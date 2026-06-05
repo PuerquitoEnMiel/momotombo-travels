@@ -1,0 +1,262 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --------------------------------------
+// 1. IDENTITY & ACCESS MANAGEMENT
+// --------------------------------------
+
+enum UserRole {
+  TRAVELER
+  GUIDE
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(TRAVELER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  profile     Profile?
+  itineraries Itinerary[]
+  reviews     Review[]
+  bookings    Booking[]
+  favorites   Favorite[]
+  points      Int      @default(0) // Gamification points
+  badges      UserBadge[]
+  providedActivities Activity[] @relation("ActivityProvider")
+}
+
+model Profile {
+  id          String @id @default(uuid())
+  userId      String @unique
+  bio         String?
+  avatarUrl   String?
+  phoneNumber String?
+  preferences Json?  // { "budget": "medium", "interests": ["nature", "history"] }
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// --------------------------------------
+// 2. CATALOG (KNOWLEDGE GRAPH)
+// --------------------------------------
+
+enum PriceLevel {
+  FREE
+  LOW     // $
+  MEDIUM  // $$
+  HIGH    // $$$
+  LUXURY  // $$$$
+}
+
+model Category {
+  id          String @id @default(uuid())
+  name        String @unique // e.g., "Volcanoes", "Beaches"
+  description String?
+  slug        String @unique
+
+  destinations Destination[]
+}
+
+model Destination {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  description String     @db.Text
+  location    Json       // { "lat": 12.34, "lng": -86.12, "address": "..." }
+  priceLevel  PriceLevel @default(MEDIUM)
+  rating      Float      @default(0.0)
+  
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id])
+
+  // Relations
+  images     DestinationImage[]
+  activities Activity[]
+  amenities  Amenity[]
+  reviews    Review[]
+  favorites  Favorite[]
+  blogPosts  BlogPost[] // Related articles
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DestinationImage {
+  id            String @id @default(uuid())
+  url           String
+  altText       String?
+  isHero        Boolean @default(false)
+  destinationId String
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+}
+
+model Activity {
+  id            String     @id @default(uuid())
+  name          String
+  description   String?
+  duration      Int?       // In minutes
+  price         Float?
+  destinationId String
+  providerId    String?    // ID of the User with role GUIDE or ADMIN
+
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  provider      User?       @relation("ActivityProvider", fields: [providerId], references: [id])
+
+  itineraryItems ItineraryItem[]
+  bookings       Booking[]
+}
+
+model Amenity {
+  id           String @id @default(uuid())
+  name         String @unique // e.g., "WiFi", "Pool", "Parking"
+  icon         String? // Lucide icon name
+  destinations Destination[]
+}
+
+// --------------------------------------
+// 3. AI & PLANNING ENGINE
+// --------------------------------------
+
+model Itinerary {
+  id         String   @id @default(uuid())
+  userId     String
+  title      String
+  startDate  DateTime
+  endDate    DateTime
+  totalPrice Float?
+  status     String   @default("DRAFT") // DRAFT, CONFIRMED, COMPLETED
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  days ItineraryDay[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ItineraryDay {
+  id          String   @id @default(uuid())
+  itineraryId String
+  dayNumber   Int
+  date        DateTime
+  
+  itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  items     ItineraryItem[]
+}
+
+model ItineraryItem {
+  id             String  @id @default(uuid())
+  itineraryDayId String
+  activityId     String?
+  customTitle    String? // If not linked to an Activity
+  startTime      DateTime?
+  endTime        DateTime?
+  notes          String?
+
+  day      ItineraryDay @relation(fields: [itineraryDayId], references: [id], onDelete: Cascade)
+  activity Activity?    @relation(fields: [activityId], references: [id])
+}
+
+// --------------------------------------
+// 4. COMMERCE & ENGAGEMENT
+// --------------------------------------
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model Booking {
+  id         String        @id @default(uuid())
+  userId     String
+  activityId String
+  date       DateTime
+  status     BookingStatus @default(PENDING)
+  totalPrice Float
+
+  user     User     @relation(fields: [userId], references: [id])
+  activity Activity @relation(fields: [activityId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id            String @id @default(uuid())
+  userId        String
+  destinationId String
+  rating        Int    // 1-5
+  comment       String @db.Text
+  
+  user        User        @relation(fields: [userId], references: [id])
+  destination Destination @relation(fields: [destinationId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Favorite {
+  id            String @id @default(uuid())
+  userId        String
+  destinationId String
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, destinationId])
+}
+
+// --------------------------------------
+// 5. CONTENT & GAMIFICATION
+// --------------------------------------
+
+model BlogPost {
+  id            String   @id @default(uuid())
+  title         String
+  slug          String   @unique
+  content       String   @db.Text
+  excerpt       String?  @db.Text
+  coverImage    String?
+  published     Boolean  @default(false)
+  destinationId String?
+  
+  destination   Destination? @relation(fields: [destinationId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Badge {
+  id          String   @id @default(uuid())
+  name        String   @unique // e.g., "Explorador de Volcanes"
+  description String
+  iconUrl     String?  // SVG or image URL
+  pointsReq   Int      @default(0) // Points required to earn this badge
+
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(uuid())
+  userId    String
+  badgeId   String
+  earnedAt  DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+}
