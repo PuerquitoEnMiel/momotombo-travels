@@ -16,7 +16,7 @@ export class GeminiAgentController {
   @Post('chat')
   async chat(
     @Body('message') message: string,
-    @Body('history') history: any[],
+    @Body('history') history: { role: string; content: string }[],
   ) {
     try {
       const rawResponse = await this.geminiAgentService.generateText(
@@ -32,18 +32,20 @@ export class GeminiAgentController {
         .replace(/```/g, '')
         .trim();
 
-      return JSON.parse(cleanResponse);
-    } catch (error: any) {
+      return JSON.parse(cleanResponse) as unknown;
+    } catch (error) {
       console.error('Error processing chat request:', error);
       throw new HttpException(
-        error.message || 'Error processing chat request',
+        error instanceof Error
+          ? error.message
+          : 'Error processing chat request',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   @Get('models')
-  async getModels() {
+  getModels() {
     return this.geminiAgentService.listModels();
   }
 
