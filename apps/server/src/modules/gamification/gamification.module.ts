@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { GamificationController } from './gamification.controller';
 import { GamificationService } from './gamification.service';
-import { PrismaModule } from '../prisma/prisma.module';
+import { PrismaModule } from '../../infrastructure/prisma/prisma.module';
 
 @Module({
   imports: [PrismaModule],

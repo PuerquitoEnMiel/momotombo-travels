@@ -7,9 +7,9 @@ import { AuthService } from './auth.service';
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(private authService: AuthService) {
     super({
-      clientID: process.env.GOOGLE_CLIENT_ID || 'mock-client-id',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'mock-client-secret',
-      callbackURL: 'http://localhost:3001/auth/google/callback',
+      clientID: process.env.GOOGLE_CLIENT_ID || 'dev-mock-client-id',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'dev-mock-client-secret',
+      callbackURL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3001/auth/google/callback',
       scope: ['email', 'profile'],
     });
   }
@@ -28,8 +28,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       picture: photos[0].value,
       accessToken,
     };
-    // Aqui llamariamos a this.authService.validateOAuthUser(user)
-    // pero mockeamos:
     done(null, user);
   }
 }

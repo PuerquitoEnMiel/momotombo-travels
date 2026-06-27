@@ -12,7 +12,7 @@ gcloud run deploy server `
     --platform managed `
     --region $REGION `
     --allow-unauthenticated `
-    --port 3000
+    --port 3001
 
 Write-Host "Building Client Image..."
 gcloud builds submit --tag gcr.io/$PROJECT_ID/momotombo-client -f apps/client/Dockerfile .

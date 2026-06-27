@@ -2,19 +2,19 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { GeminiAgentModule } from './modules/gemini-agent/gemini-agent.module';
-import { PrismaModule } from './modules/prisma/prisma.module';
+import { GeminiAgentModule } from './infrastructure/gemini-agent/gemini-agent.module';
+import { PrismaModule } from './infrastructure/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { DestinationsModule } from './modules/destinations/destinations.module';
 import { ItinerariesModule } from './modules/itineraries/itineraries.module';
-import { PineconeModule } from './modules/pinecone/pinecone.module';
+import { PineconeModule } from './infrastructure/pinecone/pinecone.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { BlogsModule } from './modules/blogs/blogs.module';
 import { GamificationModule } from './modules/gamification/gamification.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { StripeModule } from './modules/stripe/stripe.module';
+import { StripeModule } from './infrastructure/stripe/stripe.module';
 import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
