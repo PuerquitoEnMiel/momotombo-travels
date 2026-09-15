@@ -28,15 +28,49 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Auth-related flags
+  emailVerified     Boolean   @default(false)
+  emailVerifiedAt   DateTime?
+  twoFactorEnabled  Boolean   @default(false)
+  twoFactorSecret   String?
+  isActive          Boolean   @default(true)
+  lastLoginAt       DateTime?
+  lastLoginIp       String?
+  deletedAt         DateTime? // soft delete
+  language          String    @default("es")
+  timezone          String    @default("America/Managua")
+  currency          String    @default("USD")
+  stripeCustomerId  String?   @unique
+  notificationPreferences Json? @default("{\"email\": true, \"push\": true, \"sms\": false}")
+
   // Relations
-  profile     Profile?
-  itineraries Itinerary[]
-  reviews     Review[]
-  bookings    Booking[]
-  favorites   Favorite[]
-  points      Int      @default(0) // Gamification points
-  badges      UserBadge[]
-  providedActivities Activity[] @relation("ActivityProvider")
+  profile              Profile?
+  itineraries          Itinerary[]
+  reviews              Review[]
+  bookings             Booking[]
+  favorites            Favorite[]
+  points               Int               @default(0) // Gamification points
+  badges               UserBadge[]
+  providedActivities   Activity[]        @relation("ActivityProvider")
+  refreshTokens        RefreshToken[]
+  emailTokens          EmailVerificationToken[]
+  passwordResetTokens  PasswordResetToken[]
+  oauthAccounts        OAuthAccount[]
+  sessions             Session[]
+  notifications        Notification[]
+  payments             Payment[]
+  itineraryCollaborators ItineraryCollaborator[]
+  authoredComments     Comment[]          @relation("CommentAuthor")
+  moderatedComments    Comment[]          @relation("CommentModerator")
+  blogPosts            BlogPost[]         @relation("BlogPostAuthor")
+  blogPostEdits        BlogPost[]         @relation("BlogPostEditor")
+  reviewHelpful        ReviewHelpful[]
+  reviewReports        ReviewReport[]
+  auditLogs            AuditLog[]
+  subscriptions        Subscription[]
+
+  @@index([role])
+  @@index([emailVerified])
 }
 
 model Profile {
@@ -46,8 +80,101 @@ model Profile {
   avatarUrl   String?
   phoneNumber String?
   preferences Json?  // { "budget": "medium", "interests": ["nature", "history"] }
-  
+
+  dateOfBirth    DateTime?
+  gender         String?
+  nationality    String?
+  passportNumber String?
+  address        Json?
+  socialLinks    Json?
+  emergencyContact Json?
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OAuthAccount {
+  id                String   @id @default(uuid())
+  userId            String
+  provider          String   // "google", "facebook", "apple"
+  providerAccountId String   // The unique ID from the OAuth provider
+  accessToken       String?  @db.Text
+  refreshToken      String?  @db.Text
+  expiresAt         DateTime?
+  scope             String?
+  tokenType         String?
+  idToken           String?  @db.Text
+  sessionState      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  sessionToken String   @unique
+  userAgent    String?  @db.Text
+  ipAddress    String?
+  expires      DateTime
+  isActive     Boolean  @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([expires])
+}
+
+model RefreshToken {
+  id          String   @id @default(uuid())
+  userId      String
+  tokenHash   String   @unique // SHA256 hash of the refresh token
+  family      String   // Token family for rotation detection
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  replacedBy  String?  // ID of the new token after rotation
+  userAgent   String?  @db.Text
+  ipAddress   String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([family])
+  @@index([expiresAt])
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 // --------------------------------------
@@ -79,7 +206,11 @@ model Destination {
   location    Json       // { "lat": 12.34, "lng": -86.12, "address": "..." }
   priceLevel  PriceLevel @default(MEDIUM)
   rating      Float      @default(0.0)
-  
+  isFeatured  Boolean    @default(false)
+  viewCount   Int        @default(0)
+  bookingCount Int       @default(0)
+  deletedAt   DateTime?
+
   categoryId  String
   category    Category   @relation(fields: [categoryId], references: [id])
 
@@ -90,9 +221,13 @@ model Destination {
   reviews    Review[]
   favorites  Favorite[]
   blogPosts  BlogPost[] // Related articles
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([isFeatured])
+  @@index([deletedAt])
 }
 
 model DestinationImage {
@@ -110,6 +245,18 @@ model Activity {
   description   String?
   duration      Int?       // In minutes
   price         Float?
+  currency      String     @default("USD")
+  maxCapacity   Int        @default(10)
+  minCapacity   Int        @default(1)
+  difficulty    String?    // EASY, MODERATE, HARD
+  included      Json?      // ["guide", "lunch", "transport"]
+  toBring       Json?      // ["water", "sunscreen", "boots"]
+  requirements  String?    @db.Text
+  meetingPoint  Json?      // { "lat": ..., "lng": ..., "address": "..." }
+  startTimes    Json?      // ["08:00", "14:00"]
+  isActive      Boolean    @default(true)
+  cancellationPolicy String? @db.Text
+
   destinationId String
   providerId    String?    // ID of the User with role GUIDE or ADMIN
 
@@ -118,6 +265,9 @@ model Activity {
 
   itineraryItems ItineraryItem[]
   bookings       Booking[]
+
+  @@index([destinationId])
+  @@index([providerId])
 }
 
 model Amenity {
@@ -132,20 +282,33 @@ model Amenity {
 // --------------------------------------
 
 model Itinerary {
-  id         String   @id @default(uuid())
-  userId     String
-  title      String
-  startDate  DateTime
-  endDate    DateTime
-  totalPrice Float?
-  status     String   @default("DRAFT") // DRAFT, CONFIRMED, COMPLETED
-  
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  days ItineraryDay[]
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  description String?  @db.Text
+  startDate   DateTime
+  endDate     DateTime
+  totalPrice  Float?
+  currency    String   @default("USD")
+  status      String   @default("DRAFT") // DRAFT, CONFIRMED, COMPLETED, CANCELLED
+  coverImage  String?
+  isPublic    Boolean  @default(false)
+  forkedFromId String?
+  language    String   @default("es")
+
+  user         User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  days         ItineraryDay[]
+  collaborators ItineraryCollaborator[]
+  shares       ItineraryShare[]
+  forkedFrom   Itinerary?              @relation("ItineraryForks", fields: [forkedFromId], references: [id], onDelete: SetNull)
+  forks        Itinerary[]             @relation("ItineraryForks")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([isPublic])
+  @@index([status])
 }
 
 model ItineraryDay {
@@ -179,6 +342,9 @@ enum BookingStatus {
   PENDING
   CONFIRMED
   CANCELLED
+  COMPLETED
+  REFUNDED
+  EXPIRED
 }
 
 model Booking {
@@ -188,11 +354,101 @@ model Booking {
   date       DateTime
   status     BookingStatus @default(PENDING)
   totalPrice Float
+  currency   String        @default("USD")
+  guests     Int           @default(1)
+  specialRequests String?  @db.Text
+  cancellationReason String?
+  refundAmount Float?
+  confirmationCode String?  @unique
+  qrCodeUrl   String?
+  checkedInAt DateTime?
+  completedAt DateTime?
+  stripePaymentIntentId String?
+  stripeChargeId        String?
 
   user     User     @relation(fields: [userId], references: [id])
   activity Activity @relation(fields: [activityId], references: [id])
+  payments Payment[]
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([activityId])
+  @@index([status])
+  @@index([date])
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+  CANCELLED
+}
+
+model Payment {
+  id                    String        @id @default(uuid())
+  userId                String
+  bookingId             String?
+
+  // Stripe identifiers
+  stripePaymentIntentId String?       @unique
+  stripeChargeId        String?       @unique
+  stripeCustomerId      String?
+  stripeSessionId       String?       @unique
+
+  amount                Float
+  currency              String        @default("USD")
+  refundedAmount        Float         @default(0)
+  status                PaymentStatus @default(PENDING)
+
+  // Metadata
+  description          String?        @db.Text
+  receiptUrl           String?
+  failureReason        String?        @db.Text
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booking Booking? @relation(fields: [bookingId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([bookingId])
+  @@index([status])
+}
+
+enum NotificationType {
+  BOOKING
+  PAYMENT
+  ITINERARY
+  REVIEW
+  PROMOTION
+  SYSTEM
+  SECURITY
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType
+  title     String
+  body      String           @db.Text
+  data      Json?            // arbitrary payload (e.g., { bookingId, url })
+  channel   String           @default("in_app") // in_app, email, push, sms
+  readAt    DateTime?
+  archivedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([readAt])
+  @@index([createdAt])
 }
 
 model Review {
@@ -201,11 +457,28 @@ model Review {
   destinationId String
   rating        Int    // 1-5
   comment       String @db.Text
-  
+  title         String?
+  pros          String? @db.Text
+  cons          String? @db.Text
+  isVerified    Boolean @default(false) // user has completed a booking at this destination
+  isHidden      Boolean @default(false) // for moderation
+  language      String  @default("es")
+  helpfulCount  Int     @default(0)
+  reportCount   Int     @default(0)
+  deletedAt     DateTime?
+
   user        User        @relation(fields: [userId], references: [id])
   destination Destination @relation(fields: [destinationId], references: [id])
+  helpful     ReviewHelpful[]
+  reports     ReviewReport[]
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([destinationId])
+  @@index([userId])
+  @@index([rating])
+  @@index([isHidden])
 }
 
 model Favorite {
@@ -231,12 +504,34 @@ model BlogPost {
   excerpt       String?  @db.Text
   coverImage    String?
   published     Boolean  @default(false)
+  publishedAt   DateTime?
+  readTime      Int      @default(5)
+  viewCount     Int      @default(0)
+  likeCount     Int      @default(0)
+  authorId      String?
+  editorId      String?
+  categoryId    String?
   destinationId String?
-  
-  destination   Destination? @relation(fields: [destinationId], references: [id])
+  language      String   @default("es")
+  metaTitle     String?  @db.Text
+  metaDescription String? @db.Text
+  allowComments Boolean  @default(true)
+  deletedAt     DateTime?
+
+  destination Destination?  @relation(fields: [destinationId], references: [id])
+  author      User?         @relation("BlogPostAuthor", fields: [authorId], references: [id])
+  editor      User?         @relation("BlogPostEditor", fields: [editorId], references: [id])
+  category    BlogCategory? @relation(fields: [categoryId], references: [id])
+  tags        BlogPostTag[]
+  comments    Comment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([published])
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([language])
 }
 
 model Badge {
@@ -259,4 +554,269 @@ model UserBadge {
   badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
 
   @@unique([userId, badgeId])
+}
+
+// --------------------------------------
+// 6. ITINERARY COLLABORATION & SHARING
+// --------------------------------------
+
+enum CollaboratorRole {
+  VIEWER
+  EDITOR
+  CO_OWNER
+}
+
+model ItineraryCollaborator {
+  id          String           @id @default(uuid())
+  itineraryId String
+  userId      String
+  role        CollaboratorRole @default(VIEWER)
+  invitedAt   DateTime         @default(now())
+  acceptedAt  DateTime?
+
+  itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([itineraryId, userId])
+  @@index([userId])
+}
+
+model ItineraryShare {
+  id          String   @id @default(uuid())
+  itineraryId String
+  shareSlug   String   @unique
+  visibility  String   @default("private") // private, link, public
+  password    String?  // optional password for the share link
+  expiresAt   DateTime?
+  viewCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+
+  @@index([itineraryId])
+}
+
+// --------------------------------------
+// 7. BLOG TAGS, CATEGORIES & COMMENTS
+// --------------------------------------
+
+model BlogCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?  @db.Text
+  coverImage  String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  posts BlogPost[]
+}
+
+model Tag {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  slug      String   @unique
+  usageCount Int     @default(0)
+
+  posts BlogPostTag[]
+}
+
+model BlogPostTag {
+  blogPostId String
+  tagId      String
+
+  post BlogPost @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  tag  Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([blogPostId, tagId])
+  @@index([tagId])
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  FLAGGED
+}
+
+model Comment {
+  id           String        @id @default(uuid())
+  postId       String
+  authorId     String
+  parentId     String?       // For threaded replies
+  body         String        @db.Text
+  status       CommentStatus @default(APPROVED)
+  likeCount    Int           @default(0)
+  reportCount  Int           @default(0)
+  moderatedById String?
+  moderatedAt   DateTime?
+  moderationReason String?
+  deletedAt     DateTime?
+
+  post         BlogPost  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author       User      @relation("CommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  parent       Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies      Comment[] @relation("CommentReplies")
+  moderator    User?     @relation("CommentModerator", fields: [moderatedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([postId])
+  @@index([authorId])
+  @@index([parentId])
+  @@index([status])
+  @@index([deletedAt])
+}
+
+// --------------------------------------
+// 8. REVIEWS ENHANCEMENTS
+// --------------------------------------
+
+model ReviewHelpful {
+  id        String   @id @default(uuid())
+  reviewId  String
+  userId    String
+  isHelpful Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+  @@index([userId])
+}
+
+model ReviewReport {
+  id        String   @id @default(uuid())
+  reviewId  String
+  userId    String
+  reason    String   @db.Text
+  resolved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([reviewId])
+  @@index([userId])
+}
+
+// --------------------------------------
+// 9. COUPONS & PROMOTIONS
+// --------------------------------------
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+enum CouponScope {
+  GLOBAL
+  DESTINATION
+  ACTIVITY
+  CATEGORY
+}
+
+model Coupon {
+  id              String       @id @default(uuid())
+  code            String       @unique
+  description     String?      @db.Text
+  discountType    DiscountType
+  discountValue   Float
+  scope           CouponScope  @default(GLOBAL)
+  scopeId         String?      // destinationId, activityId, or categoryId
+  minPurchase     Float        @default(0)
+  maxDiscount     Float?
+  usageLimit      Int?
+  usageCount      Int          @default(0)
+  perUserLimit    Int          @default(1)
+  validFrom       DateTime     @default(now())
+  validUntil      DateTime?
+  isActive        Boolean      @default(true)
+  createdById     String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  redemptions CouponRedemption[]
+
+  @@index([code])
+  @@index([isActive])
+}
+
+model CouponRedemption {
+  id          String   @id @default(uuid())
+  couponId    String
+  userId      String
+  bookingId   String?
+  discountAmount Float
+  redeemedAt  DateTime @default(now())
+
+  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+
+  @@index([couponId])
+  @@index([userId])
+  @@index([bookingId])
+}
+
+// --------------------------------------
+// 10. SUBSCRIPTIONS (premium tier)
+// --------------------------------------
+
+enum SubscriptionPlan {
+  FREE
+  PREMIUM
+  PRO
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+  INCOMPLETE
+}
+
+model Subscription {
+  id                   String             @id @default(uuid())
+  userId               String
+  plan                 SubscriptionPlan   @default(FREE)
+  status               SubscriptionStatus @default(ACTIVE)
+  stripeSubscriptionId String?            @unique
+  stripeCustomerId     String?
+  stripePriceId        String?
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+  canceledAt           DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+// --------------------------------------
+// 11. AUDIT LOG
+// --------------------------------------
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  action    String   // e.g., "user.login", "booking.cancel"
+  resource  String?  // e.g., "User:abc123", "Booking:xyz789"
+  metadata  Json?
+  ipAddress String?
+  userAgent String?  @db.Text
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@index([resource])
 }

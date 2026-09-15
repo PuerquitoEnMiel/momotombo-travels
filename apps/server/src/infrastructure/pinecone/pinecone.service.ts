@@ -9,14 +9,17 @@ export class PineconeService implements OnModuleInit {
 
   constructor(private configService: ConfigService) {}
 
-  async onModuleInit() {
+  onModuleInit(): void {
     const apiKey = this.configService.get<string>('PINECONE_API_KEY');
     this.indexName =
       this.configService.get<string>('PINECONE_INDEX') ||
       'momotombo-destinations';
 
     if (!apiKey || apiKey === 'tu_pinecone_api_key') {
-      throw new Error('PINECONE_API_KEY no configurado correctamente en .env');
+      console.warn(
+        'PINECONE_API_KEY no configurado en .env. PineconeService no estará inicializado.',
+      );
+      return;
     }
 
     this.pinecone = new Pinecone({ apiKey });

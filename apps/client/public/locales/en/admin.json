@@ -1,0 +1,27 @@
+{
+  "title": "Admin Panel",
+  "subtitle": "General Control Panel",
+  "nav": {
+    "summary": "Summary",
+    "users": "Users",
+    "destinations": "Destinations",
+    "transactions": "Transactions",
+    "settings": "Settings"
+  },
+  "metrics": {
+    "title": "Main Metrics",
+    "subtitle": "Monitor the platform's growth and health.",
+    "totalUsers": "Total Users",
+    "activeDestinations": "Active Destinations",
+    "monthlyRevenue": "Revenue (Month)",
+    "registeredGuides": "Registered Guides"
+  },
+  "chart": {
+    "title": "Annual Revenue",
+    "disclaimer": "Simulated"
+  },
+  "recentUsers": {
+    "title": "Recent Users",
+    "viewAll": "View all"
+  }
+}

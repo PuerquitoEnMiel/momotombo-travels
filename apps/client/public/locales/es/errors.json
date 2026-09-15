@@ -1,0 +1,15 @@
+{
+  "generic": "Algo salió mal. Intenta nuevamente.",
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe o fue movida.",
+    "backHome": "Volver al inicio"
+  },
+  "serverError": {
+    "title": "Error del servidor",
+    "description": "Estamos teniendo problemas. Intenta en unos minutos."
+  },
+  "unauthorized": "Necesitas iniciar sesión para continuar.",
+  "forbidden": "No tienes permisos para acceder a esta sección.",
+  "networkError": "Error de conexión. Verifica tu internet."
+}

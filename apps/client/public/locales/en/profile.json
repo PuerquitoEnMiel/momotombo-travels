@@ -1,0 +1,32 @@
+{
+  "loading": "Loading profile...",
+  "editProfile": "Edit profile",
+  "logout": "Sign out",
+  "gamification": {
+    "title": "My Achievements",
+    "unlocked": "{count} unlocked",
+    "empty": "Book trips, write reviews and share itineraries to unlock amazing achievements.",
+    "nextLevel": "Next level: {xp} XP"
+  },
+  "stats": {
+    "favorites": "Favorites",
+    "visited": "Destinations visited",
+    "reviews": "Reviews",
+    "aiItineraries": "AI Itineraries"
+  },
+  "favorites": {
+    "title": "Favorite destinations",
+    "empty": {
+      "title": "You don't have favorites yet",
+      "description": "Save the destinations you like most to find them quickly",
+      "cta": "Explore destinations"
+    }
+  },
+  "quickActions": {
+    "title": "Quick actions",
+    "ai": "Plan with Kary AI",
+    "explore": "Explore Nicaragua",
+    "itineraries": "View itineraries",
+    "settings": "Configure profile"
+  }
+}

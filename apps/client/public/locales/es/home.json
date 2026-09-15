@@ -1,0 +1,89 @@
+{
+  "hero": {
+    "badge": "Excelencia Curada",
+    "title": "Descubre la verdadera Nicaragua con IA",
+    "subtitle": "Itinerarios personalizados, guías locales expertas y reservas instantáneas en la tierra de lagos y volcanes.",
+    "ctaPrimary": "Generar Itinerario",
+    "ctaSecondary": "Explorar Destinos"
+  },
+  "bento": {
+    "aiNote": "Powered by AI"
+  },
+  "featured": {
+    "title": "Destinos destacados",
+    "subtitle": "Los favoritos de nuestra comunidad"
+  },
+  "howItWorks": {
+    "badge": "Simple y Rápido",
+    "title": "¿Cómo funciona Momotombo?",
+    "steps": {
+      "talk": {
+        "title": "Cuéntale a Kary",
+        "description": "Dile qué te gusta: playa, volcanes, historia o aventura. Kary te escucha."
+      },
+      "plan": {
+        "title": "Recibe tu Plan",
+        "description": "Nuestra IA diseña un itinerario único con los mejores destinos y tips locales."
+      },
+      "travel": {
+        "title": "Viaja sin Estrés",
+        "description": "Reserva, explora y disfruta. Kary te acompaña en cada paso del camino."
+      }
+    }
+  },
+  "manifesto": {
+    "badge": "Nuestra Misión",
+    "title": "Si quieres descubrir la verdadera Nicaragua,",
+    "titleAccent": "Momotombo es para ti.",
+    "description": "Miles de viajeros forman parte de la comunidad que sabe cómo viajar. Nuestra responsabilidad es enseñarte destinos del mundo y acompañarte durante tu experiencia."
+  },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "items": {
+      "ai": {
+        "question": "¿Cómo funciona la inteligencia artificial de Kary?",
+        "answer": "Kary es nuestra guía IA entrenada con información local de Nicaragua. Aprende de tus preferencias y crea itinerarios personalizados basados en destinos, actividades y experiencias reales."
+      },
+      "price": {
+        "question": "¿Cuánto cuesta usar Momotombo?",
+        "answer": "El planear con IA y explorar destinos es gratuito. Solo pagas cuando reservas actividades o experiencias, sin comisiones ocultas."
+      },
+      "booking": {
+        "question": "¿Cómo funcionan las reservas?",
+        "answer": "Reservas directamente con proveedores verificados locales. Tu pago se mantiene seguro hasta que completes la experiencia."
+      },
+      "cancel": {
+        "question": "¿Puedo cancelar mi reserva?",
+        "answer": "Sí, puedes cancelar según la política de cada actividad. La mayoría permite cancelación gratuita hasta 48 horas antes."
+      }
+    }
+  },
+  "press": {
+    "disclaimer": "Apoyado por viajeros de todo el mundo"
+  },
+  "newsletter": {
+    "title": "Suscríbete a Momotombo y transforma",
+    "titleAccent": "tu forma de viajar",
+    "subtitle": "No te pierdas nuestras últimas noticias, guías secretas y descuentos exclusivos.",
+    "emailPlaceholder": "Introduce tu email",
+    "submit": "Suscríbete",
+    "terms": "Al continuar, aceptas nuestras Condiciones de uso y Política de privacidad.",
+    "success": "¡Gracias por suscribirte!",
+    "error": "Error al suscribirte. Intenta de nuevo."
+  },
+  "chat": {
+    "title": "Kary",
+    "status": "Guía IA · En línea",
+    "placeholder": "Pregunta sobre un destino...",
+    "disclaimer": "Respuestas generadas por IA · Siempre verifica la información",
+    "tooltip": "Habla con Kary, tu guía IA",
+    "quickSuggestions": [
+      "¿Qué hacer en Ometepe?",
+      "Mejores playas de Nicaragua",
+      "Aventura en volcanes",
+      "Destinos coloniales"
+    ],
+    "welcomeMessage": "¡Hola! Soy **Kary**, tu guía personal de Nicaragua. 🌋✨\n\n¿Qué aventura estás buscando hoy?",
+    "errorMessage": "Lo siento, hubo un error al conectarme. ¿Intenta nuevamente? 🙏"
+  }
+}

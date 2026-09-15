@@ -1,0 +1,13 @@
+{
+  "title": "Travel Blog",
+  "subtitle": "Stories, tips and local guides to inspire your next adventure in the land of lakes and volcanoes.",
+  "newBadge": "New",
+  "aiCta": {
+    "title": "Can't find what you're looking for?",
+    "description": "Ask Kary to write a personalized article about any Nicaraguan destination, activity, or culture.",
+    "button": "Generate with AI"
+  },
+  "article": {
+    "readMore": "Read article"
+  }
+}

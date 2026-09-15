@@ -1,46 +1,55 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { BookingsService } from './bookings.service';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import {
+  CurrentUser,
+  type AuthenticatedUser,
+} from '../../common/decorators/current-user.decorator';
+import { IsDateString, IsInt, IsUUID, Max, Min } from 'class-validator';
 
-@UseGuards(AuthGuard('jwt'))
+class CreateBookingDto {
+  @IsUUID()
+  activityId: string;
+
+  @IsDateString()
+  date: string;
+
+  @IsInt()
+  @Min(1)
+  @Max(20)
+  guests: number;
+}
+
+@UseGuards(JwtAuthGuard)
 @Controller('bookings')
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
   @Get()
-  async getUserBookings(@Request() req: any) {
-    return this.bookingsService.getUserBookings(req.user.userId);
+  getUserBookings(@CurrentUser() user: AuthenticatedUser) {
+    return this.bookingsService.getUserBookings(user.userId);
   }
 
   @Get(':id')
-  async getBookingById(@Param('id') id: string, @Request() req: any) {
-    return this.bookingsService.getBookingById(id, req.user.userId);
+  getBookingById(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.bookingsService.getBookingById(id, user.userId);
   }
 
   @Post()
-  async createBooking(
-    @Request() req: any,
-    @Body()
-    body: {
-      activityId: string;
-      date: string;
-      guests: number;
-      totalPrice: number;
-    },
+  @Throttle({ default: { limit: 15, ttl: 60000 } })
+  createBooking(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() body: CreateBookingDto,
   ) {
-    return this.bookingsService.createBooking(req.user.userId, {
+    // totalPrice is computed server-side from the activity; never trust the client.
+    return this.bookingsService.createBooking(user.userId, {
       activityId: body.activityId,
       date: new Date(body.date),
       guests: body.guests,
-      totalPrice: body.totalPrice,
     });
   }
 }

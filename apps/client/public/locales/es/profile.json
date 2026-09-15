@@ -1,0 +1,32 @@
+{
+  "loading": "Cargando perfil...",
+  "editProfile": "Editar perfil",
+  "logout": "Salir",
+  "gamification": {
+    "title": "Mis Logros",
+    "unlocked": "{count} desbloqueados",
+    "empty": "Reserva viajes, escribe reseñas y comparte itinerarios para desbloquear logros increíbles.",
+    "nextLevel": "Nivel Siguiente: {xp} XP"
+  },
+  "stats": {
+    "favorites": "Favoritos",
+    "visited": "Destinos visitados",
+    "reviews": "Reseñas",
+    "aiItineraries": "Itinerarios IA"
+  },
+  "favorites": {
+    "title": "Destinos favoritos",
+    "empty": {
+      "title": "Aún no tienes favoritos",
+      "description": "Guarda los destinos que más te gustan para encontrarlos rápido",
+      "cta": "Explorar destinos"
+    }
+  },
+  "quickActions": {
+    "title": "Accesos rápidos",
+    "ai": "Planear con Kary IA",
+    "explore": "Explorar Nicaragua",
+    "itineraries": "Ver itinerarios",
+    "settings": "Configurar perfil"
+  }
+}

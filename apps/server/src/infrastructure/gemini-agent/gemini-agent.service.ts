@@ -40,9 +40,10 @@ export class GeminiAgentService implements OnModuleInit {
     this.location =
       this.configService.get<string>('GOOGLE_CLOUD_LOCATION') || 'us-central1';
     if (!this.projectId) {
-      console.error(
-        '🚨 ERROR CRÍTICO: No se encontró GOOGLE_CLOUD_PROJECT en el archivo .env',
+      console.warn(
+        '🚨 ADVERTENCIA: No se encontró GOOGLE_CLOUD_PROJECT en el archivo .env. Usando un ID de proyecto de marcador de posición para evitar fallas en el inicio.',
       );
+      this.projectId = 'momotombo-travels-dev';
     }
 
     this.vertexAI = new VertexAI({

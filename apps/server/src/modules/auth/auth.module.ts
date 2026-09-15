@@ -1,28 +1,36 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PrismaModule } from '../../infrastructure/prisma/prisma.module';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { GoogleAuthController } from './google-auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { GoogleStrategy } from './google.strategy';
-
-const jwtSecret = process.env.JWT_SECRET;
-if (!jwtSecret && process.env.NODE_ENV === 'production') {
-  throw new Error('JWT_SECRET environment variable is required in production');
-}
+import { TokensService } from './tokens.service';
 
 @Module({
   imports: [
     PrismaModule,
     PassportModule,
-    JwtModule.register({
-      secret: jwtSecret || 'dev-only-jwt-secret-do-not-use-in-production',
-      signOptions: { expiresIn: '1d' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const secret = config.get<string>('JWT_SECRET');
+        if (!secret) {
+          throw new Error('JWT_SECRET environment variable is required');
+        }
+        return {
+          secret,
+          verifyOptions: { ignoreExpiration: false },
+        };
+      },
     }),
   ],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, GoogleStrategy],
-  exports: [AuthService],
+  controllers: [AuthController, GoogleAuthController],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, TokensService],
+  exports: [AuthService, TokensService],
 })
 export class AuthModule {}

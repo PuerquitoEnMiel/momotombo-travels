@@ -1,0 +1,15 @@
+{
+  "generic": "Something went wrong. Please try again.",
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist or was moved.",
+    "backHome": "Back to home"
+  },
+  "serverError": {
+    "title": "Server error",
+    "description": "We're having problems. Try again in a few minutes."
+  },
+  "unauthorized": "You need to sign in to continue.",
+  "forbidden": "You don't have permission to access this section.",
+  "networkError": "Connection error. Check your internet."
+}

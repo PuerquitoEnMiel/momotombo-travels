@@ -1,0 +1,9 @@
+{
+  "apps/server/**/*.{ts,js}": [
+    "npm run lint --workspace=server"
+  ],
+  "apps/client/**/*.{ts,tsx,js,jsx}": [
+    "npm run lint --workspace=client"
+  ]
+}
+

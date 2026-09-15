@@ -1,0 +1,27 @@
+{
+  "title": "Panel de Administración",
+  "subtitle": "Panel de Control General",
+  "nav": {
+    "summary": "Resumen",
+    "users": "Usuarios",
+    "destinations": "Destinos",
+    "transactions": "Transacciones",
+    "settings": "Ajustes"
+  },
+  "metrics": {
+    "title": "Métricas Principales",
+    "subtitle": "Monitorea el crecimiento y salud de la plataforma.",
+    "totalUsers": "Usuarios Totales",
+    "activeDestinations": "Destinos Activos",
+    "monthlyRevenue": "Ingresos (Mes)",
+    "registeredGuides": "Guías Registrados"
+  },
+  "chart": {
+    "title": "Ingresos Anuales",
+    "disclaimer": "Simulado"
+  },
+  "recentUsers": {
+    "title": "Usuarios Recientes",
+    "viewAll": "Ver todos"
+  }
+}

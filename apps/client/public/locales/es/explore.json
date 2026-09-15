@@ -1,0 +1,79 @@
+{
+  "header": {
+    "badge": "Explorar Nicaragua",
+    "title": "Descubre tu próxima",
+    "titleAccent": "aventura",
+    "subtitle": "Busca con IA o filtra por categoría. Cada destino es una historia.",
+    "searchPlaceholder": "Ej: \"quiero ver volcanes y nadar en lagos...\"",
+    "searchButton": "Buscar con IA",
+    "advancedFilters": "Filtros avanzados"
+  },
+  "categories": {
+    "all": "Todos",
+    "volcanoes": "Volcanes",
+    "colonial": "Colonial",
+    "beaches": "Playas",
+    "islands": "Islas"
+  },
+  "priceLabels": {
+    "FREE": "Gratis",
+    "LOW": "$",
+    "MEDIUM": "$$",
+    "HIGH": "$$$",
+    "LUXURY": "$$$$"
+  },
+  "ai": {
+    "recommends": "Kary recomienda",
+    "loading": "Kary analizando tu solicitud...",
+    "error": "Error al procesar la búsqueda. Intenta nuevamente."
+  },
+  "results": {
+    "count": "{count} destinos encontrados",
+    "viewDestination": "Ver destino",
+    "noResults": "Sin resultados",
+    "noResultsHint": "Intenta otra búsqueda o selecciona otra categoría."
+  },
+  "detail": {
+    "about": "Sobre este destino",
+    "activities": "Actividades",
+    "amenities": "Servicios",
+    "reviews": "Reseñas",
+    "noReviews": "Aún no hay reseñas para este destino.",
+    "bookNow": "Reservar ahora",
+    "writeReview": "Escribir reseña",
+    "perPerson": "por persona",
+    "duration": "Duración",
+    "reviewsCount": "{count} reseñas"
+  },
+  "booking": {
+    "title": "Reservar Actividad",
+    "subtitle": "Asegura tu lugar en esta aventura",
+    "selectActivity": "Selecciona una actividad",
+    "date": "Fecha",
+    "guests": "Personas",
+    "pricePerPerson": "Precio por persona",
+    "totalGuests": "Total personas",
+    "totalToPay": "Total a pagar",
+    "payButton": "Pagar con Stripe",
+    "success": "¡Reserva Confirmada!",
+    "successHint": "Hemos enviado los detalles a tu correo electrónico.",
+    "errors": {
+      "noAuth": "Debes iniciar sesión para reservar",
+      "generic": "Error al procesar la reserva"
+    }
+  },
+  "review": {
+    "title": "Escribe una reseña",
+    "subtitle": "Comparte tu experiencia en este destino",
+    "yourRating": "Tu calificación",
+    "tellUsMore": "Cuéntanos más",
+    "commentPlaceholder": "¿Qué te gustó más? ¿Algún consejo para otros viajeros?",
+    "submit": "Publicar reseña",
+    "success": "¡Gracias por tu reseña!",
+    "successHint": "Tu opinión ayuda a otros viajeros a descubrir Nicaragua.",
+    "errors": {
+      "noAuth": "Debes iniciar sesión para dejar una reseña",
+      "generic": "Error al enviar la reseña"
+    }
+  }
+}

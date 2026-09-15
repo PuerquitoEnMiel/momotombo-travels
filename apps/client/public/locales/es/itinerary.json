@@ -1,0 +1,36 @@
+{
+  "list": {
+    "title": "Mis Itinerarios",
+    "subtitle": "Tus aventuras planificadas con Kary",
+    "newItinerary": "Nuevo itinerario",
+    "empty": {
+      "title": "Aún no tienes itinerarios",
+      "description": "Crea tu primer itinerario personalizado con la ayuda de nuestra IA.",
+      "cta": "Crear itinerario"
+    }
+  },
+  "planner": {
+    "title": "Planear con Kary",
+    "subtitle": "Tu guía personal para diseñar el viaje perfecto",
+    "inputPlaceholder": "Escribe tu mensaje...",
+    "starterPrompts": {
+      "weekend": "Diseña un fin de semana romántico en Granada",
+      "family": "Plan familiar de 5 días con niños pequeños",
+      "adventure": "Aventura extrema de 7 días con volcanes y surf",
+      "culture": "Recorrido cultural de 4 días por ciudades coloniales"
+    }
+  },
+  "editor": {
+    "loading": "Cargando itinerario...",
+    "addDay": "Agregar día",
+    "addActivity": "Agregar actividad",
+    "share": "Compartir",
+    "exportPdf": "Exportar PDF",
+    "confirm": "Confirmar itinerario",
+    "totalCost": "Costo total",
+    "duration": "Duración",
+    "noItems": "No hay actividades en este día",
+    "drag": "Arrastra para reordenar",
+    "mapPlaceholder": "Mapa interactivo disponible próximamente"
+  }
+}

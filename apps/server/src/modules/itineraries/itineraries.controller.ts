@@ -1,52 +1,92 @@
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+  IsArray,
+  IsDateString,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MaxLength,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 import { ItinerariesService } from './itineraries.service';
+import {
+  CurrentUser,
+  type AuthenticatedUser,
+} from '../../common/decorators/current-user.decorator';
 
-@UseGuards(AuthGuard('jwt'))
+class CreateItineraryDto {
+  @IsString()
+  @MinLength(1)
+  @MaxLength(200)
+  title: string;
+
+  @IsDateString()
+  startDate: string;
+
+  @IsDateString()
+  endDate: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
+  description?: string;
+}
+
+class ReorderItemDto {
+  @IsUUID()
+  id: string;
+
+  @IsUUID()
+  itineraryDayId: string;
+}
+
+class ReorderItemsDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ReorderItemDto)
+  items: ReorderItemDto[];
+}
+
 @Controller('itineraries')
 export class ItinerariesController {
   constructor(private readonly itinerariesService: ItinerariesService) {}
 
   @Get()
-  async getUserItineraries(@Request() req: any) {
-    return this.itinerariesService.getUserItineraries(req.user.userId);
+  getUserItineraries(@CurrentUser() user: AuthenticatedUser) {
+    return this.itinerariesService.getUserItineraries(user.userId);
   }
 
   @Get(':id')
-  async getItineraryById(@Param('id') id: string, @Request() req: any) {
-    return this.itinerariesService.getItineraryById(id, req.user.userId);
+  getItineraryById(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.itinerariesService.getItineraryById(id, user.userId);
   }
 
   @Post()
-  async createItinerary(
-    @Request() req: any,
-    @Body() body: { title: string; startDate: string; endDate: string },
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
+  createItinerary(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CreateItineraryDto,
   ) {
-    return this.itinerariesService.createItinerary(req.user.userId, {
-      title: body.title,
-      startDate: new Date(body.startDate),
-      endDate: new Date(body.endDate),
+    return this.itinerariesService.createItinerary(user.userId, {
+      title: dto.title,
+      startDate: new Date(dto.startDate),
+      endDate: new Date(dto.endDate),
     });
   }
 
   @Post(':id/items/reorder')
-  async reorderItems(
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
+  reorderItems(
     @Param('id') id: string,
-    @Request() req: any,
-    @Body() body: { items: { id: string; itineraryDayId: string }[] },
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ReorderItemsDto,
   ) {
-    return this.itinerariesService.reorderItems(
-      req.user.userId,
-      id,
-      body.items,
-    );
+    return this.itinerariesService.reorderItems(user.userId, id, dto.items);
   }
 }

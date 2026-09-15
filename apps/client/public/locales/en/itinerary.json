@@ -1,0 +1,36 @@
+{
+  "list": {
+    "title": "My Itineraries",
+    "subtitle": "Your adventures planned with Kary",
+    "newItinerary": "New itinerary",
+    "empty": {
+      "title": "You don't have any itineraries yet",
+      "description": "Create your first personalized itinerary with the help of our AI.",
+      "cta": "Create itinerary"
+    }
+  },
+  "planner": {
+    "title": "Plan with Kary",
+    "subtitle": "Your personal guide to designing the perfect trip",
+    "inputPlaceholder": "Type your message...",
+    "starterPrompts": {
+      "weekend": "Design a romantic weekend in Granada",
+      "family": "5-day family plan with small children",
+      "adventure": "7-day extreme adventure with volcanoes and surfing",
+      "culture": "4-day cultural tour through colonial cities"
+    }
+  },
+  "editor": {
+    "loading": "Loading itinerary...",
+    "addDay": "Add day",
+    "addActivity": "Add activity",
+    "share": "Share",
+    "exportPdf": "Export PDF",
+    "confirm": "Confirm itinerary",
+    "totalCost": "Total cost",
+    "duration": "Duration",
+    "noItems": "No activities in this day",
+    "drag": "Drag to reorder",
+    "mapPlaceholder": "Interactive map coming soon"
+  }
+}

@@ -1,14 +1,16 @@
-import { Controller, Get, UseGuards, Request } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Get } from '@nestjs/common';
 import { GamificationService } from './gamification.service';
+import {
+  CurrentUser,
+  type AuthenticatedUser,
+} from '../../common/decorators/current-user.decorator';
 
-@UseGuards(AuthGuard('jwt'))
 @Controller('gamification')
 export class GamificationController {
   constructor(private readonly gamificationService: GamificationService) {}
 
   @Get('me')
-  async getMyGamification(@Request() req: any) {
-    return this.gamificationService.getUserGamificationData(req.user.userId);
+  getMyGamification(@CurrentUser() user: AuthenticatedUser) {
+    return this.gamificationService.getUserGamificationData(user.userId);
   }
 }

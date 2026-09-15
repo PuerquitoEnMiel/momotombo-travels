@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#004f96" />
+      <stop offset="50%" stop-color="#006e2a" />
+      <stop offset="100%" stop-color="#121212" />
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c9a900" />
+      <stop offset="100%" stop-color="#ff7849" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="950" cy="180" r="180" fill="rgba(255,255,255,0.04)" />
+  <circle cx="180" cy="500" r="220" fill="rgba(255,255,255,0.03)" />
+  <text x="80" y="240" font-family="Georgia, serif" font-size="92" font-weight="700" fill="white" letter-spacing="-2">Momotombo</text>
+  <text x="80" y="340" font-family="Georgia, serif" font-size="92" font-weight="300" font-style="italic" fill="url(#accent)" letter-spacing="-2">Travels</text>
+  <line x1="80" y1="380" x2="160" y2="380" stroke="#c9a900" stroke-width="4" />
+  <text x="80" y="450" font-family="Inter, sans-serif" font-size="32" font-weight="500" fill="rgba(255,255,255,0.9)">Descubre la tierra de lagos y volcanes</text>
+  <text x="80" y="500" font-family="Inter, sans-serif" font-size="32" font-weight="500" fill="rgba(255,255,255,0.9)">con inteligencia artificial</text>
+  <text x="80" y="580" font-family="Inter, sans-serif" font-size="20" font-weight="600" fill="#c9a900" letter-spacing="2">MOMOTOMBO.TRAVEL</text>
+  <path d="M 1080 540 L 1100 510 L 1100 530 L 1140 530 L 1140 540 L 1100 540 L 1080 510 Z" fill="#ff4500" opacity="0.7" />
+</svg>

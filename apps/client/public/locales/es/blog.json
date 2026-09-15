@@ -1,0 +1,13 @@
+{
+  "title": "Blog de Viajes",
+  "subtitle": "Historias, consejos y guías locales para inspirar tu próxima aventura en la tierra de lagos y volcanes.",
+  "newBadge": "Nuevo",
+  "aiCta": {
+    "title": "¿No encuentras lo que buscas?",
+    "description": "Pídele a Kary que escriba un artículo personalizado sobre cualquier destino, actividad o cultura nicaragüense.",
+    "button": "Generar con IA"
+  },
+  "article": {
+    "readMore": "Leer artículo"
+  }
+}
