@@ -19,6 +19,10 @@ async function bootstrap() {
   const config = app.get(ConfigService);
   const logger = new Logger('Bootstrap');
 
+  // Trust proxy (required for rate limiting behind Cloud Run / reverse proxy)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
   // Security: HTTP headers (CSP disabled in dev for easier debugging)
   app.use(
     helmet({

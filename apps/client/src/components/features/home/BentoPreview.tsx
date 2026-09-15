@@ -31,7 +31,7 @@ export function BentoPreview() {
     return (
         <section 
             id="itinerarios"
-            className="bg-volcano-black text-surface py-24 px-6 md:px-12 rounded-t-[2.5rem] relative -mt-6 z-10 border-t border-white/5"
+            className="bg-volcano-black text-surface py-24 px-6 md:px-12 rounded-t-3xl relative -mt-6 z-10 border-t border-white/5"
         >
             <div className="max-w-7xl mx-auto">
                 {/* Header */}

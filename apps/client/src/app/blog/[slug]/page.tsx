@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/es";
 import { ArrowLeft, Calendar, MapPin, Clock, BookOpen, ShareNetwork, TwitterLogo, FacebookLogo } from "@phosphor-icons/react";
 import { Button, Card, CardBody, Container, Spinner, EmptyState, ErrorState } from "@/components/ui";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { useToast } from "@/hooks/useToast";
 import { blogsService } from "@/services/blogs.service";
 import type { BlogPost } from "@/types/blog";
@@ -152,7 +153,7 @@ export default function BlogPostPage() {
           {post.content ? (
             <div
               className="text-on-surface leading-relaxed text-pretty"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
             />
           ) : (
             <Card>

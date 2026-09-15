@@ -5,11 +5,25 @@ import { PrismaService } from '../../infrastructure/prisma/prisma.service';
 export class DestinationsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(categorySlug?: string) {
-    const where = categorySlug ? { category: { slug: categorySlug } } : {};
+  async findAll(categorySlug?: string, departmentSlug?: string) {
+    const where: Record<string, unknown> = {};
+    if (categorySlug) where.category = { slug: categorySlug };
+    if (departmentSlug) where.department = { slug: departmentSlug };
 
     return this.prisma.destination.findMany({
       where,
+      include: {
+        images: true,
+        category: true,
+        department: true,
+        activities: true,
+      },
+    });
+  }
+
+  async findByDepartment(departmentSlug: string) {
+    return this.prisma.destination.findMany({
+      where: { department: { slug: departmentSlug } },
       include: {
         images: true,
         category: true,
@@ -24,6 +38,7 @@ export class DestinationsService {
       include: {
         images: true,
         category: true,
+        department: true,
         activities: true,
         amenities: true,
         reviews: {

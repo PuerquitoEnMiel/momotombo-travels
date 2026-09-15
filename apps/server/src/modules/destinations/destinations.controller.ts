@@ -8,8 +8,11 @@ export class DestinationsController {
 
   @Public()
   @Get()
-  findAll(@Query('category') category?: string) {
-    return this.destinationsService.findAll(category);
+  findAll(
+    @Query('category') category?: string,
+    @Query('department') department?: string,
+  ) {
+    return this.destinationsService.findAll(category, department);
   }
 
   @Public()

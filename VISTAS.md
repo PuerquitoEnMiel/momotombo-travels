@@ -10,8 +10,8 @@ Documento maestro de seguimiento para el inventario de vistas, estado de impleme
 |---|---|
 | **Vistas Totales Activas en el Sistema** | **24 Rutas** |
 | **Vistas Implementadas en Código (100% Funcionales)** | **24 Rutas** |
-| **Vistas con Pantalla Diseñada en Google Stitch** | **1 (Home Page)** |
-| **Vistas Pendientes de Pantalla en Google Stitch** | **23 Rutas** |
+| **Vistas con Pantalla Diseñada en Google Stitch** | **4 (Home Page, /explorar, /explorar/[slug], /planificar)** |
+| **Vistas Pendientes de Pantalla en Google Stitch** | **20 Rutas** |
 
 ---
 
@@ -22,8 +22,8 @@ Documento maestro de seguimiento para el inventario de vistas, estado de impleme
 | Ruta | Archivo / Componente | Estado Código | Estado Stitch | Conexión Backend |
 |---|---|---|---|---|
 | `/` | `apps/client/src/app/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`e7e3ed76cbf84adb8c552462b707b2d5`) | `GET /destinations` |
-| `/explorar` | `apps/client/src/app/explorar/page.tsx` | Implementada (100%) | Pendiente Stitch | `GET /destinations`, `GET /categories` |
-| `/explorar/[slug]` | `apps/client/src/app/explorar/[slug]/page.tsx` | Implementada (100%) | Pendiente Stitch | `GET /destinations/:slug`, `POST /bookings` |
+| `/explorar` | `apps/client/src/app/explorar/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`6c76d1987e194e37aadca63dec8db65b`) | `GET /destinations`, `GET /categories` |
+| `/explorar/[slug]` | `apps/client/src/app/explorar/[slug]/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`f6fb4c293bed4720a0bb64b042d69c41`) | `GET /destinations/:slug`, `POST /bookings` |
 | `/blog` | `apps/client/src/app/blog/page.tsx` | Implementada (100%) | Pendiente Stitch | `GET /blogs`, `GET /tags` |
 | `/blog/[slug]` | `apps/client/src/app/blog/[slug]/page.tsx` | Implementada (100%) | Pendiente Stitch | `GET /blogs/:slug`, `POST /comments` |
 
@@ -33,7 +33,7 @@ Documento maestro de seguimiento para el inventario de vistas, estado de impleme
 
 | Ruta | Archivo / Componente | Estado Código | Estado Stitch | Conexión Backend |
 |---|---|---|---|---|
-| `/planificar` | `apps/client/src/app/planificar/page.tsx` | Implementada (100%) | Pendiente Stitch | `POST /itineraries/generate` (Gemini) |
+| `/planificar` | `apps/client/src/app/planificar/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`f6afdf2e014d490da928b7e203656693`) | `POST /itineraries/generate` (Gemini) |
 | `/planificar/[id]` | `apps/client/src/app/planificar/[id]/page.tsx` | Implementada (100%) | Pendiente Stitch | `GET /itineraries/:id`, `PATCH /itineraries/:id` |
 | `/itinerarios/[id]/compartir` | `apps/client/src/app/itinerarios/[id]/compartir/page.tsx` | **Implementada (100%)** | Pendiente Stitch | `GET /itineraries/:id` |
 

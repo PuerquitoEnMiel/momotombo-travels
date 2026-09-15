@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { CaretDown, Globe, Check } from "@phosphor-icons/react";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
-import { SUPPORTED_LANGUAGES, LANGUAGE_LABELS, LANGUAGE_FLAGS, type Language } from "@/lib/i18n";
+import { SUPPORTED_LANGUAGES, LANGUAGE_LABELS, type Language } from "@/lib/i18n";
 import { cn } from "@/lib/cn";
 
 export function LanguageSwitcher({ className }: { className?: string }) {
@@ -47,7 +47,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         <ul
           role="listbox"
           className={cn(
-            "absolute right-0 top-full mt-2 w-44 z-[1500]",
+            "absolute right-0 top-full mt-2 w-44 z-1500",
             "bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-xl",
             "py-1 overflow-hidden"
           )}

@@ -97,7 +97,7 @@ export function ChatWidget() {
                         <ChatTeardropDots size={15} className="text-oro-indigena" />
                         Habla con Kary, tu guía IA
                     </span>
-                    <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-0 h-0 border-l-[6px] border-l-volcano-black border-y-4 border-y-transparent" />
+                    <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[6px] border-l-volcano-black border-y-4 border-y-transparent" />
                 </motion.div>
             )}
         </div>

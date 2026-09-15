@@ -97,11 +97,8 @@ export default function CheckoutPage() {
   const handleProceedToPayment = async () => {
     setProcessing(true);
     try {
-      const title = booking?.activity?.name || "Expedición Momotombo Travels";
       const session = await bookingsService.createCheckoutSession(
-        bookingId,
-        finalPrice,
-        title
+        bookingId
       );
       if (session?.url) {
         window.location.href = session.url;

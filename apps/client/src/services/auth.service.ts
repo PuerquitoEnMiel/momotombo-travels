@@ -5,8 +5,8 @@ import type { AuthResponse, AuthUser, LoginPayload, RegisterPayload } from "@/ty
 export const authService = {
   async login(payload: LoginPayload): Promise<AuthResponse> {
     const response = await api.post<AuthResponse>(`${API_URL}/auth/login`, payload, { skipAuth: true });
-    if (response.access_token) {
-      setAuthToken(response.access_token);
+    if (response.accessToken) {
+      setAuthToken(response.accessToken);
     }
     return response;
   },

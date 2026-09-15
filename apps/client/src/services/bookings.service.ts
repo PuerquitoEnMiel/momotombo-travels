@@ -17,12 +17,10 @@ export const bookingsService = {
 
   async createCheckoutSession(
     bookingId: string,
-    amount: number,
-    title: string
   ): Promise<{ url: string; sessionId: string }> {
     return api.post<{ url: string; sessionId: string }>(
       `${API_URL}/stripe/create-checkout-session`,
-      { bookingId, amount, title }
+      { bookingId }
     );
   },
 };

@@ -45,7 +45,7 @@ export function Newsletter() {
             id="newsletter-email-input"
             autoComplete="email"
             containerClassName="flex-1"
-            className="!rounded-lg !h-12 !bg-surface-container-lowest"
+            className="rounded-lg! h-12! bg-surface-container-lowest!"
           />
           <Button
             type="submit"
@@ -53,7 +53,7 @@ export function Newsletter() {
             size="md"
             loading={loading}
             id="newsletter-submit-button"
-            className="!rounded-lg !h-12 shadow-sm hover:shadow-md px-6 font-sans font-semibold text-xs tracking-wider uppercase whitespace-nowrap"
+            className="rounded-lg! h-12! shadow-sm hover:shadow-md px-6 font-sans font-semibold text-xs tracking-wider uppercase whitespace-nowrap"
           >
             Suscribirme a las Crónicas
           </Button>

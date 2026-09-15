@@ -4,18 +4,19 @@ import {
   UploadedFile,
   UseInterceptors,
   BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import type { Request } from 'express';
-import { Public } from '../../common/decorators/public.decorator';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 @Controller('upload')
+@UseGuards(JwtAuthGuard)
 export class UploadController {
-  @Public()
   @Post('image')
   @UseInterceptors(
     FileInterceptor('file', {

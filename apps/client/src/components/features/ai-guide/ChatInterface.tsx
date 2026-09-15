@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { API_URL } from "@/lib/api";
+import { formatAndSanitize, sanitizeHtml } from "@/lib/sanitize";
 
 interface SuggestedDestination {
     name: string;
@@ -151,9 +152,7 @@ export function ChatInterface() {
     };
 
     const formatContent = (text: string) => {
-        return text
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\n/g, '<br />');
+        return formatAndSanitize(text);
     };
 
     const showQuickSuggestions = messages.length === 1;
@@ -202,7 +201,7 @@ export function ChatInterface() {
                                         ? "bg-nica-blue text-white rounded-br-none"
                                         : "bg-white text-gray-800 shadow-sm border border-gray-100 rounded-bl-none"
                                 }`}
-                                dangerouslySetInnerHTML={{ __html: msg.role === "assistant" ? formatContent(msg.content) : msg.content }}
+                                dangerouslySetInnerHTML={{ __html: msg.role === "assistant" ? formatContent(msg.content) : sanitizeHtml(msg.content) }}
                             />
                             {/* Destination cards */}
                             {msg.suggestions && msg.suggestions.length > 0 && (

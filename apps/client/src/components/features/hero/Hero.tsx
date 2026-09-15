@@ -1,11 +1,48 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Sparkle, Compass, MapPin, ShieldCheck } from "@phosphor-icons/react";
+import { Star, Sparkle, Compass, MapPin, ShieldCheck, Thermometer } from "@phosphor-icons/react";
+import { destinationsService } from "@/services/destinations.service";
+import type { Destination } from "@/types/destination";
 
 export function Hero() {
+    const [temperature, setTemperature] = useState<number | null>(null);
+    const [heroDest, setHeroDest] = useState<Destination | null>(null);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        // 1. Fetch live real-time temperature for Mombacho / Maribios (lat: 11.826, lng: -85.984)
+        fetch("https://api.open-meteo.com/v1/forecast?latitude=11.826&longitude=-85.984&current=temperature_2m")
+            .then((r) => r.ok ? r.json() : null)
+            .then((data) => {
+                if (isMounted && data?.current?.temperature_2m != null) {
+                    setTemperature(Math.round(data.current.temperature_2m));
+                }
+            })
+            .catch(() => {
+                if (isMounted) setTemperature(22);
+            });
+
+        // 2. Fetch destination data from backend
+        destinationsService
+            .list()
+            .then((list) => {
+                if (isMounted && list && list.length > 0) {
+                    const found = list.find((d) => d.slug.includes("granada") || d.slug.includes("mombacho")) || list[0];
+                    setHeroDest(found);
+                }
+            })
+            .catch(() => {});
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
     const handleGenerate = () => {
         window.dispatchEvent(new Event("open-chat"));
     };
@@ -117,7 +154,9 @@ export function Hero() {
                                     Charter Privado
                                 </span>
                                 <div className="flex items-center gap-1 text-xs">
-                                    <span className="font-bold text-on-surface">4.9</span>
+                                    <span className="font-bold text-on-surface">
+                                        {heroDest?.rating ? heroDest.rating.toFixed(1) : "4.9"}
+                                    </span>
                                     <div className="flex items-center text-tertiary">
                                         {[...Array(5)].map((_, i) => (
                                             <Star key={i} size={13} weight="fill" />
@@ -126,7 +165,7 @@ export function Hero() {
                                 </div>
                             </div>
                             <h2 className="font-serif text-lg font-bold text-on-surface mb-1">
-                                Volcán Mombacho & Granada Colonial
+                                {heroDest?.name || "Volcán Mombacho & Granada Colonial"}
                             </h2>
                             <div className="flex items-center gap-3 text-xs text-on-surface-variant font-sans">
                                 <span className="flex items-center gap-1">
@@ -134,7 +173,7 @@ export function Hero() {
                                     1,344 msnm
                                 </span>
                                 <span>•</span>
-                                <span>Bosque Nuboso Privado</span>
+                                <span>{heroDest?.category?.name || "Bosque Nuboso Privado"}</span>
                             </div>
                         </div>
                     </motion.div>
@@ -142,7 +181,8 @@ export function Hero() {
                     {/* Accent Volcanic Live Tag */}
                     <div className="hidden sm:flex absolute -top-3 -right-3 z-20 bg-primary text-on-primary px-3.5 py-1.5 rounded-full shadow-lg items-center gap-2 font-mono text-[11px] font-semibold">
                         <span className="w-2 h-2 rounded-full bg-oro-indigena animate-ping" />
-                        <span>TEMPERATURA ACTUAL: 21°C</span>
+                        <Thermometer size={14} weight="bold" />
+                        <span>{temperature !== null ? `TEMPERATURA ACTUAL: ${temperature}°C` : "MONITOREANDO CLIMA..."}</span>
                     </div>
                 </div>
             </div>

@@ -16,18 +16,11 @@ import {
   type AuthenticatedUser,
 } from '../../common/decorators/current-user.decorator';
 import { BookingsService } from '../../modules/bookings/bookings.service';
-import { IsUUID, IsNumber, IsString, Min } from 'class-validator';
+import { IsUUID } from 'class-validator';
 
 class CreateCheckoutDto {
   @IsUUID()
   bookingId: string;
-
-  @IsNumber()
-  @Min(0)
-  amount: number;
-
-  @IsString()
-  title: string;
 }
 
 interface RequestWithRawBody extends Request {
@@ -52,11 +45,15 @@ export class StripeController {
       user.userId,
     );
 
+    // SECURITY: Price comes from DB, never from client
+    const amount = booking.totalPrice;
+    const title = booking.activity?.name ?? 'Expedicion Momotombo Travels';
+
     const result = await this.stripeService.createCheckoutSession(
       user.userId,
       body.bookingId,
-      body.amount,
-      body.title,
+      amount,
+      title,
       user.email,
       booking.activity?.destination?.name,
     );

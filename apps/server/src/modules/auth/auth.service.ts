@@ -217,7 +217,7 @@ export class AuthService {
     return {
       success: true,
       message: 'Verification email sent',
-      _devToken: token,
+      ...(process.env.NODE_ENV !== 'production' && { _devToken: token }),
     };
   }
 
@@ -235,7 +235,7 @@ export class AuthService {
       return {
         success: true,
         message: 'If the email exists, a reset link has been sent',
-        _devToken: token,
+        ...(process.env.NODE_ENV !== 'production' && { _devToken: token }),
       };
     }
     return {

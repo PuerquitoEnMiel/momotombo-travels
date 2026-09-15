@@ -174,7 +174,7 @@ export default function NuevaActividadPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-stone-300 mb-2 flex items-center gap-1.5">
+              <label className="text-xs font-mono uppercase tracking-wider text-stone-300 mb-2 flex items-center gap-1.5">
                 <CurrencyDollar size={14} className="text-oro-indigena" /> Tarifa / Persona (USD)
               </label>
               <input
@@ -189,7 +189,7 @@ export default function NuevaActividadPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-stone-300 mb-2 flex items-center gap-1.5">
+              <label className="text-xs font-mono uppercase tracking-wider text-stone-300 mb-2 flex items-center gap-1.5">
                 <Clock size={14} className="text-oro-indigena" /> Duración (Horas)
               </label>
               <input
@@ -204,7 +204,7 @@ export default function NuevaActividadPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-stone-300 mb-2 flex items-center gap-1.5">
+              <label className="text-xs font-mono uppercase tracking-wider text-stone-300 mb-2 flex items-center gap-1.5">
                 <Users size={14} className="text-oro-indigena" /> Cupo Máximo
               </label>
               <input

@@ -40,6 +40,9 @@ export interface RegisterPayload {
 }
 
 export interface AuthResponse {
-  access_token: string;
+  accessToken: string;
+  refreshToken: string;
+  accessExpiresIn: number;
+  refreshExpiresIn: number;
   user?: AuthUser;
 }

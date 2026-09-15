@@ -22,6 +22,9 @@ WORKDIR /app
 COPY --from=builder /app/apps/server/node_modules ./node_modules
 COPY --from=builder /app/apps/server/dist ./dist
 COPY --from=builder /app/apps/server/package.json ./
+COPY --from=builder /app/apps/server/prisma ./prisma
+
+USER node
 
 EXPOSE 3001
 CMD ["npm", "run", "start:prod"]
