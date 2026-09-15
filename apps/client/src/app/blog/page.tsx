@@ -102,7 +102,7 @@ export default function BlogPage() {
       </header>
 
       <Container size="lg" className="mt-12 mb-16">
-        <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl p-8 md:p-12 text-nica-white shadow-2xl relative overflow-hidden">
+        <div className="bg-linear-to-r from-primary to-secondary rounded-2xl p-8 md:p-12 text-nica-white shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" aria-hidden="true" />
 
           <div className="relative z-10 md:flex items-center justify-between gap-8">
@@ -123,7 +123,7 @@ export default function BlogPage() {
                 toast.info("Kary está en camino...");
               }}
               id="btn-generate-blog-ai"
-              className="bg-surface-container-lowest text-volcano-black hover:text-primary hover:scale-105 active:scale-[0.97] transition-all duration-300 ease-out-expo px-8 py-4 rounded-full font-bold text-lg shadow-lg flex items-center gap-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-oro-indigena"
+              className="bg-surface-container-lowest text-volcano-black hover:text-primary hover:scale-105 active:scale-[0.97] transition-all duration-300 ease-out-expo px-8 py-4 rounded-full font-bold text-lg shadow-lg flex items-center gap-3 focus-visible:outline-2 focus-visible:outline-oro-indigena"
             >
               <Sparkle size={20} className="text-primary" aria-hidden="true" />
               {t("aiCta.button")}

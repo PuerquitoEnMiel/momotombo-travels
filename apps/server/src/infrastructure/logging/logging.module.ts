@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { LoggerModule } from 'nestjs-pino';
 import { AppLogger } from './app-logger';
 
@@ -44,24 +45,22 @@ import { AppLogger } from './app-logger';
             statusCode: res.statusCode,
           }),
         },
-        customSuccessMessage: (
-          req: Record<string, unknown>,
-          res: Record<string, unknown>,
-        ) => {
-          return `${String(req.method)} ${String(req.url)} ${String(res.statusCode)}`;
+        customSuccessMessage: (req: IncomingMessage, res: ServerResponse) => {
+          return `${req.method ?? ''} ${req.url ?? ''} ${res.statusCode}`;
         },
         customErrorMessage: (
-          req: Record<string, unknown>,
-          res: Record<string, unknown>,
+          req: IncomingMessage,
+          res: ServerResponse,
           err: Error,
         ) => {
-          return `${String(req.method)} ${String(req.url)} ${String(res.statusCode)} - ${err.message}`;
+          return `${req.method ?? ''} ${req.url ?? ''} ${res.statusCode} - ${err.message}`;
         },
         autoLogging: true,
-        genReqId: (req: Record<string, unknown>) => {
-          const headers = req.headers as Record<string, unknown> | undefined;
-          const existingId = headers?.['x-request-id'];
+        genReqId: (req: IncomingMessage) => {
+          const existingId = req.headers['x-request-id'];
           if (typeof existingId === 'string') return existingId;
+          if (Array.isArray(existingId) && existingId.length > 0)
+            return existingId[0];
           return crypto.randomUUID();
         },
       },

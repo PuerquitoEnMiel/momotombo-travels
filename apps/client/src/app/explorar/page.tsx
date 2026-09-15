@@ -54,9 +54,9 @@ function DestinationCard({ dest, index }: { dest: Destination; index: number }) 
             ) : (
               <div className="w-full h-full flex items-center justify-center text-on-surface-variant text-5xl">🏔️</div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
             <div className="absolute top-4 left-4">
-              <Badge variant="default" size="sm" className="!bg-surface-container-lowest/90 !text-volcano-black">
+              <Badge variant="default" size="sm" className="bg-surface-container-lowest/90! text-volcano-black!">
                 {dest.category?.name}
               </Badge>
             </div>
@@ -147,7 +147,7 @@ export default function ExplorarPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-surface-container-low via-surface-container-lowest to-info-container/30">
+    <main className="min-h-screen bg-linear-to-br from-surface-container-low via-surface-container-lowest to-info-container/30">
       <header className="relative pt-32 pb-16 px-6 text-center bg-volcano-black overflow-hidden">
         <div
           className="absolute inset-0 opacity-10"
@@ -192,7 +192,7 @@ export default function ExplorarPage() {
                 type="submit"
                 id="ai-search-submit"
                 disabled={aiLoading || !query.trim()}
-                className="bg-primary hover:bg-secondary text-nica-white px-6 py-3 rounded-full font-bold transition-all duration-300 ease-out-expo flex items-center gap-2 disabled:opacity-50 text-sm active:scale-[0.97] focus-visible:outline focus-visible:outline-2 focus-visible:outline-oro-indigena"
+                className="bg-primary hover:bg-secondary text-nica-white px-6 py-3 rounded-full font-bold transition-all duration-300 ease-out-expo flex items-center gap-2 disabled:opacity-50 text-sm active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-oro-indigena"
               >
                 {aiLoading ? <Spinner size="sm" /> : <MagnifyingGlass size={18} aria-hidden="true" />}
                 {t("header.searchButton")}
@@ -214,7 +214,7 @@ export default function ExplorarPage() {
                 onClick={() => { setActiveCategory(cat.slug); setQuery(""); setSummary(null); }}
                 aria-pressed={isActive}
                 className={cn(
-                  "px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-300 ease-out-expo border active:scale-[0.97] focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary",
+                  "px-5 py-2.5 rounded-full font-medium text-sm transition-all duration-300 ease-out-expo border active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-primary",
                   isActive
                     ? "bg-primary text-nica-white border-primary shadow-lg shadow-primary/20"
                     : "bg-surface-container-lowest text-on-surface-variant border-outline-variant hover:border-primary hover:text-primary"
@@ -237,7 +237,7 @@ export default function ExplorarPage() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-              className="bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20 rounded-2xl p-6 mb-8 flex gap-4"
+              className="bg-linear-to-r from-primary/5 to-secondary/5 border border-primary/20 rounded-2xl p-6 mb-8 flex gap-4"
             >
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <Sparkle size={20} className="text-primary" aria-hidden="true" />

@@ -60,7 +60,7 @@ function LoginForm() {
         size="lg"
         onClick={() => toast.info("Google sign-in: próximamente")}
         id="btn-login-google"
-        className="mb-6 !bg-surface-container-lowest !text-on-surface"
+        className="mb-6 bg-surface-container-lowest! text-on-surface!"
       >
         <span className="inline-flex items-center gap-2">
           <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="" className="w-5 h-5" />
@@ -142,7 +142,7 @@ export default function LoginPage() {
       </div>
 
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 md:p-16">
-        <Container size="md" className="!max-w-md !p-0">
+        <Container size="md" className="max-w-md! p-0!">
           <Suspense fallback={<div className="animate-pulse h-64 w-full bg-surface-container rounded-xl" aria-label="Loading login form" />}>
             <LoginForm />
           </Suspense>

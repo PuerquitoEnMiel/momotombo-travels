@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { PlusCircle, Calendar, CurrencyDollar, Pulse, Gear, SignOut, CheckCircle, Clock } from "@phosphor-icons/react";
+import { PlusCircle, Calendar, CurrencyDollar, Pulse, Gear, CheckCircle, Clock } from "@phosphor-icons/react";
 import { API_URL } from "@/lib/api";
 
 interface GuideUser {

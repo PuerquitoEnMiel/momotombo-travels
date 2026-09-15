@@ -102,7 +102,7 @@ export default function AdminDashboard() {
               <CardBody>
                 <div className="h-64 flex items-end justify-between gap-2" role="img" aria-label="Annual revenue chart">
                   {[40, 60, 45, 80, 50, 90, 100, 85, 70, 95, 110, 120].map((h, i) => (
-                    <div key={i} className="flex-1 bg-gradient-to-t from-primary/20 to-primary rounded-t-sm" style={{ height: `${h}%` }} />
+                    <div key={i} className="flex-1 bg-linear-to-t from-primary/20 to-primary rounded-t-sm" style={{ height: `${h}%` }} />
                   ))}
                 </div>
                 <div className="flex justify-between text-xs text-on-surface-variant mt-4 font-medium uppercase" aria-hidden="true">
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
                   ].map((u) => (
                     <div key={u.email} className="flex items-center justify-between p-3 rounded-2xl hover:bg-surface-container border border-transparent hover:border-outline-variant transition-colors">
                       <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 bg-gradient-to-br from-surface-container-high to-outline-variant rounded-full flex items-center justify-center font-bold text-on-surface-variant text-sm shrink-0">
+                        <div className="w-10 h-10 bg-linear-to-br from-surface-container-high to-outline-variant rounded-full flex items-center justify-center font-bold text-on-surface-variant text-sm shrink-0">
                           {u.name.charAt(0)}
                         </div>
                         <div className="min-w-0">

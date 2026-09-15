@@ -12,7 +12,7 @@ import type { Icon } from "@phosphor-icons/react";
 
 function StatCard({ icon: Icon, label, value, color }: { icon: Icon; label: string; value: string | number; color: string }) {
   return (
-    <div className={`bg-gradient-to-br ${color} rounded-2xl p-5 text-nica-white`}>
+    <div className={`bg-linear-to-br ${color} rounded-2xl p-5 text-nica-white`}>
       <div className="flex items-center justify-between mb-3">
         <Icon size={20} className="opacity-80" aria-hidden="true" />
         <span className="text-2xl font-bold">{value}</span>
@@ -81,7 +81,7 @@ export default function PerfilPage() {
             />
             <button
               type="button"
-              className="absolute bottom-1 right-1 w-8 h-8 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+              className="absolute bottom-1 right-1 w-8 h-8 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow focus-visible:outline-2 focus-visible:outline-primary"
               aria-label={t("editProfile")}
             >
               <Camera size={14} className="text-on-surface" />
@@ -110,7 +110,7 @@ export default function PerfilPage() {
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden" role="progressbar" aria-valuenow={progressPercentage} aria-valuemin={0} aria-valuemax={100}>
                   <div
-                    className="h-full bg-gradient-to-r from-oro-indigena to-secondary rounded-full transition-all duration-1000"
+                    className="h-full bg-linear-to-r from-oro-indigena to-secondary rounded-full transition-all duration-1000"
                     style={{ width: `${progressPercentage}%` }}
                   />
                 </div>
@@ -131,7 +131,7 @@ export default function PerfilPage() {
               }}
               id="btn-logout"
               iconLeft={<SignOut size={14} />}
-              className="!text-danger !border-danger/30 hover:!bg-danger-container/30"
+              className="text-danger! border-danger/30! hover:bg-danger-container/30!"
             >
               {t("logout")}
             </Button>
@@ -161,7 +161,7 @@ export default function PerfilPage() {
               <CardBody>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                   {gamification.earnedBadges.map((badge) => (
-                    <div key={badge.id} className="flex flex-col items-center text-center p-4 bg-gradient-to-b from-oro-indigena/10 to-surface-container-lowest rounded-2xl border border-oro-indigena/20">
+                    <div key={badge.id} className="flex flex-col items-center text-center p-4 bg-linear-to-b from-oro-indigena/10 to-surface-container-lowest rounded-2xl border border-oro-indigena/20">
                       <div className="w-12 h-12 bg-oro-indigena text-nica-white rounded-full flex items-center justify-center mb-3 shadow-md">
                         <Trophy size={20} aria-hidden="true" />
                       </div>

@@ -136,17 +136,17 @@ export default function DestinationDetailPage() {
             />
           </motion.div>
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-600 bg-gradient-to-br from-gray-800 to-volcano-black">
+          <div className="w-full h-full flex items-center justify-center text-gray-600 bg-linear-to-br from-gray-800 to-volcano-black">
             <Mountains size={120} weight="duotone" className="text-on-surface-variant/30" aria-hidden="true" />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/30" aria-hidden="true" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-black/30" aria-hidden="true" />
 
         <div className="absolute top-0 left-0 right-0 p-6 flex items-center justify-between z-10">
           <Link
             href="/explorar"
             id="btn-back-explorar"
-            className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-nica-white px-4 py-2 rounded-full text-sm font-medium hover:bg-white/20 active:scale-[0.97] transition-all duration-300 ease-out-expo border border-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-oro-indigena"
+            className="flex items-center gap-2 bg-white/10 backdrop-blur-md text-nica-white px-4 py-2 rounded-full text-sm font-medium hover:bg-white/20 active:scale-[0.97] transition-all duration-300 ease-out-expo border border-white/20 focus-visible:outline-2 focus-visible:outline-oro-indigena"
           >
             <ArrowLeft size={16} aria-hidden="true" /> Explorar
           </Link>
@@ -157,7 +157,7 @@ export default function DestinationDetailPage() {
               id="btn-favorite"
               aria-label={isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
               aria-pressed={isFavorite}
-              className={`w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center border active:scale-[0.97] transition-all duration-300 ease-out-expo focus-visible:outline focus-visible:outline-2 focus-visible:outline-oro-indigena ${
+              className={`w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center border active:scale-[0.97] transition-all duration-300 ease-out-expo focus-visible:outline-2 focus-visible:outline-oro-indigena ${
                 isFavorite ? "bg-danger border-danger text-nica-white" : "bg-white/10 border-white/20 text-nica-white hover:bg-white/20"
               }`}
             >
@@ -168,7 +168,7 @@ export default function DestinationDetailPage() {
               onClick={handleShare}
               id="btn-share"
               aria-label="Compartir destino"
-              className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-nica-white flex items-center justify-center hover:bg-white/20 active:scale-[0.97] transition-all duration-300 ease-out-expo focus-visible:outline focus-visible:outline-2 focus-visible:outline-oro-indigena"
+              className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-nica-white flex items-center justify-center hover:bg-white/20 active:scale-[0.97] transition-all duration-300 ease-out-expo focus-visible:outline-2 focus-visible:outline-oro-indigena"
             >
               <ShareNetwork size={18} aria-hidden="true" />
             </button>
@@ -215,7 +215,7 @@ export default function DestinationDetailPage() {
                 aria-selected={activeImage === i}
                 aria-label={`Ver imagen ${i + 1}`}
                 onClick={() => setActiveImage(i)}
-                className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-oro-indigena ${
+                className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all focus-visible:outline-2 focus-visible:outline-oro-indigena ${
                   activeImage === i ? "border-oro-indigena scale-110" : "border-white/30 opacity-60 hover:opacity-100"
                 }`}
               >
@@ -263,7 +263,7 @@ export default function DestinationDetailPage() {
                   {dest.activities.map((act) => (
                     <article
                       key={act.id}
-                      className="group bg-gradient-to-br from-surface-container-low to-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 hover:border-primary/30 hover:shadow-lg transition-all duration-300 ease-out-expo"
+                      className="group bg-linear-to-br from-surface-container-low to-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 hover:border-primary/30 hover:shadow-lg transition-all duration-300 ease-out-expo"
                     >
                       <h3 className="font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">{act.name}</h3>
                       {act.description && <p className="text-on-surface-variant text-sm mb-3 leading-relaxed text-pretty">{act.description}</p>}
@@ -368,7 +368,7 @@ export default function DestinationDetailPage() {
 
           <aside className="lg:col-span-1">
             <div className="sticky top-24 space-y-4">
-              <div className="bg-gradient-to-br from-volcano-black to-gray-800 rounded-2xl p-6 text-nica-white shadow-2xl">
+              <div className="bg-linear-to-br from-volcano-black to-gray-800 rounded-2xl p-6 text-nica-white shadow-2xl">
                 <div className="flex items-center gap-2 mb-4">
                   <Sparkle size={18} className="text-oro-indigena" aria-hidden="true" />
                   <span className="text-oro-indigena text-sm font-medium">Reserva o Planifica</span>

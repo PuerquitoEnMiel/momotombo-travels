@@ -1,12 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
-import { MapTrifold, Calendar, DotsSixVertical, CheckCircle, Clock, ShareNetwork, Download, Trash, Plus } from "@phosphor-icons/react";
+import { MapTrifold, DotsSixVertical, CheckCircle, Clock, ShareNetwork, Download, Trash, Plus } from "@phosphor-icons/react";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
-import { motion } from "framer-motion";
 import { API_URL } from "@/lib/api";
 
 dayjs.locale("es");
@@ -26,7 +24,6 @@ interface ItineraryDay {
 }
 
 export default function ItineraryEditor({ params }: { params: { id: string } }) {
-    const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [title, setTitle] = useState("Cargando...");
     const [days, setDays] = useState<ItineraryDay[]>([]);

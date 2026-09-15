@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { PaperPlaneRight, Sparkle, MapPin, Star, Clock, CurrencyDollar, Calendar, ArrowRight, CaretRight, Compass, Mountains, TreePalm, Sun } from "@phosphor-icons/react";
-import { motion, AnimatePresence } from "framer-motion";
+import { PaperPlaneRight, Sparkle, CurrencyDollar, Calendar, CaretRight, Compass, Mountains, TreePalm, Sun } from "@phosphor-icons/react";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { API_URL } from "@/lib/api";
 
@@ -11,12 +11,6 @@ interface Message {
     content: string;
     suggestions?: any[];
     action_type?: string;
-}
-
-interface ItineraryDay {
-    day: number;
-    title: string;
-    destinations: string[];
 }
 
 const STARTER_PROMPTS = [

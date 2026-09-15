@@ -60,7 +60,7 @@ export default function RegistroPage() {
       </div>
 
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 md:p-16">
-        <Container size="md" className="!max-w-md !p-0">
+        <Container size="md" className="max-w-md! p-0!">
           <div className="w-full">
             <div className="mb-10 text-center lg:text-left">
               <h1 className="font-serif text-4xl font-bold text-volcano-black mb-2 text-balance">{t("register.title")}</h1>
@@ -73,7 +73,7 @@ export default function RegistroPage() {
               size="lg"
               onClick={() => toast.info("Google sign-up: próximamente")}
               id="btn-register-google"
-              className="mb-6 !bg-surface-container-lowest !text-on-surface"
+              className="mb-6 bg-surface-container-lowest! text-on-surface!"
             >
               <span className="inline-flex items-center gap-2">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="" className="w-5 h-5" />

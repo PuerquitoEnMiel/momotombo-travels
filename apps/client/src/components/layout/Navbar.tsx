@@ -69,7 +69,7 @@ export function Navbar() {
       id="main-navbar"
       aria-label={tCommon("appName")}
       className={cn(
-        "fixed top-0 left-0 w-full z-[1100] transition-all duration-300 ease-out-expo",
+        "fixed top-0 left-0 w-full z-1100 transition-all duration-300 ease-out-expo",
         isScrolled
           ? "bg-surface/90 dark:bg-volcano-black/90 backdrop-blur-md py-3 border-b border-outline-variant/30 shadow-sm"
           : "bg-transparent py-5"
@@ -139,7 +139,7 @@ export function Navbar() {
                 {t(link.key)}
                 <span
                   className={cn(
-                    "absolute bottom-0 left-0 h-[2px] bg-primary transition-[width] duration-300 ease-out-expo group-hover:w-full",
+                    "absolute bottom-0 left-0 h-0.5 bg-primary transition-[width] duration-300 ease-out-expo group-hover:w-full",
                     isActive ? "w-full" : "w-0"
                   )}
                 />
