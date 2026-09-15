@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { PlusCircle, Calendar, CurrencyDollar, Pulse, Gear, CheckCircle, Clock } from "@phosphor-icons/react";
 import { API_URL } from "@/lib/api";
@@ -104,9 +105,13 @@ export default function ProveedoresDashboard() {
                                 <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">Mis Actividades</h1>
                                 <p className="text-gray-500">Gestiona los tours y experiencias que ofreces.</p>
                             </div>
-                            <button id="btn-prov-new-activity" className="bg-primary hover:bg-secondary text-white px-5 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]">
+                            <Link
+                                href="/proveedores/actividades/nueva"
+                                id="btn-prov-new-activity"
+                                className="bg-primary hover:bg-secondary text-white px-5 py-2.5 rounded-full font-bold text-sm flex items-center gap-2 transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]"
+                            >
                                 <PlusCircle size={18} /> Nueva Actividad
-                            </button>
+                            </Link>
                         </div>
 
                         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">

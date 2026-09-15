@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Sparkle } from "@phosphor-icons/react";
+import { X, Sparkle, ChatTeardropDots } from "@phosphor-icons/react";
 import { ChatInterface } from "./ChatInterface";
 
 export function ChatWidget() {
@@ -93,7 +93,10 @@ export function ChatWidget() {
                     transition={{ delay: 1, duration: 0.4 }}
                     className="absolute right-16 bottom-2 bg-volcano-black text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap pointer-events-none shadow-lg"
                 >
-                    💬 Habla con Kary, tu guía IA
+                    <span className="inline-flex items-center gap-1.5">
+                        <ChatTeardropDots size={15} className="text-oro-indigena" />
+                        Habla con Kary, tu guía IA
+                    </span>
                     <div className="absolute right-[-6px] top-1/2 -translate-y-1/2 w-0 h-0 border-l-[6px] border-l-volcano-black border-y-4 border-y-transparent" />
                 </motion.div>
             )}

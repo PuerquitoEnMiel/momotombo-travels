@@ -6,51 +6,50 @@
    ============================================================ */
 
 @theme {
-  /* === Brand colors === */
-  --color-primary: #004f96;
+  /* === Brand colors (Gran Fusión Eco-Volcánica Stitch) === */
+  --color-primary: #8a3824; /* Volcanic Terracotta */
   --color-on-primary: #ffffff;
-  --color-primary-container: #0067c0;
-  --color-on-primary-container: #dbe7ff;
+  --color-primary-container: #8a3824;
+  --color-on-primary-container: #ffb2a0;
+  --color-primary-hover: #6f2c1c;
 
-  --color-secondary: #006e2a;
+  --color-secondary: #1e3b2f; /* Canopy & Selva Emerald */
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #86fb96;
-  --color-on-secondary-container: #00752d;
+  --color-secondary-container: #c6e7d6;
+  --color-on-secondary-container: #4b695b;
 
-  --color-tertiary: #705d00;
+  --color-tertiary: #c49a45; /* Imperial Ochre / Brushed Brass */
   --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #6b4c00;
+  --color-on-tertiary-container: #ecbe65;
 
-  /* === Brand aliases (legacy names kept for compatibility) === */
-  --color-volcano-black: #121212;
-  --color-oro-indigena: #c9a900;
-  --color-nica-blue: var(--color-primary);
-  --color-nica-white: #ffffff;
-  --color-volcan-magma: #ff4500;
-  --color-selva-esmeralda: var(--color-secondary);
-
-  /* === New brand tokens (added) === */
+  /* === Heritage & Energy Accents === */
+  --color-ocean-deep: #00386e; /* Deep Nica Oceanic Blue */
+  --color-nica-blue: #004f96;
+  --color-volcan-magma: #ff4500; /* Active Volcanic Magma */
   --color-sunset-orange: #ff7849;
-  --color-ocean-deep: #003a6e;
   --color-colonial-cream: #faf3e0;
   --color-laguna-blue: #4ba3c7;
-  --color-sand: #e6d4a3;
-  --color-jungle: #2d4a2a;
+  --color-volcano-black: #181513; /* Warm Volcanic Basalt Dark */
+  --color-oro-indigena: #c49a45;
+  --color-selva-esmeralda: #1e3b2f;
 
-  /* === Surface system (Material 3) === */
-  --color-background: #f9f9ff;
-  --color-on-background: #191c21;
-  --color-on-surface: #191c21;
-  --color-on-surface-variant: #414752;
-  --color-outline: #717783;
-  --color-outline-variant: #c1c6d4;
-  --color-surface: #f9f9ff;
-  --color-surface-dim: #d8dae2;
-  --color-surface-container: #ecedf6;
-  --color-surface-container-low: #f2f3fb;
+  /* === Surface system (Warm Travertine & Basalt) === */
+  --color-background: #fbf9f5; /* Warm Travertine */
+  --color-on-background: #1e1b18; /* Basalt Charcoal */
+  --color-on-surface: #1e1b18;
+  --color-on-surface-variant: #55423e;
+  --color-outline: #88726d;
+  --color-outline-variant: #e8e2d5; /* Stone-wash Hairline */
+  --color-surface: #ffffff;
+  --color-surface-dim: #f4ece7;
+  --color-surface-container: #faf2ed;
+  --color-surface-container-low: #f7f3ed;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-high: #e6e8f0;
-  --color-surface-container-highest: #e1e2ea;
-  --color-inverse-surface: #2d3037;
+  --color-surface-container-high: #eee7e2;
+  --color-surface-container-highest: #e9e1dc;
+  --color-inverse-surface: #2e2b28;
+  --color-inverse-on-surface: #f7efea;
 
   /* === Semantic colors (status) === */
   --color-success: #1b873f;
@@ -68,30 +67,20 @@
   --color-danger-container: #fde2e2;
   --color-on-danger-container: #7a0a0a;
 
-  --color-info: #0b6cc7;
+  --color-info: #00386e;
   --color-on-info: #ffffff;
   --color-info-container: #d4e8ff;
-  --color-on-info-container: #053a6c;
+  --color-on-info-container: #002244;
 
   /* === RGB variants (for use in shadow rgba) === */
-  --color-primary-rgb: 0, 79, 150;
+  --color-primary-rgb: 138, 56, 36;
   --color-volcan-magma-rgb: 255, 69, 0;
-  --color-oro-indigena-rgb: 201, 169, 0;
-  --color-volcano-black-rgb: 18, 18, 18;
+  --color-oro-indigena-rgb: 196, 154, 69;
+  --color-volcano-black-rgb: 30, 27, 24;
   --color-success-rgb: 27, 135, 63;
   --color-danger-rgb: 200, 30, 30;
-  --color-info-rgb: 11, 108, 199;
-  --color-secondary-rgb: 0, 110, 42;
-
-  /* === Spacing scale === */
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 0.75rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
-  --spacing-3xl: 4.5rem;
-  --spacing-4xl: 6rem;
+  --color-info-rgb: 0, 56, 110;
+  --color-secondary-rgb: 30, 59, 47;
 
   /* === Border radius === */
   --radius-xs: 0.375rem;
@@ -151,8 +140,8 @@
 }
 
 :root {
-  --background: #fafafa;
-  --foreground: #171717;
+  --background: #fbf9f5;
+  --foreground: #1e1b18;
   --ease-out: var(--ease-out-expo);
   --ease-in-out: var(--ease-in-out-expo);
 }
@@ -160,17 +149,17 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: var(--color-volcano-black);
-    --foreground: #f1f1f1;
+    --foreground: #f7efea;
   }
   .dark {
-    --color-background: #0a0a0a;
-    --color-surface: #1a1a1a;
-    --color-surface-container: #222222;
-    --color-surface-container-low: #1f1f1f;
-    --color-surface-container-high: #2a2a2a;
-    --color-on-background: #f5f5f5;
-    --color-on-surface: #f5f5f5;
-    --color-outline-variant: #3a3a3a;
+    --color-background: #12100e;
+    --color-surface: #1e1b18;
+    --color-surface-container: #26221f;
+    --color-surface-container-low: #201c19;
+    --color-surface-container-high: #2e2926;
+    --color-on-background: #f7efea;
+    --color-on-surface: #f7efea;
+    --color-outline-variant: #423b37;
   }
 }
 

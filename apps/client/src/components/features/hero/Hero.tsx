@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Sparkle, Compass } from "@phosphor-icons/react";
+import { Star, Sparkle, Compass, MapPin, ShieldCheck } from "@phosphor-icons/react";
 
 export function Hero() {
     const handleGenerate = () => {
@@ -15,106 +15,135 @@ export function Hero() {
             id="hero-section"
             className="px-6 md:px-12 max-w-7xl mx-auto mb-20 pt-28 pb-12 overflow-hidden relative"
         >
-            {/* Ambient Volcanic Atmosphere Glows */}
-            <div className="absolute top-1/3 -left-20 w-[420px] h-[420px] bg-sunset-orange/10 rounded-full blur-3xl -z-10 pointer-events-none" />
-            <div className="absolute top-10 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
+            {/* Ambient Travertine and Volcanic Atmosphere Glows */}
+            <div className="absolute top-1/4 -left-24 w-[480px] h-[480px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
+            <div className="absolute top-12 right-10 w-[520px] h-[520px] bg-secondary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center min-h-[600px] md:min-h-[700px]">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 items-center min-h-[600px] md:min-h-[680px]">
                 {/* Typography Column */}
                 <motion.div 
                     initial={{ opacity: 0, y: 24 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-                    className="col-span-1 md:col-span-5 relative z-10 space-y-6 flex flex-col items-start justify-center"
+                    className="col-span-1 md:col-span-6 relative z-10 space-y-6 flex flex-col items-start justify-center"
                 >
                     <span 
                         id="hero-eyebrow"
-                        className="font-sans font-semibold text-xs tracking-[0.15em] text-tertiary uppercase inline-flex items-center gap-2 bg-colonial-cream/70 dark:bg-volcano-black/70 border border-oro-indigena/30 px-3.5 py-1.5 rounded-full shadow-2xs backdrop-blur-xs"
+                        className="font-sans font-semibold text-xs tracking-[0.18em] text-tertiary uppercase inline-flex items-center gap-2 bg-surface-container/80 border border-outline-variant/60 px-4 py-1.5 rounded-full shadow-xs backdrop-blur-xs"
                     >
-                        <Sparkle size={13} weight="fill" className="text-oro-indigena" />
+                        <Sparkle size={13} weight="fill" className="text-tertiary" />
                         <span>Tierra de Lagos y Volcanes</span>
                         <span className="text-outline/40">·</span>
-                        <span className="font-mono text-[11px] text-on-surface-variant/80 lowercase">{"12°29'N 86°32'W"}</span>
+                        <span className="font-mono text-[11px] text-on-surface-variant lowercase">{"12°29'N 86°32'W"}</span>
                     </span>
+
                     <h1 
                         id="hero-title"
-                        className="font-serif text-5xl md:text-7xl font-semibold text-on-background leading-[1.1] tracking-tight text-balance"
+                        className="font-serif text-5xl md:text-7xl font-semibold text-on-background leading-[1.12] tracking-tight text-balance"
                     >
                         Descubre el Alma de <br />
-                        <span className="text-primary italic font-medium">Nicaragua</span>
+                        <span className="text-primary italic font-normal">Nicaragua</span>
                     </h1>
+
                     <p 
                         id="hero-description"
-                        className="font-sans text-base md:text-lg text-on-surface-variant max-w-md leading-relaxed"
+                        className="font-sans text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed text-pretty"
                     >
-                        Viajes diseñados con inteligencia artificial que fusionan paisajes volcánicos salvajes con una hospitalidad de lujo sin igual. El viaje, rediseñado.
+                        Expediciones diseñadas con inteligencia artificial que fusionan la fuerza volcánica y la naturaleza salvaje con la hospitalidad colonial más exclusiva. El viaje, reinventado.
                     </p>
+
                     <div className="pt-2 flex flex-wrap items-center gap-4">
                         <button
                             onClick={handleGenerate}
                             id="hero-generate-button"
-                            className="group relative inline-flex items-center gap-2.5 bg-gradient-magma hover:brightness-110 text-white px-7 py-4 rounded-full font-sans font-semibold text-xs tracking-wider uppercase transition-all duration-300 active:scale-[0.97] shadow-glow-magma-intense cursor-pointer"
+                            className="group relative inline-flex items-center gap-2.5 bg-primary hover:bg-primary-hover text-on-primary px-8 py-4 rounded-full font-sans font-semibold text-xs tracking-wider uppercase transition-all duration-300 active:scale-[0.97] shadow-sm hover:shadow-md cursor-pointer"
                         >
-                            <span>Generar Itinerario IA</span>
-                            <Sparkle size={14} weight="fill" className="group-hover:rotate-12 transition-transform duration-300" />
+                            <span>Diseñar Expedición IA</span>
+                            <Sparkle size={14} weight="fill" className="text-on-primary-container group-hover:rotate-12 transition-transform duration-300" />
                         </button>
+
                         <Link
                             href="/explorar"
-                            className="inline-flex items-center gap-2 font-sans font-semibold text-xs tracking-wider uppercase text-on-surface-variant hover:text-primary transition-colors py-3 px-3 group"
+                            id="hero-explore-button"
+                            className="inline-flex items-center gap-2 font-sans font-semibold text-xs tracking-wider uppercase text-on-surface hover:text-primary transition-all py-3.5 px-6 rounded-full border border-outline-variant/60 hover:border-primary/40 bg-surface-container-low/70 backdrop-blur-xs group active:scale-[0.97]"
                         >
                             <Compass size={16} className="text-secondary group-hover:rotate-45 transition-transform" />
-                            <span>Ruta Volcánica</span>
+                            <span>Explorar Destinos</span>
                         </Link>
+                    </div>
+
+                    {/* Trust Indicators */}
+                    <div className="pt-4 flex flex-wrap items-center gap-6 border-t border-outline-variant/40 w-full max-w-xl">
+                        <div className="flex items-center gap-2 text-xs text-on-surface-variant font-medium">
+                            <ShieldCheck size={16} weight="fill" className="text-secondary shrink-0" />
+                            <span>Vulcanólogos Certificados</span>
+                        </div>
+                        <div className="hidden sm:block h-3 w-px bg-outline-variant/50" />
+                        <div className="flex items-center gap-2 text-xs text-on-surface-variant font-medium">
+                            <Sparkle size={15} weight="fill" className="text-tertiary shrink-0" />
+                            <span>Curaduría IA & Humana</span>
+                        </div>
+                        <div className="hidden sm:block h-3 w-px bg-outline-variant/50" />
+                        <div className="flex items-center gap-2 text-xs text-on-surface-variant font-medium">
+                            <Star size={15} weight="fill" className="text-primary shrink-0" />
+                            <span>Relais & Châteaux Partners</span>
+                        </div>
                     </div>
                 </motion.div>
 
-
-                {/* Imagery Column (Overlapping) */}
-                <div className="col-span-1 md:col-span-7 relative h-[450px] md:h-[620px] mt-6 md:mt-0 flex items-center justify-center">
-                    {/* Background/Back Image */}
+                {/* Imagery Column (Cinematic Asymmetric Spread from Stitch) */}
+                <div className="col-span-1 md:col-span-6 relative h-[480px] md:h-[560px] mt-6 md:mt-0 flex items-center justify-center">
+                    {/* Main Panoramic Frame */}
                     <motion.div 
-                        initial={{ opacity: 0, scale: 0.95, x: 20 }}
+                        initial={{ opacity: 0, scale: 0.96, x: 20 }}
                         animate={{ opacity: 1, scale: 1, x: 0 }}
                         transition={{ duration: 0.8, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}
-                        className="absolute right-0 top-0 w-[82%] h-[82%] rounded-2xl overflow-hidden shadow-md z-0"
+                        className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl border border-outline-variant/60 group bg-surface-container"
                     >
                         <Image
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-YMMd3CDhwhrftwkYXCjKmcpNBLHmNDN4hgA7Q2Wlsk5Iv_pS5uczU2WbUgW6ekjPp0Z9gOzmTAbYUANUXgv5ir1pnoiSnQDiDLkmUATJaEnMJ1uzE3XaXKWpOkWgnfyeoYWUC0MfywY7Tn56DFjeTOJ0RWWBTMh5DHgDMQRbjZ2ahdvEStnhfB0ZfyX56dG0zhL6y5a-vHuCzTlATlA0CBMd6IvZUKeez7sd_7_KoiJSbdN7zQ00blqpoIW01bcclx-0Mw-rkcZt"
-                            alt="Breathtaking Volcanic Ridge Nicaragua"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvNdbvt0IpFvZ8JMUEhE3ohn0fW_NOAqWe49Ss-QQMuNpskgTzbUmbHuBd23_xO35tWRHO66XW_Fn1tlz1prz2VbN3A-Q0wwku8oRpNpVuG8ODSw2dkZr-ywa_1NojVkLpEdGs9JQ2YXnPSpPtXBhEvyx1yj8BZTZEhNGJrftKS1ShvNWqmQrhURIggLJ5BjipOdyUoGhcmxZ3O-kT6RDqB1o9mx2oxccmjyAJ6wZFAnBMGqo6TbPjltUuHtzee0DCT2b3UEGFpQ0E"
+                            alt="Volcán Mombacho y mirador hacia Granada Colonial"
                             fill
                             priority
-                            sizes="(max-w-768px) 100vw, 50vw"
-                            className="object-cover object-center transition-transform duration-700 hover:scale-103 ease-out"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="object-cover object-center transition-transform duration-700 group-hover:scale-105 ease-out"
                         />
+                        <div className="absolute inset-0 bg-linear-to-t from-volcano-black/80 via-volcano-black/20 to-transparent" />
+
+                        {/* Floating Luxury Card Inset */}
+                        <div className="absolute bottom-6 left-6 right-6 p-5 rounded-xl bg-surface-container-lowest/95 backdrop-blur-md border border-outline-variant/50 shadow-lg text-on-surface">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="px-2.5 py-0.5 rounded bg-surface-container-high text-primary font-sans font-bold text-[10px] tracking-wider uppercase">
+                                    Charter Privado
+                                </span>
+                                <div className="flex items-center gap-1 text-xs">
+                                    <span className="font-bold text-on-surface">4.9</span>
+                                    <div className="flex items-center text-tertiary">
+                                        {[...Array(5)].map((_, i) => (
+                                            <Star key={i} size={13} weight="fill" />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                            <h2 className="font-serif text-lg font-bold text-on-surface mb-1">
+                                Volcán Mombacho & Granada Colonial
+                            </h2>
+                            <div className="flex items-center gap-3 text-xs text-on-surface-variant font-sans">
+                                <span className="flex items-center gap-1">
+                                    <MapPin size={13} className="text-primary" weight="fill" />
+                                    1,344 msnm
+                                </span>
+                                <span>•</span>
+                                <span>Bosque Nuboso Privado</span>
+                            </div>
+                        </div>
                     </motion.div>
 
-                    {/* Foreground/Front Overlapping Image */}
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.95, x: -20, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.3, ease: [0.23, 1, 0.32, 1] }}
-                        className="absolute left-0 bottom-0 w-[60%] h-[60%] rounded-2xl overflow-hidden shadow-lg border-4 border-surface z-10"
-                    >
-                        <Image
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp_BQxHOrAV0J-4YGpP8wXIS37iHVQjfiB58ybeyA0j3rlkrriEJTIawpYZiFh2VshTMwz_AuP3FdYB8_mjxUrWUUEam209gmkc4kGJQLTITocLG3E1mBYeDhwuTvvO1FUZhDEc0FH0sDRhDljakIFkRbLYR_tjypzaEQBSOtEhhQLChoa6rj_mND30WgTZjYiC97NEv37-cotD8MoOwmQwmIQOK8dbCSi_SSJmNVTxJRBFNSd6xnrtUIfOA61uDA1qMEyKBRaQEg5"
-                            alt="Luxury Infinity Pool Resort Nicaragua"
-                            fill
-                            sizes="(max-w-768px) 100vw, 35vw"
-                            className="object-cover transition-transform duration-700 hover:scale-103 ease-out"
-                        />
-                    </motion.div>
-
-                    {/* Luxury Badge */}
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6, delay: 0.45, ease: [0.23, 1, 0.32, 1] }}
-                        id="hero-luxury-badge"
-                        className="absolute right-6 bottom-16 z-20 bg-surface/90 backdrop-blur-md px-4 py-2.5 rounded-full shadow-sm flex items-center gap-1.5 border border-outline-variant/30"
-                    >
-                        <Star size={15} weight="fill" className="text-tertiary" />
-                        <span className="font-sans font-semibold text-xs tracking-wider text-on-surface">Curated Excellence</span>
-                    </motion.div>
+                    {/* Accent Volcanic Live Tag */}
+                    <div className="hidden sm:flex absolute -top-3 -right-3 z-20 bg-primary text-on-primary px-3.5 py-1.5 rounded-full shadow-lg items-center gap-2 font-mono text-[11px] font-semibold">
+                        <span className="w-2 h-2 rounded-full bg-oro-indigena animate-ping" />
+                        <span>TEMPERATURA ACTUAL: 21°C</span>
+                    </div>
                 </div>
             </div>
         </section>

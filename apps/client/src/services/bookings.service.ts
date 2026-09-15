@@ -14,4 +14,15 @@ export const bookingsService = {
   async create(payload: CreateBookingPayload): Promise<Booking> {
     return api.post<Booking>(`${API_URL}/bookings`, payload);
   },
+
+  async createCheckoutSession(
+    bookingId: string,
+    amount: number,
+    title: string
+  ): Promise<{ url: string; sessionId: string }> {
+    return api.post<{ url: string; sessionId: string }>(
+      `${API_URL}/stripe/create-checkout-session`,
+      { bookingId, amount, title }
+    );
+  },
 };

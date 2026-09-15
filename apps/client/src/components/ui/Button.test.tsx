@@ -73,7 +73,7 @@ describe('Button', () => {
   });
 
   it('renders with icon left', () => {
-    render(<Button iconLeft={<span data-testid="icon">🎯</span>}>With Icon</Button>);
+    render(<Button iconLeft={<span data-testid="icon">icon</span>}>With Icon</Button>);
     expect(screen.getByTestId('icon')).toBeInTheDocument();
   });
 

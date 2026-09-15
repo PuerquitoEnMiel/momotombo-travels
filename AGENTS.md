@@ -86,6 +86,7 @@ After connecting, run `npx prisma migrate deploy` then `npx prisma db seed` from
 - **Rate limiting**: `ThrottlerModule` global guard, 10 req/min per IP.
 - **CORS**: enabled globally (no origin restriction).
 - **Fonts**: Inter, Outfit, Newsreader (Google Fonts via `next/font`).
+- **Icons & Emojis**: STRICT NO-EMOJI RULE across the entire UI. Never use Unicode emojis (flags, smileys, star emojis, etc.) in text, buttons, tags, or dropdowns. ALWAYS use SVG icons from `@phosphor-icons/react`.
 
 ## Architecture notes
 

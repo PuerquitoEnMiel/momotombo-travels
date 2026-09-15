@@ -40,11 +40,11 @@ export default function AdminDashboard() {
   const sidebarSections: SidebarSection[] = [
     {
       items: [
-        { id: "btn-admin-nav-summary", label: t("nav.summary"), icon: <ChartBar size={18} />, active: true },
-        { id: "btn-admin-nav-users", label: t("nav.users"), icon: <Users size={18} /> },
-        { id: "btn-admin-nav-destinations", label: t("nav.destinations"), icon: <MapPin size={18} /> },
-        { id: "btn-admin-nav-transactions", label: t("nav.transactions"), icon: <CurrencyDollar size={18} /> },
-        { id: "btn-admin-nav-settings", label: t("nav.settings"), icon: <Gear size={18} /> },
+        { id: "btn-admin-nav-summary", label: t("nav.summary"), icon: <ChartBar size={18} />, active: true, href: "/admin" },
+        { id: "btn-admin-nav-users", label: t("nav.users"), icon: <Users size={18} />, href: "/admin" },
+        { id: "btn-admin-nav-destinations", label: t("nav.destinations"), icon: <MapPin size={18} />, href: "/admin/destinos" },
+        { id: "btn-admin-nav-transactions", label: t("nav.transactions"), icon: <CurrencyDollar size={18} />, href: "/admin" },
+        { id: "btn-admin-nav-settings", label: t("nav.settings"), icon: <Gear size={18} />, href: "/admin" },
       ],
     },
   ];

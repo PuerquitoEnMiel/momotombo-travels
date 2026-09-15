@@ -84,7 +84,7 @@ export function ChatInterface() {
     const [messages, setMessages] = useState<Message[]>([
         {
             role: "assistant",
-            content: "¡Hola! Soy **Kary**, tu guía personal de Nicaragua. 🌋✨\n\n¿Qué aventura estás buscando hoy?",
+            content: "¡Hola! Soy **Kary**, tu guía personal de Nicaragua.\n\n¿Qué aventura estás buscando hoy?",
         },
     ]);
     const [input, setInput] = useState("");
@@ -141,7 +141,7 @@ export function ChatInterface() {
                 ...prev,
                 {
                     role: "assistant",
-                    content: "Lo siento, hubo un error al conectarme. ¿Intenta nuevamente? 🙏",
+                    content: "Lo siento, hubo un error al conectarme. ¿Deseas intentar nuevamente?",
                 },
             ]);
         } finally {

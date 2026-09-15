@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { MagnifyingGlass, MapPin, Star, Sparkle, Sliders, X, ArrowRight } from "@phosphor-icons/react";
+import { MagnifyingGlass, MapPin, Star, Sparkle, Sliders, X, ArrowRight, Mountains } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -52,7 +52,9 @@ function DestinationCard({ dest, index }: { dest: Destination; index: number }) 
                 className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out-expo"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-on-surface-variant text-5xl">🏔️</div>
+              <div className="w-full h-full flex items-center justify-center text-outline-variant">
+                <Mountains size={52} className="opacity-40" />
+              </div>
             )}
             <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
             <div className="absolute top-4 left-4">

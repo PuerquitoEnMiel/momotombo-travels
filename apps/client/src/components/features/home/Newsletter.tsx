@@ -23,41 +23,43 @@ export function Newsletter() {
   };
 
   return (
-    <section className="py-24 px-6 bg-surface-container-lowest">
+    <section className="py-24 px-6 bg-surface-container-low/40 border-t border-outline-variant/30">
       <Container size="md" className="text-center">
-        <h2 className="font-serif text-4xl md:text-5xl font-bold text-volcano-black mb-6 text-balance">
-          {t("title")} <br />
-          <span className="text-primary">{t("titleAccent")}</span>
+        <span className="font-sans font-bold text-xs text-tertiary uppercase tracking-widest block mb-2">
+          BOLETÍN EDITORIAL
+        </span>
+        <h2 className="font-serif text-3xl md:text-5xl font-bold text-on-surface mb-4 text-balance">
+          Crónicas de los Maribios
         </h2>
-        <p className="text-on-surface-variant mb-10 text-lg text-pretty max-w-2xl mx-auto">
-          {t("subtitle")}
+        <p className="text-on-surface-variant mb-10 text-base md:text-lg text-pretty max-w-xl mx-auto leading-relaxed">
+          Disquisiciones mensuales sobre lagunas secretas, haciendas cafetaleras centenarias y novedades geológicas del arco volcánico centroamericano.
         </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-3 max-w-lg mx-auto">
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
           <Input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={t("emailPlaceholder")}
+            placeholder="correo@ejemplo.com"
             id="newsletter-email-input"
             autoComplete="email"
             containerClassName="flex-1"
-            className="!rounded-full !h-14"
+            className="!rounded-lg !h-12 !bg-surface-container-lowest"
           />
           <Button
             type="submit"
-            variant="secondary"
-            size="lg"
+            variant="primary"
+            size="md"
             loading={loading}
             id="newsletter-submit-button"
-            className="!rounded-full shadow-md hover:shadow-lg"
+            className="!rounded-lg !h-12 shadow-sm hover:shadow-md px-6 font-sans font-semibold text-xs tracking-wider uppercase whitespace-nowrap"
           >
-            {t("submit")}
+            Suscribirme a las Crónicas
           </Button>
         </form>
 
-        <p className="mt-6 text-xs text-on-surface-variant">{t("terms")}</p>
+        <p className="mt-5 text-xs text-on-surface-variant">Respetamos el silencio. Cancelación en un clic en cada entrega.</p>
       </Container>
     </section>
   );

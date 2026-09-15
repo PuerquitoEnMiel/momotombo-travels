@@ -20,6 +20,26 @@ export const authService = {
     return api.get<AuthUser>(`${API_URL}/auth/me`);
   },
 
+  async forgotPassword(email: string): Promise<{ message: string }> {
+    return api.post<{ message: string }>(`${API_URL}/auth/forgot-password`, { email }, { skipAuth: true });
+  },
+
+  async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+    return api.post<{ message: string }>(
+      `${API_URL}/auth/reset-password`,
+      { token, newPassword },
+      { skipAuth: true }
+    );
+  },
+
+  async verifyEmail(token: string): Promise<{ message: string }> {
+    return api.post<{ message: string }>(
+      `${API_URL}/auth/verify-email`,
+      { token },
+      { skipAuth: true }
+    );
+  },
+
   logout(): void {
     clearAuthToken();
   },

@@ -3,7 +3,6 @@
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
-import HttpBackend from "i18next-http-backend";
 
 import esCommon from "../../public/locales/es/common.json";
 import esNav from "../../public/locales/es/nav.json";
@@ -38,10 +37,12 @@ export const LANGUAGE_LABELS: Record<Language, string> = {
   en: "English",
 };
 
-export const LANGUAGE_FLAGS: Record<Language, string> = {
-  es: "🇳🇮",
-  en: "🇺🇸",
+export const LANGUAGE_CODES: Record<Language, string> = {
+  es: "ES",
+  en: "EN",
 };
+
+export const LANGUAGE_FLAGS: Record<Language, string> = LANGUAGE_CODES;
 
 const resources = {
   es: {
@@ -72,52 +73,50 @@ const resources = {
   },
 } as const;
 
-let initialized = false;
+if (!i18next.isInitialized) {
+  if (typeof window !== "undefined") {
+    i18next.use(LanguageDetector);
+  }
+  void i18next
+    .use(initReactI18next)
+    .init({
+      resources,
+      lng: DEFAULT_LANGUAGE,
+      fallbackLng: DEFAULT_LANGUAGE,
+      supportedLngs: SUPPORTED_LANGUAGES as unknown as string[],
+      ns: [
+        "common",
+        "nav",
+        "auth",
+        "home",
+        "explore",
+        "itinerary",
+        "profile",
+        "admin",
+        "blog",
+        "errors",
+        "validation",
+      ],
+      defaultNS: "common",
+      interpolation: {
+        escapeValue: false,
+      },
+      detection: {
+        order: ["localStorage", "navigator", "htmlTag"],
+        caches: ["localStorage"],
+        lookupLocalStorage: "momotombo-lang",
+      },
+      react: {
+        useSuspense: false,
+      },
+      load: "currentOnly",
+    });
+}
 
 export function initI18n(language?: Language): typeof i18next {
-  if (!initialized) {
-    void i18next
-      .use(HttpBackend)
-      .use(LanguageDetector)
-      .use(initReactI18next)
-      .init({
-        resources,
-        fallbackLng: DEFAULT_LANGUAGE,
-        supportedLngs: SUPPORTED_LANGUAGES as unknown as string[],
-        ns: [
-          "common",
-          "nav",
-          "auth",
-          "home",
-          "explore",
-          "itinerary",
-          "profile",
-          "admin",
-          "blog",
-          "errors",
-          "validation",
-        ],
-        defaultNS: "common",
-        interpolation: {
-          escapeValue: false,
-        },
-        detection: {
-          order: ["localStorage", "navigator", "htmlTag"],
-          caches: ["localStorage"],
-          lookupLocalStorage: "momotombo-lang",
-        },
-        react: {
-          useSuspense: false,
-        },
-        load: "currentOnly",
-      });
-    initialized = true;
-  }
-
   if (language && i18next.language !== language) {
     void i18next.changeLanguage(language);
   }
-
   return i18next;
 }
 

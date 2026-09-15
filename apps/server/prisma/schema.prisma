@@ -198,6 +198,34 @@ model Category {
   destinations Destination[]
 }
 
+model Department {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  slug        String  @unique
+  isoCode     String  @unique
+  type        String  @default("DEPARTMENT") // DEPARTMENT | AUTONOMOUS_REGION
+  capital     String?
+  description String? @db.Text
+  imageUrl    String?
+
+  destinations Destination[]
+  municipalities Municipality[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Municipality {
+  id           String  @id @default(uuid())
+  name         String
+  slug         String
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@unique([slug, departmentId])
+  @@index([departmentId])
+}
+
 model Destination {
   id          String     @id @default(uuid())
   name        String
@@ -214,6 +242,9 @@ model Destination {
   categoryId  String
   category    Category   @relation(fields: [categoryId], references: [id])
 
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+
   // Relations
   images     DestinationImage[]
   activities Activity[]
@@ -226,6 +257,7 @@ model Destination {
   updatedAt DateTime @updatedAt
 
   @@index([categoryId])
+  @@index([departmentId])
   @@index([isFeatured])
   @@index([deletedAt])
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Calendar, Users, CheckCircle } from "@phosphor-icons/react";
 import { Modal, Input, Button, Badge } from "@/components/ui";
@@ -26,6 +27,7 @@ interface BookingModalProps {
 }
 
 export function BookingModal({ isOpen, onClose, activities, destinationName }: BookingModalProps) {
+  const router = useRouter();
   const { t } = useTranslation("explore", { keyPrefix: "booking" });
   const { isAuthenticated } = useAuth();
   const toast = useToast();
@@ -34,6 +36,7 @@ export function BookingModal({ isOpen, onClose, activities, destinationName }: B
   const [guests, setGuests] = useState(1);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [createdBookingId, setCreatedBookingId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
   const activity = activities.find((a) => a.id === selectedActivity);
@@ -48,12 +51,15 @@ export function BookingModal({ isOpen, onClose, activities, destinationName }: B
     setError("");
     setLoading(true);
     try {
-      await bookingsService.create({
+      const res = await bookingsService.create({
         activityId: selectedActivity,
         date,
         guests,
         totalPrice,
       });
+      if (res?.id) {
+        setCreatedBookingId(res.id);
+      }
       setSuccess(true);
       toast.success(t("success"));
     } catch (err) {
@@ -82,13 +88,37 @@ export function BookingModal({ isOpen, onClose, activities, destinationName }: B
       showCloseButton={!loading}
     >
       {success ? (
-        <div className="p-6 text-center">
-          <div className="w-16 h-16 bg-success-container text-success rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="p-6 text-center space-y-4">
+          <div className="w-16 h-16 bg-success-container text-success rounded-full flex items-center justify-center mx-auto mb-2">
             <CheckCircle size={32} weight="duotone" />
           </div>
-          <Button variant="primary" onClick={handleClose} id="btn-booking-success-close">
-            Cerrar
-          </Button>
+          <h3 className="font-serif text-lg text-on-surface font-medium">¡Reserva Registrada!</h3>
+          <p className="text-xs text-on-surface-variant max-w-sm mx-auto">
+            Tu solicitud de reserva ha sido guardada. Puedes proceder al pago seguro de inmediato o revisarla en tu perfil.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            {createdBookingId && (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  handleClose();
+                  router.push(`/checkout/${createdBookingId}`);
+                }}
+                id="btn-booking-proceed-checkout"
+                className="flex-1 justify-center bg-oro-indigena text-volcano-black font-mono text-xs uppercase font-bold"
+              >
+                Pagar Reserva
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              onClick={handleClose}
+              id="btn-booking-success-close"
+              className="flex-1 justify-center text-xs font-mono"
+            >
+              Cerrar
+            </Button>
+          </div>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="p-6 space-y-5">

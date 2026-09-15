@@ -25,4 +25,16 @@ export const destinationsService = {
       { skipAuth: true }
     );
   },
+
+  async create(payload: Partial<Destination>): Promise<Destination> {
+    return api.post<Destination>(`${API_URL}/destinations`, payload);
+  },
+
+  async update(id: string, payload: Partial<Destination>): Promise<Destination> {
+    return api.patch<Destination>(`${API_URL}/destinations/${id}`, payload);
+  },
+
+  async delete(id: string): Promise<{ success: boolean }> {
+    return api.delete<{ success: boolean }>(`${API_URL}/destinations/${id}`);
+  },
 };

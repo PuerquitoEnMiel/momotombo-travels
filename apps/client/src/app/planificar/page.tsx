@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { PaperPlaneRight, Sparkle, CurrencyDollar, Calendar, CaretRight, Compass, Mountains, TreePalm, Sun } from "@phosphor-icons/react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { API_URL } from "@/lib/api";
 
 interface Message {
@@ -35,7 +36,14 @@ function SuggestionCard({ dest }: { dest: any }) {
         <Link href={`/explorar/${dest.slug || ""}`}>
             <div className="group flex items-center gap-3 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-3 hover:border-primary/40 hover:shadow-lg transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.99]">
                 {dest.image_url && (
-                    <img src={dest.image_url} alt={dest.name} className="w-16 h-16 rounded-xl object-cover shrink-0" />
+                    <Image
+                        src={dest.image_url}
+                        alt={dest.name}
+                        width={64}
+                        height={64}
+                        unoptimized
+                        className="w-16 h-16 rounded-xl object-cover shrink-0"
+                    />
                 )}
                 <div className="flex-1 min-w-0">
                     <p className="font-bold text-gray-900 text-sm truncate group-hover:text-primary transition-colors duration-300 ease-[cubic-bezier(0.23,1,0.32,1)]">{dest.name}</p>
@@ -101,7 +109,7 @@ export default function PlanificarPage() {
         } catch {
             setMessages((prev) => [
                 ...prev,
-                { role: "assistant", content: "Lo siento, hubo un error de conexión. ¿Intentamos de nuevo? 🙏" },
+                { role: "assistant", content: "Lo siento, hubo un error de conexión. ¿Intentamos de nuevo?" },
             ]);
         } finally {
             setIsLoading(false);

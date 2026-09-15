@@ -38,9 +38,8 @@ export function LanguageSwitcher({ className }: { className?: string }) {
           "bg-surface-container-lowest text-on-surface-variant"
         )}
       >
-        <Globe size={14} weight="bold" />
-        <span aria-hidden="true">{LANGUAGE_FLAGS[current]}</span>
-        <span className="hidden sm:inline">{current.toUpperCase()}</span>
+        <Globe size={15} weight="bold" className="text-primary" />
+        <span className="font-semibold text-xs tracking-wider">{current.toUpperCase()}</span>
         <CaretDown size={12} className={cn("transition-transform", open && "rotate-180")} />
       </button>
 
@@ -67,11 +66,11 @@ export function LanguageSwitcher({ className }: { className?: string }) {
                       : "text-on-surface hover:bg-surface-container"
                   )}
                 >
-                  <span aria-hidden="true" className="text-base leading-none">
-                    {LANGUAGE_FLAGS[lang]}
+                  <span className="font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant">
+                    {lang.toUpperCase()}
                   </span>
                   <span className="flex-1 text-left">{LANGUAGE_LABELS[lang]}</span>
-                  {isSelected && <Check size={14} weight="bold" />}
+                  {isSelected && <Check size={14} weight="bold" className="text-primary" />}
                 </button>
               </li>
             );
