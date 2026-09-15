@@ -79,10 +79,48 @@ export function Navbar() {
         <Link
           href="/"
           id="nav-logo"
-          className="font-serif text-2xl md:text-3xl font-bold tracking-tighter text-on-background hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2.5 group transition-opacity hover:opacity-95"
         >
-          Momotombo <span className="font-light italic text-primary">Travels</span>
+          {/* Volcán Momotombo Isotype */}
+          <div className="w-9 h-9 rounded-xl bg-surface-container-high/80 dark:bg-volcano-black border border-outline-variant/40 flex items-center justify-center p-1.5 shadow-xs group-hover:border-primary/50 transition-colors">
+            <svg
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-full h-full"
+              aria-hidden="true"
+            >
+              <path
+                d="M16 5L26 23H6L16 5Z"
+                className="fill-primary dark:fill-primary-container"
+              />
+              <circle cx="16" cy="7.5" r="2" fill="#ff4500" />
+              <path
+                d="M14 11L16 6L18 11"
+                stroke="#ff7849"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+              />
+              <path
+                d="M4 26C7 25 10 27 16 26C22 25 25 27 28 26"
+                stroke="#004f96"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
+              <path
+                d="M7 29C10 28.5 13 29.5 16 29C19 28.5 22 29.5 25 29"
+                stroke="#4ba3c7"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                strokeOpacity="0.7"
+              />
+            </svg>
+          </div>
+          <span className="font-serif text-2xl md:text-3xl font-bold tracking-tighter text-on-background">
+            Momotombo <span className="font-light italic text-primary">Travels</span>
+          </span>
         </Link>
+
 
         <div className="hidden md:flex gap-8 font-sans font-medium text-xs tracking-wider uppercase items-center">
           {NAV_LINKS.map((link) => {

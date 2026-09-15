@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Star, Sparkle } from "@phosphor-icons/react";
+import Link from "next/link";
+import { Star, Sparkle, Compass } from "@phosphor-icons/react";
 
 export function Hero() {
     const handleGenerate = () => {
@@ -12,8 +13,12 @@ export function Hero() {
     return (
         <section 
             id="hero-section"
-            className="px-6 md:px-12 max-w-7xl mx-auto mb-20 pt-28 pb-12 overflow-hidden"
+            className="px-6 md:px-12 max-w-7xl mx-auto mb-20 pt-28 pb-12 overflow-hidden relative"
         >
+            {/* Ambient Volcanic Atmosphere Glows */}
+            <div className="absolute top-1/3 -left-20 w-[420px] h-[420px] bg-sunset-orange/10 rounded-full blur-3xl -z-10 pointer-events-none" />
+            <div className="absolute top-10 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none" />
+
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center min-h-[600px] md:min-h-[700px]">
                 {/* Typography Column */}
                 <motion.div 
@@ -24,10 +29,12 @@ export function Hero() {
                 >
                     <span 
                         id="hero-eyebrow"
-                        className="font-sans font-semibold text-xs tracking-[0.2em] text-tertiary uppercase inline-flex items-center gap-1.5"
+                        className="font-sans font-semibold text-xs tracking-[0.15em] text-tertiary uppercase inline-flex items-center gap-2 bg-colonial-cream/70 dark:bg-volcano-black/70 border border-oro-indigena/30 px-3.5 py-1.5 rounded-full shadow-2xs backdrop-blur-xs"
                     >
-                        <Sparkle size={12} weight="fill" />
-                        Edición Editorial
+                        <Sparkle size={13} weight="fill" className="text-oro-indigena" />
+                        <span>Tierra de Lagos y Volcanes</span>
+                        <span className="text-outline/40">·</span>
+                        <span className="font-mono text-[11px] text-on-surface-variant/80 lowercase">{"12°29'N 86°32'W"}</span>
                     </span>
                     <h1 
                         id="hero-title"
@@ -42,16 +49,25 @@ export function Hero() {
                     >
                         Viajes diseñados con inteligencia artificial que fusionan paisajes volcánicos salvajes con una hospitalidad de lujo sin igual. El viaje, rediseñado.
                     </p>
-                    <div className="pt-2">
+                    <div className="pt-2 flex flex-wrap items-center gap-4">
                         <button
                             onClick={handleGenerate}
                             id="hero-generate-button"
-                            className="bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container px-8 py-4 rounded-full font-sans font-semibold text-xs tracking-wider uppercase transition-[transform,background-color,color] duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.97] shadow-sm cursor-pointer"
+                            className="group relative inline-flex items-center gap-2.5 bg-gradient-magma hover:brightness-110 text-white px-7 py-4 rounded-full font-sans font-semibold text-xs tracking-wider uppercase transition-all duration-300 active:scale-[0.97] shadow-glow-magma-intense cursor-pointer"
                         >
-                            Generar Itinerario
+                            <span>Generar Itinerario IA</span>
+                            <Sparkle size={14} weight="fill" className="group-hover:rotate-12 transition-transform duration-300" />
                         </button>
+                        <Link
+                            href="/explorar"
+                            className="inline-flex items-center gap-2 font-sans font-semibold text-xs tracking-wider uppercase text-on-surface-variant hover:text-primary transition-colors py-3 px-3 group"
+                        >
+                            <Compass size={16} className="text-secondary group-hover:rotate-45 transition-transform" />
+                            <span>Ruta Volcánica</span>
+                        </Link>
                     </div>
                 </motion.div>
+
 
                 {/* Imagery Column (Overlapping) */}
                 <div className="col-span-1 md:col-span-7 relative h-[450px] md:h-[620px] mt-6 md:mt-0 flex items-center justify-center">

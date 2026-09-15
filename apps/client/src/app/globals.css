@@ -265,3 +265,17 @@ body {
 *::-webkit-scrollbar-thumb:hover {
   background: var(--color-outline);
 }
+
+/* === Custom Momotombo Brand Utilities === */
+@utility shadow-glow-magma-intense {
+  box-shadow: 0 0 30px rgba(255, 69, 0, 0.35), 0 0 60px rgba(255, 120, 73, 0.15);
+}
+
+@utility bg-gradient-magma {
+  background-image: linear-gradient(135deg, #ff4500 0%, #ff7849 60%, #c9a900 100%);
+}
+
+@utility bg-gradient-editorial-warm {
+  background-image: radial-gradient(circle at 85% 15%, rgba(255, 120, 73, 0.1) 0%, rgba(250, 243, 224, 0.6) 45%, transparent 75%);
+}
+

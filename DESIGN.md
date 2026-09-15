@@ -80,22 +80,38 @@ The interface feels premium, warm, authentic, and modern — never generic, ster
 - **Editorial & Quotes**: Newsreader (Google Fonts) — elegant serif for cultural narratives and testimonials.
 
 ## Component Patterns
-- **Buttons**:
-  - Primary: Nica Blue background (`#004f96`), white text, rounded-md (12px) or pill (9999px), subtle hover lift.
-  - Magma Action: Volcan Magma (`#ff4500`) for high-energy adventure booking.
-  - Secondary: Selva Esmeralda (`#006e2a`) for eco-tourism actions.
-  - Outline: 1px border with `color-primary`, transparent surface.
-- **Cards**:
-  - 16px border-radius (`rounded-lg` / `rounded-xl`).
-  - Subtle border (`1px solid #c1c6d4`), soft elevation shadow (`shadow-md`).
-  - Image header with aspect ratio 16:9 or 4:3, overlaid badge (e.g. "Eco-Trek", "Colonial").
+- **Isotype & Brand Iconography**:
+  - **Momotombo Volcano Glyph**: Iconic triangular conical silhouette (`viewBox="0 0 32 32"`), magma vent apex, and horizontal stylized ripple waves representing Lake Xolotlán (Lake Managua).
+  - Used in Navbar header, hero watermarks, and brand badges. Never replace with generic plane/globe travel stock icons.
+- **Buttons & Action Triggers**:
+  - Primary: Nica Blue background (`#004f96`), white text, rounded-xl (12px) or pill (9999px), subtle hover lift.
+  - Magma Action (High-Energy CTA): Linear gradient `from-volcan-magma to-sunset-orange` (`#ff4500` to `#ff7849`) paired with `shadow-glow-magma-intense` (`0 10px 25px -5px rgba(255, 69, 0, 0.45)`). Used for key conversion moments (e.g. "Comenzar Viaje", "Reservar Expedición").
+  - Secondary: Selva Esmeralda (`#006e2a`) for eco-tourism and nature-first actions.
+  - Ghost / Outline: 1px border with `color-primary` or white/20 on dark volcanic backgrounds.
+- **Cards & Geographic Tiles**:
+  - 16px to 24px border-radius (`rounded-2xl` / `rounded-3xl`).
+  - Container styling: White background with warm border (`border-stone-100` / `border-outline-variant/30`), soft ambient elevation (`shadow-md` transitioning to `shadow-xl` on hover).
+  - Image header: Aspect ratio 16:9 or 4:3 with gradient darkening vignette (`from-black/70 via-black/20 to-transparent`) for overlay contrast.
+  - **Geographic Card Anatomy**:
+    - Top badges: Category pill (`Selva Esmeralda` or `Volcán Magma`) + UNESCO / Biosphere recognition.
+    - Title: Bold Outfit typography with destination name.
+    - Altitude badge: Metric elevation (`msnm` - metros sobre el nivel del mar) giving true volcanic/mountain terrain context.
+    - Seasonality badge: Micro-pill highlighting best travel period (`Nov - May: Seca` or `Jun - Oct: Verde`).
+    - Region & Location: Map pin with department/region (e.g. "León / La Paz Centro").
+    - Pricing / CTA: Currency in USD with clear per-person rating and interactive booking trigger.
+- **Atmospheric Elements**:
+  - **Volcano Coordinates**: Latitude/Longitude metadata stamp (`12°29'N 86°32'W`) anchoring digital travelers to the real Momotombo summit.
+  - **Ambient Glows**: Radial magma blurs (`bg-volcan-magma/15 blur-3xl`) creating warmth behind dark hero banners.
 - **Navigation**:
   - Sticky glassmorphism bar (`backdrop-blur-md`, semi-transparent background).
-  - Clear brand logo with volcano glyph.
+  - Clear brand logo with volcano glyph + direct route shortcuts (Ruta Volcánica, Explorar, Planificar con IA).
 
 ## Do's and Don'ts
 - **DO** combine volcano warm tones (`#ff4500`) with tropical greens (`#006e2a`) and deep blues (`#004f96`) in balanced harmony.
+- **DO** incorporate authentic local geographical indicators: altitude in `msnm`, lake proximity, and dry/rainy seasons.
+- **DO** use the authentic Momotombo Volcano + Lake Xolotlán silhouette isotype across high-impact surfaces.
 - **DO** use rounded cards and glassmorphism with generous whitespace.
 - **DO** feature authentic imagery of Nicaraguan volcanoes, colonial architecture (Granada/León), and Pacific beaches.
 - **DON'T** use generic corporate blues, purple SaaS gradients, or cold gray tech palettes.
+- **DON'T** use generic travel icons (airplanes, generic suitcase clips) when Nicaraguan natural motifs apply.
 - **DON'T** use harsh square sharp corners (maintain minimum 8px to 16px border radius).
