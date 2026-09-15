@@ -44,3 +44,7 @@ prisma/*.db-journal
 
 # Large assets
 public/videos/Hero.webm
+
+# Scratch / Local scripts
+my-first-design.ts
+
