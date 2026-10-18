@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Momotombo Travels · Bitácora de Expediciones &amp; Rutas Privadas</title>
+<!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Container Queries & Forms -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-container": "#ffb2a0",
+            "outline-variant": "#dbc1bb",
+            "on-tertiary-fixed-variant": "#5d4200",
+            "primary": "#6c2210",
+            "on-secondary-container": "#4b695b",
+            "on-primary-fixed": "#3c0700",
+            "secondary-container": "#c6e7d6",
+            "on-secondary-fixed-variant": "#2f4d40",
+            "inverse-primary": "#ffb4a2",
+            "surface-dim": "#e0d9d4",
+            "primary-fixed": "#ffdad2",
+            "surface-container-lowest": "#ffffff",
+            "surface": "#fff8f4",
+            "on-secondary-fixed": "#022016",
+            "tertiary-fixed-dim": "#eec067",
+            "surface-container-low": "#faf2ed",
+            "on-tertiary-container": "#ecbe65",
+            "secondary-fixed-dim": "#adcebd",
+            "inverse-surface": "#33302c",
+            "surface-bright": "#fff8f4",
+            "surface-variant": "#e9e1dc",
+            "error": "#ba1a1a",
+            "tertiary": "#4e3700",
+            "secondary": "#476557",
+            "primary-container": "#8a3824",
+            "secondary-fixed": "#c9ead9",
+            "on-background": "#1e1b18",
+            "on-secondary": "#ffffff",
+            "surface-container-highest": "#e9e1dc",
+            "primary-fixed-dim": "#ffb4a2",
+            "surface-tint": "#9a442f",
+            "on-error-container": "#93000a",
+            "on-primary": "#ffffff",
+            "outline": "#88726d",
+            "on-tertiary-fixed": "#261900",
+            "surface-container-high": "#eee7e2",
+            "on-surface": "#1e1b18",
+            "on-primary-fixed-variant": "#7c2d1a",
+            "background": "#fff8f4",
+            "tertiary-container": "#6b4c00",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed": "#ffdea4",
+            "inverse-on-surface": "#f7efea",
+            "error-container": "#ffdad6",
+            "on-surface-variant": "#55423e",
+            "surface-container": "#f4ece7",
+            "on-error": "#ffffff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "gutter": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.5rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Playfair Display"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "display-xl-mobile": ["Playfair Display"],
+            "headline-md": ["Playfair Display"],
+            "display-xl": ["Playfair Display"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-sm": ["Playfair Display"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "display-xl-mobile": ["38px", { "lineHeight": "46px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-md": ["28px", { "lineHeight": "36px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "display-xl": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+            "headline-sm": ["22px", { "lineHeight": "30px", "letterSpacing": "0.005em", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.04em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 350, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      height: 4px;
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #dbc1bb;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased selection:bg-primary-container selection:text-surface-container-lowest font-body-md min-h-screen flex flex-col">
+<!-- TOP NAVIGATION BAR (Shared Component Anchor) -->
+<header class="docked full-width top-0 sticky z-50 bg-surface/85 backdrop-blur-md border-b border-outline-variant/40 shadow-[0_4px_20px_-2px_rgba(33,30,27,0.04)]">
+<div class="flex justify-between items-center w-full px-6 md:px-12 max-w-[1440px] mx-auto h-20">
+<!-- Monogram & Brand Logo -->
+<div class="flex items-center gap-4">
+<a class="flex items-center gap-3 group" href="#">
+<div class="w-10 h-10 rounded-lg bg-primary-container text-on-primary flex items-center justify-center font-headline-sm text-headline-sm shadow-sm group-hover:scale-[0.98] transition-transform">
+            M
+          </div>
+<div class="flex flex-col">
+<span class="text-headline-sm font-headline-sm font-semibold tracking-tight text-primary">Momotombo Travels</span>
+<span class="font-label-sm text-label-sm tracking-widest uppercase text-outline">Vulcanology Sanctuaries</span>
+</div>
+</a>
+</div>
+<!-- Navigation Links with Itinerarios as Active Anchor -->
+<nav class="hidden lg:flex items-center space-x-8">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 font-label-lg text-label-lg" href="#destinos">Destinos</a>
+<a class="text-primary font-semibold border-b-2 border-primary pb-1 font-label-lg text-label-lg" href="#itinerarios">Itinerarios</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 font-label-lg text-label-lg" href="#charters">Private Charters</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 font-label-lg text-label-lg" href="#ficha-tecnica">Ficha Técnica</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 font-label-lg text-label-lg" href="#journal">Journal</a>
+</nav>
+<!-- Right Trailing Actions & Traveler Pill -->
+<div class="flex items-center gap-4">
+<!-- Currency & Language Selectors -->
+<div class="hidden md:flex items-center space-x-2 text-outline text-label-md font-label-md border-r border-outline-variant/50 pr-4">
+<span class="text-on-surface font-semibold">USD ($)</span>
+<span class="text-outline-variant">|</span>
+<span class="text-primary font-semibold">ES</span>
+<span class="text-on-surface-variant hover:text-primary cursor-pointer transition-colors">EN</span>
+</div>
+<!-- Notification Bell -->
+<button aria-label="Notificaciones" class="relative p-2 text-on-surface-variant hover:text-primary transition-colors duration-150" type="button">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary ring-2 ring-surface"></span>
+</button>
+<!-- Traveler Profile Pill -->
+<div class="flex items-center gap-3 pl-2 py-1 pr-3 bg-surface-container rounded-full border border-outline-variant/40 shadow-sm hover:border-outline-variant transition-all">
+<div class="relative">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-md font-label-md font-semibold">
+              SB
+            </div>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-600 ring-2 ring-surface"></span>
+</div>
+<div class="hidden sm:flex flex-col text-left">
+<span class="font-label-md text-label-md text-on-surface font-semibold leading-tight">Sofía Bermúdez</span>
+<span class="font-label-sm text-label-sm text-secondary font-medium tracking-tight">En Expedición</span>
+</div>
+</div>
+<!-- Reserve Expedition Action (Shared CTA) -->
+<a class="hidden xl:inline-flex items-center justify-center h-10 px-5 bg-primary-container text-surface-container-lowest font-label-lg text-label-lg rounded-lg shadow-sm hover:bg-primary transition-all duration-200 active:scale-[0.98]" href="#planificar">
+          Reserve Expedition
+        </a>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS / DASHBOARD CONTAINER -->
+<main class="flex-grow w-full max-w-[1440px] mx-auto px-6 md:px-12 py-10 space-y-12">
+<!-- HERO SECTION / EXPEDITIONS HEADER -->
+<section class="space-y-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-outline-variant/40">
+<div class="space-y-3 max-w-3xl">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high rounded-full border border-outline-variant/50">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant font-semibold">CORDÓN VOLCÁNICO DEL PACÍFICO · BITÁCORA PRIVADA</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg font-medium text-primary tracking-tight">
+            Bitácora de Expediciones &amp; Rutas Privadas
+          </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant font-light">
+            Gestiona, refina y comparte tus travesías a través de la cordillera volcánica y las ciudades patrimoniales de Nicaragua.
+          </p>
+</div>
+<!-- Primary Action CTA -->
+<div class="flex-shrink-0">
+<button class="group inline-flex items-center gap-3 px-6 h-12 bg-primary-container hover:bg-primary text-surface-container-lowest rounded-lg font-label-lg text-label-lg tracking-wide shadow-[0_4px_20px_-2px_rgba(138,56,36,0.35)] hover:shadow-[0_8px_24px_-2px_rgba(138,56,36,0.5)] transition-all duration-200 active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined transition-transform duration-300 group-hover:rotate-12" data-icon="auto_awesome">auto_awesome</span>
+<span>Diseñar Nueva Ruta con Kary IA</span>
+</button>
+</div>
+</div>
+<!-- Filters & Search Toolbar -->
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 pt-2">
+<!-- Filter Pills Tabs -->
+<div class="flex items-center gap-2 overflow-x-auto custom-scroll pb-2 lg:pb-0">
+<button class="px-4 py-2 bg-secondary text-surface-container-lowest rounded-full font-label-md text-label-md whitespace-nowrap shadow-sm" type="button">
+            Todas las Expediciones (4)
+          </button>
+<button class="px-4 py-2 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-full font-label-md text-label-md whitespace-nowrap border border-outline-variant/30 transition-colors" type="button">
+            Confirmadas &amp; Activas (2)
+          </button>
+<button class="px-4 py-2 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-full font-label-md text-label-md whitespace-nowrap border border-outline-variant/30 transition-colors" type="button">
+            Borradores de Planificación (1)
+          </button>
+<button class="px-4 py-2 bg-surface-container hover:bg-surface-container-high text-on-surface rounded-full font-label-md text-label-md whitespace-nowrap border border-outline-variant/30 transition-colors" type="button">
+            Completadas (1)
+          </button>
+</div>
+<!-- Search Bar and Sorter Dropdown -->
+<div class="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+<div class="relative w-full sm:w-72">
+<span class="absolute inset-y-0 left-3 flex items-center text-outline pointer-events-none">
+<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+</span>
+<input class="w-full h-10 pl-10 pr-4 bg-surface-container-lowest rounded-lg border border-outline-variant/60 font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none" placeholder="Buscar por destino o actividad..." type="text"/>
+</div>
+<div class="relative min-w-[210px]">
+<select class="w-full h-10 pl-3 pr-8 bg-surface-container-lowest rounded-lg border border-outline-variant/60 font-label-md text-label-md text-on-surface focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 appearance-none outline-none cursor-pointer">
+<option>Ordenar por: Fecha de Salida</option>
+<option>Ordenar por: Nivel de Desafío</option>
+<option>Ordenar por: Duración de Travesía</option>
+<option>Ordenar por: Creación Reciente</option>
+</select>
+<span class="absolute inset-y-0 right-3 flex items-center text-outline pointer-events-none">
+<span class="material-symbols-outlined text-[18px]" data-icon="expand_more">expand_more</span>
+</span>
+</div>
+</div>
+</div>
+</section>
+<!-- METRICS & FIELD LOGISTICS BAR (3 Column clean luxury cards) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant/40 shadow-[0_4px_20px_-2px_rgba(33,30,27,0.04)] flex flex-col justify-between hover:shadow-[0_16px_36px_-4px_rgba(33,30,27,0.08)] transition-all duration-300">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline">Estado Operativo</span>
+<h3 class="font-label-md text-label-md font-semibold text-on-surface-variant mt-1">Expediciones en Curso / Próximas</h3>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="volcano">volcano</span>
+</div>
+</div>
+<div class="mt-4">
+<div class="font-headline-md text-headline-md font-semibold text-primary">2 Rutas Activas</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Logística e itinerarios validados con vulcanólogos de INETER y custodios territoriales.
+          </p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant/40 shadow-[0_4px_20px_-2px_rgba(33,30,27,0.04)] flex flex-col justify-between hover:shadow-[0_16px_36px_-4px_rgba(33,30,27,0.08)] transition-all duration-300">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-outline">Densidad de Travesía</span>
+<h3 class="font-label-md text-label-md font-semibold text-on-surface-variant mt-1">Días Totales en Ruta</h3>
+</div>
+<div class="w-10 h-10 rounded-lg bg-secondary-container/60 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+</div>
+</div>
+<div class="mt-4">
+<div class="font-headline-md text-headline-md font-semibold text-on-surface">14 Días</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Planificados en 6 departamentos: Rivas, Granada, Masaya, León, Chinandega y Madriz.
+          </p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant/40 shadow-[0_4px_20px_-2px_rgba(33,30,27,0.04)] flex flex-col justify-between hover:shadow-[0_16px_36px_-4px_rgba(33,30,27,0.08)] transition-all duration-300">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-tertiary">Membresía &amp; Sanctuario</span>
+<h3 class="font-label-md text-label-md font-semibold text-on-surface-variant mt-1">Prestigio y Recompensas</h3>
+</div>
+<div class="w-10 h-10 rounded-lg bg-tertiary-fixed/40 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="military_tech">military_tech</span>
+</div>
+</div>
+<div class="mt-4">
+<div class="font-headline-md text-headline-md font-semibold text-tertiary">+1,850 XP</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            3 Medallas de Campo por desbloquear · Rango: Explorador Mayor de la Cordillera.
+          </p>
+</div>
+</div>
+</section>
+<!-- PRIMARY CONTENT: FEATURED ACTIVE EXPEDITION (Full-width panoramic hero card) -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container" data-icon="near_me">near_me</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Expedición Insignia Inminente</h2>
+</div>
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Código de Misión: NICA-OMT-882</span>
+</div>
+<div class="relative bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/40 shadow-[0_4px_20px_-2px_rgba(33,30,27,0.06)] group hover:shadow-[0_16px_36px_-4px_rgba(33,30,27,0.12)] transition-all duration-500">
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-[460px]">
+<!-- Panoramic Image Block (8 cols) -->
+<div class="lg:col-span-8 relative min-h-[300px] lg:min-h-full overflow-hidden">
+<img alt="Ometepe twin volcanoes reflection across Lake Cocibolca at dawn" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida/AEtjO1UGxoGd88_GEqoAVnbywg-7l8y0DfC15PH25CTV8vGnBY4huq5G76A4KScwohnZk2abzYWVmeRROwmV9zMzs3zoWwjxL1ZhXxCSC_7_h31iP1E_OM-rBfQWvehQbGo2RCS15j_9bV35Z53iRu2B2YCMhYpat0ZgKllKRqZYWarXRcAydpmElXK2K8Yu9qEa-DJDrrByjOid0bJBQNF65AMTJ8Z8-Ng5pxR5NONxukUnLz441UPzvtkTMNc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-inverse-surface/20 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-inverse-surface/30 lg:to-inverse-surface/90"></div>
+<!-- Floating Live Status Badge -->
+<div class="absolute top-6 left-6 inline-flex items-center gap-2.5 px-4 py-2 bg-inverse-surface/90 backdrop-blur-md rounded-full border border-surface-container-highest/30 shadow-md">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+</span>
+<span class="font-label-sm text-label-sm text-surface-bright tracking-widest uppercase font-semibold">Confirmado · Salida en 12 Días</span>
+</div>
+<!-- Inset Image Metadata Strip -->
+<div class="absolute bottom-6 left-6 right-6 lg:right-auto text-surface-bright max-w-md">
+<div class="inline-block px-3 py-1 bg-surface-container-lowest/20 backdrop-blur-sm rounded mb-2 text-label-sm font-label-sm tracking-wider uppercase">
+                18 - 22 Noviembre 2025 (5 Días / 4 Noches)
+              </div>
+<p class="font-body-sm text-body-sm text-surface-variant/90 drop-shadow">
+                Reserva de Biósfera Isla de Ometepe · Volcanes Concepción &amp; Maderas
+              </p>
+</div>
+</div>
+<!-- Narrative and Logistics Panel (4 cols) -->
+<div class="lg:col-span-4 p-8 flex flex-col justify-between bg-surface-container-low border-t lg:border-t-0 lg:border-l border-outline-variant/30">
+<div class="space-y-6">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary-container font-bold">Travesía Lacustre &amp; Cráteres Nubosos</span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-semibold mt-1 leading-snug">
+                  Expedición Volcán Maderas &amp; Santuario de Aguas Termales
+                </h3>
+</div>
+<!-- Route Path Stepper Flow -->
+<div class="space-y-2 pt-2 border-t border-outline-variant/40">
+<div class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Itinerario de Vuelo y Tránsito</div>
+<div class="flex items-center text-on-surface-variant font-label-md text-label-md flex-wrap gap-y-1 gap-x-2">
+<span class="text-on-surface font-semibold">Managua Heliport</span>
+<span class="text-primary font-bold">➔</span>
+<span>Granada Colonial</span>
+<span class="text-primary font-bold">➔</span>
+<span>Volcán Masaya Nocturno</span>
+<span class="text-primary font-bold">➔</span>
+<span class="text-primary-container font-semibold">Laguna Maderas</span>
+</div>
+</div>
+<!-- Curated Logistics Tags -->
+<div class="flex flex-wrap gap-2 pt-1">
+<span class="px-2.5 py-1 bg-surface-container rounded font-label-sm text-label-sm text-on-surface-variant border border-outline-variant/40 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="helicopter">flight</span> Vuelo Helicóptero H130
+                </span>
+<span class="px-2.5 py-1 bg-surface-container rounded font-label-sm text-label-sm text-on-surface-variant border border-outline-variant/40 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="psychology">psychology</span> Dr. Carlos Marenco (INETER)
+                </span>
+<span class="px-2.5 py-1 bg-surface-container rounded font-label-sm text-label-sm text-on-surface-variant border border-outline-variant/40 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="villa">villa</span> Villa Privada de Teca
+                </span>
+<span class="px-2.5 py-1 bg-surface-container rounded font-label-sm text-label-sm text-on-surface-variant border border-outline-variant/40 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="wine_bar">wine_bar</span> Cata Centenario
+                </span>
+</div>
+</div>
+<!-- Action CTAs Cluster -->
+<div class="space-y-3 pt-8">
+<a class="w-full flex items-center justify-center gap-2 h-12 bg-primary-container hover:bg-primary text-surface-container-lowest font-label-lg text-label-lg rounded-lg shadow transition-all duration-200" href="#cuaderno">
+<span>Abrir Cuaderno de Ruta</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</a>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-1.5 h-10 px-3 bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant/60 font-label-md text-label-md rounded-lg transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+<span>Voucher PDF</span>
+</button>
+<button class="flex items-center justify-center gap-1.5 h-10 px-3 bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant/60 font-label-md text-label-md rounded-lg transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="share">share</span>
+<span>Compartir Ruta</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ASYMMETRIC GRID: CURATED ITINERARIES (3 Columns) -->
+<section class="space-y-6">
+<div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-outline-variant/30 pb-3">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Tus Itinerarios Curados &amp; Archivo de Expediciones</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Travesías diseñadas a medida, sincronizadas en tiempo real con monitoreo geofísico.</p>
+</div>
+<span class="font-label-md text-label-md text-outline">3 de 4 Rutas Sincronizadas</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Column 1: Borrador IA · En Edición (Cerro Negro & Telica) -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/40 shadow-[0_4px_20px_-2px_rgba(33,30,27,0.04)] flex flex-col justify-between hover:shadow-[0_16px_36px_-4px_rgba(33,30,27,0.08)] transition-all duration-300">
+<div>
+<div class="relative h-56 bg-inverse-surface overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A cinematic dramatic wide-angle shot of Cerro Negro volcano Nicaragua with volcanic black ash dunes contrasting with a glowing sunset sky. Basalt volcanic stone texture and minimal sulfur steam plumes in warm terracotta and amber tones evoking luxury exploration aesthetics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOKMwSIeqbLAxz1tZqFqjJ9yA1PC628MGc6dQvCUZug05rE-kJfFhGNfurypbXAnY9Z6BFiy2vqp6B0ILlO4WsC07eC3iFCs4-chsQGyQ1yv_vpe5Q7nHzwzt1THa2hpuA-jWidQFKKbClvVzJ9tMKoVrsQL9UDPH_sMB-hm8RQ4woSB4ssdpG723S7QJ7n2LGOyIq1EggvEgl-p1MkYJ19zzgWJ8nTno-PLM_KCgwUYkMDvvqk7Rm35WWr7sfH0T1NKh65nGcgMCt"/>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-black/30"></div>
+<!-- Amber Tag: Borrador IA -->
+<div class="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3 py-1 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="draw">draw</span>
+<span>Borrador IA · En Edición</span>
+</div>
+<div class="absolute bottom-4 left-4 text-surface-bright">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-tertiary-fixed-dim">León &amp; Cordillera de los Maribios</span>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold hover:text-primary transition-colors">
+                Travesía del Fuego y Ceniza: Cerro Negro &amp; Telica Nocturno
+              </h3>
+<div class="flex items-center gap-3 text-label-md font-label-md text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span> 4 Días</span>
+<span>·</span>
+<span>7 actividades</span>
+<span>·</span>
+<span class="text-error font-medium">Exigente / Alta</span>
+</div>
+<!-- Progress Bar -->
+<div class="space-y-1.5 pt-2">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-outline uppercase">Completitud del Dossier</span>
+<span class="text-primary font-bold">85% planificado</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-2 overflow-hidden">
+<div class="bg-primary-container h-full rounded-full transition-all duration-500" style="width: 85%"></div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pt-2">
+                Ascenso a cráteres activos con sandboarding sobre magma petrificado y pernocta con vulcanólogos en estación sismológica.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0 flex items-center justify-between border-t border-outline-variant/30 mt-4">
+<button class="inline-flex items-center gap-2 font-label-md text-label-md text-primary font-bold hover:translate-x-1 transition-transform" type="button">
+<span>Continuar Editando con IA</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button aria-label="Archivar ruta" class="p-2 text-outline hover:text-error transition-colors rounded-lg" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+</button>
+</div>
+</article>
+<!-- Column 2: Confirmada (Granada, Masaya & Catarina) -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/40 shadow-[0_4px_20px_-2px_rgba(33,30,27,0.04)] flex flex-col justify-between hover:shadow-[0_16px_36px_-4px_rgba(33,30,27,0.08)] transition-all duration-300">
+<div>
+<div class="relative h-56 bg-inverse-surface overflow-hidden">
+<img alt="Historic Granada Nicaragua Spanish colonial cathedral through stone archway draped in bougainvillea" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1VwS3OHyZSI6KxtRzs1qRiSCJACL7d-C-MDbsC4IFoj0vpg-tulFI-1PRzGrYRQqJTvSF5nXzjU-lo8wNC0IEKLp5z1LzgWFZ-KjkDmtjNt5UqFhhccGXdzH24acu9zZPCrfwoHVgtmZknQdz1ar-NmhNh-wLYzo42h6PjulVbysgbpYrAyAzO27QM0e0TW1T6GitQHbMGFjbDwvvJg2OnsupFRtO0mieSImid3_RzzCWeQjqpLZJ07-6I"/>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-black/30"></div>
+<!-- Emerald Tag: Confirmada -->
+<div class="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3 py-1 bg-secondary text-on-secondary font-label-sm text-label-sm rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span>
+<span>Confirmada</span>
+</div>
+<div class="absolute bottom-4 left-4 text-surface-bright">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary-fixed">Granada Señorial &amp; Masaya</span>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold hover:text-primary transition-colors">
+                Ruta Colonial &amp; Sabores del Cacao: Granada, Masaya &amp; Catarina
+              </h3>
+<div class="flex items-center gap-3 text-label-md font-label-md text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span> 3 Días</span>
+<span>·</span>
+<span>5 actividades</span>
+<span>·</span>
+<span class="text-secondary font-medium">Relajado / Cultural</span>
+</div>
+<!-- Curated Logistics Pill List -->
+<div class="space-y-2 pt-2">
+<div class="flex items-center gap-2 text-body-sm text-body-sm text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>Transporte Privado 4x4 con Concierge</span>
+</div>
+<div class="flex items-center gap-2 text-body-sm text-body-sm text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>Casona Señorial S. XVI (Patrimonio Exclusivo)</span>
+</div>
+<div class="flex items-center gap-2 text-body-sm text-body-sm text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>Cata Privada de Ron &amp; Cacao Criollo</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pt-2">
+                Inmersión íntima en arquitectura mudéjar colonial, talleres de hamacas finas y mirador lacustre sobre la Laguna de Apoyo.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0 flex items-center justify-between border-t border-outline-variant/30 mt-4">
+<a class="inline-flex items-center gap-2 font-label-md text-label-md text-primary font-bold hover:translate-x-1 transition-transform" href="#itinerario">
+<span>Ver Itinerario Completo</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</a>
+<button aria-label="Descargar PDF" class="p-2 text-outline hover:text-primary transition-colors rounded-lg" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="picture_as_pdf">picture_as_pdf</span>
+</button>
+</div>
+</article>
+<!-- Column 3: Completada (Playas Vírgenes de Tola) -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/40 shadow-[0_4px_20px_-2px_rgba(33,30,27,0.04)] flex flex-col justify-between hover:shadow-[0_16px_36px_-4px_rgba(33,30,27,0.08)] transition-all duration-300">
+<div>
+<div class="relative h-56 bg-inverse-surface overflow-hidden">
+<img alt="Costa Esmeralda Tola pristine luxury beach villa in Nicaragua tucked in tropical cliffside overlooking Pacific waves" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1WvhzxU8JCo9QVJDvY0vclHal1hGNp9IJeQst8r7o-tz2hfKcRo-Q2oiDpFJq3oDsTp0r5WAS8V7B2lkwjNOCYdGLvNdjq93qHXPkSNSG-LVEhBveU5nn50yEwZfGIofX_uqoRk3qyX6mMvEWI6LtF0YvNiHbEoiclOgP8WjdcgZhyjnQj4uHDl3zVSTkQ_hJhfzMgEoAcPrnuAAmSMAccARHHuK3w53Ia0GUHOP_ND5k2y9T4xXfPYCYI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-black/30"></div>
+<!-- Slate Tag: Completada -->
+<div class="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3 py-1 bg-surface-dim text-on-surface-variant font-label-sm text-label-sm rounded-full shadow-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="task_alt">task_alt</span>
+<span>Completada · Ene 2025</span>
+</div>
+<div class="absolute bottom-4 left-4 text-surface-bright">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-surface-dim">Costa Esmeralda · Tola</span>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold hover:text-primary transition-colors">
+                Santuario del Pacífico: Playas Vírgenes de Tola &amp; Surf Volcánico
+              </h3>
+<div class="flex items-center gap-3 text-label-md font-label-md text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span> 6 Días</span>
+<span>·</span>
+<span>8 actividades</span>
+<span>·</span>
+<span class="text-on-surface-variant font-medium">Océano &amp; Litoral</span>
+</div>
+<!-- Earned Badge Highlight -->
+<div class="p-3 bg-tertiary-fixed/30 rounded-lg border border-tertiary-fixed-dim/60 flex items-center gap-3">
+<span class="text-2xl">🏅</span>
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-tertiary-container font-bold block">Medalla Desbloqueada</span>
+<span class="font-label-md text-label-md text-on-tertiary-fixed font-semibold">Guardián de la Costa Pacífica</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pt-2">
+                Pensión frente a arrecifes volcánicos, navegación privada en catamarán al atardecer y liberación de tortugas paslama.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0 flex items-center justify-between border-t border-outline-variant/30 mt-4">
+<a class="inline-flex items-center gap-2 font-label-md text-label-md text-on-surface-variant hover:text-primary font-semibold transition-colors" href="#revivir">
+<span>Revivir Cuaderno de Ruta</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="history_edu">history_edu</span>
+</a>
+<button aria-label="Compartir con Amigos" class="p-2 text-outline hover:text-primary transition-colors rounded-lg" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="share">share</span>
+</button>
+</div>
+</article>
+</div>
+</section>
+<!-- AI CONCIERGE ROUTE OPTIMIZATION BOX (Deep Basalt + Ambient Magma Glow) -->
+<section class="relative rounded-2xl overflow-hidden bg-inverse-surface text-inverse-on-surface p-8 md:p-10 border border-outline/30 shadow-[0_20px_50px_rgba(33,30,27,0.25)]">
+<!-- Magma Radial Atmosphere Glow -->
+<div class="absolute -top-32 -right-32 w-96 h-96 bg-primary-container/30 rounded-full blur-[90px] pointer-events-none"></div>
+<div class="absolute -bottom-32 -left-32 w-80 h-80 bg-tertiary-container/30 rounded-full blur-[80px] pointer-events-none"></div>
+<div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+<!-- Left: Concierge Avatar & Insight Message -->
+<div class="lg:col-span-8 space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-container to-tertiary-container flex items-center justify-center text-surface shadow-md">
+<span class="material-symbols-outlined text-2xl" data-icon="sparkles">auto_awesome</span>
+</div>
+<div>
+<div class="font-label-sm text-label-sm uppercase tracking-widest text-primary-fixed-dim font-bold">CONCIERGE ALGORÍTMICO · KARY IA</div>
+<h3 class="font-headline-sm text-headline-sm text-surface-bright font-medium">Ventana de Oportunidad Geofísica Detectada</h3>
+</div>
+</div>
+<p class="font-body-md text-body-md text-surface-dim leading-relaxed max-w-2xl">
+            Kary IA detectó una ventana microclimática óptima y baja sismicidad para el ascenso al cráter del Volcán Masaya durante tu próxima estancia en Granada. ¿Deseas sincronizar la caminata nocturna con telescopio térmico de infrarrojos?
+          </p>
+<!-- Quick Telemetry Tags -->
+<div class="flex flex-wrap items-center gap-3 pt-2">
+<span class="px-3 py-1 rounded bg-surface-container-highest/20 border border-surface-container-highest/30 font-label-sm text-label-sm text-inverse-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-tertiary-fixed-dim" data-icon="air">air</span> Viento: 14 km/h ENE
+            </span>
+<span class="px-3 py-1 rounded bg-surface-container-highest/20 border border-surface-container-highest/30 font-label-sm text-label-sm text-inverse-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-secondary-fixed" data-icon="visibility">visibility</span> Visibilidad: 98%
+            </span>
+<span class="px-3 py-1 rounded bg-surface-container-highest/20 border border-surface-container-highest/30 font-label-sm text-label-sm text-inverse-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-emerald-400" data-icon="security">security</span> Gases: Nivel 1 Seguro
+            </span>
+</div>
+</div>
+<!-- Right: Action Button Trigger -->
+<div class="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col justify-center items-start lg:items-end gap-3">
+<button class="w-full sm:w-auto lg:w-full h-13 px-6 py-3.5 bg-gradient-to-r from-primary-container via-primary to-primary-container text-surface-container-lowest font-label-lg text-label-lg font-semibold rounded-lg shadow-[0_4px_25px_rgba(138,56,36,0.5)] hover:shadow-[0_8px_30px_rgba(255,112,67,0.4)] hover:-translate-y-0.5 transition-all duration-200 text-center" type="button">
+            Optimizar Itinerario con Kary IA
+          </button>
+<span class="font-label-sm text-label-sm text-surface-dim/70 tracking-tight text-center w-full">
+            Sin costo añadido · Valida reservas al instante
+          </span>
+</div>
+</div>
+</section>
+</main>
+<!-- FOOTER (Shared Component Anchor) -->
+<footer class="docked full-width bottom bg-inverse-surface border-t border-outline/20 flat no shadows mt-16 text-inverse-on-surface">
+<div class="flex flex-col w-full px-6 md:px-16 py-16 max-w-[1440px] mx-auto">
+<!-- Top Row: Brand & Partnerships -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-outline/20">
+<div class="md:col-span-5 space-y-4">
+<div class="text-headline-md font-headline-md font-semibold text-inverse-on-surface">Momotombo Travels</div>
+<p class="font-body-sm text-body-sm text-surface-variant max-w-sm">
+            Atelier de expediciones vulcanológicas, charters aéreos y residencias históricas en Nicaragua. Redefiniendo el viaje geológico con precisión científica y hospitalidad de clase mundial.
+          </p>
+<div class="flex items-center gap-4 pt-2">
+<span class="font-label-sm text-label-sm text-surface-variant uppercase tracking-wider">Afiliaciones Oficiales:</span>
+<span class="font-label-sm text-label-sm text-tertiary-fixed-dim font-bold">INETER Sismología</span>
+<span class="text-outline-variant">·</span>
+<span class="font-label-sm text-label-sm text-tertiary-fixed-dim font-bold">Relais &amp; Châteaux</span>
+</div>
+</div>
+<!-- Curated Links Grid -->
+<div class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-6">
+<div class="space-y-3">
+<h4 class="font-label-md text-label-md font-semibold text-inverse-primary uppercase tracking-wider">Expediciones</h4>
+<ul class="space-y-2 font-body-sm text-body-sm">
+<li><a class="text-surface-variant hover:text-inverse-on-surface transition-colors duration-200" href="#">Volcanic Field Notes</a></li>
+<li><a class="text-surface-variant hover:text-inverse-on-surface transition-colors duration-200" href="#">San Cristóbal &amp; Telica Routes</a></li>
+<li><a class="text-surface-variant hover:text-inverse-on-surface transition-colors duration-200" href="#">Granada Archives</a></li>
+</ul>
+</div>
+<div class="space-y-3">
+<h4 class="font-label-md text-label-md font-semibold text-inverse-primary uppercase tracking-wider">Seguridad</h4>
+<ul class="space-y-2 font-body-sm text-body-sm">
+<li><a class="text-surface-variant hover:text-inverse-on-surface transition-colors duration-200" href="#">Safety &amp; Seismic Manifest</a></li>
+<li><a class="text-surface-variant hover:text-inverse-on-surface transition-colors duration-200" href="#">Private Charter Protocols</a></li>
+<li><a class="text-surface-variant hover:text-inverse-on-surface transition-colors duration-200" href="#">Evacuación Aeromédica</a></li>
+</ul>
+</div>
+<div class="space-y-3">
+<h4 class="font-label-md text-label-md font-semibold text-inverse-primary uppercase tracking-wider">Legales</h4>
+<ul class="space-y-2 font-body-sm text-body-sm">
+<li><a class="text-surface-variant hover:text-inverse-on-surface transition-colors duration-200" href="#">Terms of Exclusivity</a></li>
+<li><a class="text-surface-variant hover:text-inverse-on-surface transition-colors duration-200" href="#">Privacy Policy</a></li>
+<li><a class="text-tertiary-fixed font-semibold underline decoration-1 underline-offset-4" href="#">Ficha Técnica</a></li>
+</ul>
+</div>
+</div>
+</div>
+<!-- Bottom Copyright & Compliance Line -->
+<div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+<p class="font-body-sm text-body-sm text-surface-variant/80 text-center md:text-left">
+          © 2024 Momotombo Travels. Handcrafted Expeditions &amp; Vulcanology Sanctuaries in Nicaragua. In affiliation with INETER &amp; Relais &amp; Châteaux. All rights reserved.
+        </p>
+<div class="flex items-center gap-6 text-label-sm font-label-sm text-surface-variant">
+<span>Managua · Granada · León · San Juan del Sur</span>
+</div>
+</div>
+</div>
+</footer>
+<!-- Micro-interactions JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Smooth scroll anchors if needed
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          const targetId = this.getAttribute('href');
+          if (targetId && targetId !== '#') {
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+              e.preventDefault();
+              targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body></html>

@@ -33,6 +33,12 @@
       "route": "/perfil",
       "title": "Momotombo Travels - Traveler Expedition Profile, Gamification Hub & Journey Management",
       "deviceType": "DESKTOP"
+    },
+    {
+      "id": "ac6a84d3c0d14243b96d4507a1c517c6",
+      "route": "/itinerarios",
+      "title": "Momotombo Travels - Expeditions & Curated Itineraries Dashboard (Mis Itinerarios)",
+      "deviceType": "DESKTOP"
     }
   ]
 }

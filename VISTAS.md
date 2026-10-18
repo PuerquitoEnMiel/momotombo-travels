@@ -10,8 +10,8 @@ Documento maestro de seguimiento para el inventario de vistas, estado de impleme
 |---|---|
 | **Vistas Totales Activas en el Sistema** | **24 Rutas** |
 | **Vistas Implementadas en Código (100% Funcionales)** | **24 Rutas** |
-| **Vistas con Pantalla Diseñada en Google Stitch** | **5 (Home Page, /explorar, /explorar/[slug], /planificar, /perfil)** |
-| **Vistas Pendientes de Pantalla en Google Stitch** | **19 Rutas** |
+| **Vistas con Pantalla Diseñada en Google Stitch** | **6 (Home Page, /explorar, /explorar/[slug], /planificar, /perfil, /itinerarios)** |
+| **Vistas Pendientes de Pantalla en Google Stitch** | **18 Rutas** |
 
 ---
 
@@ -43,7 +43,7 @@ Documento maestro de seguimiento para el inventario de vistas, estado de impleme
 
 | Ruta | Archivo / Componente | Estado Código | Estado Stitch | Conexión Backend |
 |---|---|---|---|---|
-| `/itinerarios` | `apps/client/src/app/itinerarios/page.tsx` | Implementada (100%) | Pendiente Stitch | `GET /itineraries/my-itineraries` |
+| `/itinerarios` | `apps/client/src/app/itinerarios/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`ac6a84d3c0d14243b96d4507a1c517c6`) | `GET /itineraries/my-itineraries` |
 | `/perfil` | `apps/client/src/app/perfil/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`ec29bced410e4d1ea2e10b0de28558e7`) | `GET /auth/me`, `GET /bookings/my-bookings`, `GET /gamification/badges` |
 
 ---
