@@ -26,6 +26,7 @@ export interface AuthUser {
   name: string;
   email: string;
   role: UserRole;
+  avatarUrl?: string;
 }
 
 export interface LoginPayload {

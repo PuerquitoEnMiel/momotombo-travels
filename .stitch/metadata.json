@@ -1,0 +1,38 @@
+﻿{
+  "projectId": "14965205256228060440",
+  "projectTitle": "Momotombo Travels UI",
+  "designSystem": "assets/fb842ef77f7841a69f2fda24a2ac5333",
+  "designSystemName": "Volcanic Elegance",
+  "screens": [
+    {
+      "id": "e7e3ed76cbf84adb8c552462b707b2d5",
+      "route": "/",
+      "title": "Momotombo Travels - Editorial Desktop Landing Page",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "6c76d1987e194e37aadca63dec8db65b",
+      "route": "/explorar",
+      "title": "Momotombo Travels - Catálogo y Exploración de Destinos",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "f6fb4c293bed4720a0bb64b042d69c41",
+      "route": "/explorar/[slug]",
+      "title": "Momotombo Travels - Ficha Técnica: Granada Colonial",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "f6afdf2e014d490da928b7e203656693",
+      "route": "/planificar",
+      "title": "Momotombo Travels - AI Concierge & Itinerary Planner",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "ec29bced410e4d1ea2e10b0de28558e7",
+      "route": "/perfil",
+      "title": "Momotombo Travels - Traveler Expedition Profile, Gamification Hub & Journey Management",
+      "deviceType": "DESKTOP"
+    }
+  ]
+}

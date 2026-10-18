@@ -4,7 +4,7 @@
     "accessibility": {
       "source": "addyosmani/web-quality-skills",
       "sourceType": "autoskills-registry",
-      "computedHash": "bffe3d08cfe92ebad63699f74ce29e35c19850ebfbf474c1463183cfe34d6a09"
+      "computedHash": "2174f783a038a7ca4869c4c18e14726ec13b9c6b705d59253f647d0ca37cb78d"
     },
     "cavecrew": {
       "source": "JuliusBrussee/caveman",
@@ -56,12 +56,12 @@
     "frontend-design": {
       "source": "anthropics/skills",
       "sourceType": "autoskills-registry",
-      "computedHash": "82fb11a63fb1e35ee2469516ed02d54695f783115b1540c0e783197af4240a3a"
+      "computedHash": "a4e6516a601f72ffd8bcd0d64609e8ba724d2ce92569a059a6890a5caadf072b"
     },
     "nestjs-best-practices": {
       "source": "kadajett/agent-nestjs-skills",
       "sourceType": "autoskills-registry",
-      "computedHash": "7f14f088a79090183152c2aa556f708b2f5b7d0dacfb0ad339df2d498ba52aa3"
+      "computedHash": "733132088381b9a8fa587c4e81ff14d823cd13f76cbc2162b56a617803836d89"
     },
     "next-best-practices": {
       "source": "vercel-labs/next-skills",
@@ -73,6 +73,11 @@
       "sourceType": "autoskills-registry",
       "computedHash": "82a02f95879e9adf1a5a89f9ca2f51813e41ff3bab3c723cc8905f5a926bdd30"
     },
+    "next-cache-components-adoption": {
+      "source": "vercel/next.js",
+      "sourceType": "autoskills-registry",
+      "computedHash": "1642ae2a1bc48f484240cb9c9669e32846aa5e4f9fa68cd650ad4817fa070711"
+    },
     "next-upgrade": {
       "source": "vercel-labs/next-skills",
       "sourceType": "autoskills-registry",
@@ -81,32 +86,37 @@
     "nodejs-backend-patterns": {
       "source": "wshobson/agents",
       "sourceType": "autoskills-registry",
-      "computedHash": "710a5e6f83c46e8f6c43356df55c143a7375c4414559a581654ce51709138c55"
+      "computedHash": "ec099fc7d7ece12e8a89c24b12eff36f27dd243db15c5a70f3df8406ec9c738e"
     },
     "nodejs-best-practices": {
       "source": "sickn33/antigravity-awesome-skills",
       "sourceType": "autoskills-registry",
-      "computedHash": "7361ab02fb6b09913e3bdd9cf61c629ed6c17de9485e6a781054e5d437ccfc29"
+      "computedHash": "2c543ab51c9c4093c8a94aa615f39ca55d93835816aeeaa5bbd89261d85c584c"
+    },
+    "playwright-best-practices": {
+      "source": "currents-dev/playwright-best-practices-skill",
+      "sourceType": "autoskills-registry",
+      "computedHash": "e561c4afbeb78350e32621b505a1e5f42194e8df33d8d03ed77b16bf06651862"
     },
     "prisma-cli": {
       "source": "prisma/skills",
       "sourceType": "autoskills-registry",
-      "computedHash": "d2b4e410bb24df07e0a399cf1fd70ca6a2f696079f7e6445eb602116566d2278"
+      "computedHash": "251460308049626fd8561fad649354ecdfbef71f9f243fd7705c3e61cb7878f2"
     },
     "prisma-client-api": {
       "source": "prisma/skills",
       "sourceType": "autoskills-registry",
-      "computedHash": "922d6b5b4eb4387e72e409fa063f8e1bffb9037aed595cba0d3c257f418b6c18"
+      "computedHash": "e4a709bc916691bcaa1ad6bac6d00cd388c2093857c065a699a0d046f237311d"
     },
     "prisma-database-setup": {
       "source": "prisma/skills",
       "sourceType": "autoskills-registry",
-      "computedHash": "50c6cbc7090ef356c026cb76352952b83b65bee8b3f3c7ac337461f5b352e9b9"
+      "computedHash": "d5de5d8c2750b1078caaddaacac147aba3f54f4d5653c0a543904c7a1820fc77"
     },
     "prisma-postgres": {
       "source": "prisma/skills",
       "sourceType": "autoskills-registry",
-      "computedHash": "3adda04ae85b8593cfca45d48d5d410ddffb2797ea53f6dc9dfe34b8d71d35e9"
+      "computedHash": "bb2725342147ce5251a4e618118700e224cd5e5472b6e85bb1f12918f6a985f0"
     },
     "react-best-practices": {
       "source": "vercel-labs/agent-skills",
@@ -116,17 +126,22 @@
     "seo": {
       "source": "addyosmani/web-quality-skills",
       "sourceType": "autoskills-registry",
-      "computedHash": "c184da724d1c61ad077f27418ea8e7e88fd54bcdf98165e18be7e4681cbd5e20"
+      "computedHash": "7495da57766c99f787a729d4a21234ecb5d29d90f304a0d9a5996dcdc1eec048"
     },
     "stripe-best-practices": {
       "source": "stripe/ai",
       "sourceType": "autoskills-registry",
-      "computedHash": "0ca31a5a3c2631cd0419ba2e186e962773718799d2b281551c0e48195693350f"
+      "computedHash": "82055cb92946b6861434c220a7869d79b3e473b65c2c8738e2a67e6e7b3375f8"
     },
     "tailwind-css-patterns": {
       "source": "giuseppe-trisciuoglio/developer-kit",
       "sourceType": "autoskills-registry",
       "computedHash": "8fd534b64b3f305ade80c207e2f9ba4338d5e409e355af9f724c36764b6709c1"
+    },
+    "threejs-animation": {
+      "source": "cloudai-x/threejs-skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "b3b6365653ff318a55181814db0e779ceb097c0c07d8f1442c836a9cfc9e93f4"
     },
     "threejs-fundamentals": {
       "source": "cloudai-x/threejs-skills",
@@ -176,12 +191,17 @@
     "typescript-advanced-types": {
       "source": "wshobson/agents",
       "sourceType": "autoskills-registry",
-      "computedHash": "5ca0e177c6aaaba1889255691224daafdb7d71f317cc70bede1590d3907ded42"
+      "computedHash": "cb5d18bc19191b388cc49c15ff98dcbc714fa343373d078be00833e8a18ef291"
     },
     "upgrade-stripe": {
       "source": "stripe/ai",
       "sourceType": "autoskills-registry",
-      "computedHash": "017906619cae467ebfac534bed0dc25d1c157dd55bfb0530fb5d38d2418b426c"
+      "computedHash": "e6adafe947fb33ab2e328f09106caa66d4985167d4532c9a31a817daaf8f27a5"
+    },
+    "vitest": {
+      "source": "antfu/skills",
+      "sourceType": "autoskills-registry",
+      "computedHash": "bbb3d22f611fb721b9b475f014b323882732dc3f724e0f3de229c38795d77e8f"
     }
   }
 }
