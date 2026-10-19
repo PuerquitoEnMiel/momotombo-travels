@@ -1,9 +1,9 @@
 {
   "apps/server/**/*.{ts,js}": [
-    "npm run lint --workspace=server"
+    "npm exec --workspace=server -- eslint --fix",
+    "npm exec --workspace=server -- prettier --write"
   ],
   "apps/client/**/*.{ts,tsx,js,jsx}": [
-    "npm run lint --workspace=client"
+    "npm exec --workspace=client -- eslint --fix"
   ]
 }
-

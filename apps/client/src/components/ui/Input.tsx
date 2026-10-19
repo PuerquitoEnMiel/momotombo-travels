@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, type InputHTMLAttributes, type ReactNode } from "react";
+import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -12,14 +12,12 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   containerClassName?: string;
 }
 
-let counter = 0;
-const nextId = () => `input-${++counter}`;
-
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   { className, containerClassName, label, helperText, error, iconLeft, iconRight, id, ...props },
   ref
 ) {
-  const inputId = id || nextId();
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
   const describedBy = error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined;
 
   return (
@@ -42,11 +40,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           aria-describedby={describedBy}
           className={cn(
             "w-full h-11 rounded-xl border bg-surface-container-lowest text-on-surface text-sm",
-            "transition-all duration-200 ease-out-expo outline-none",
-            "placeholder:text-on-surface-variant/60",
-            "focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest",
+            "transition-all duration-200 ease-out-expo focus:outline-none",
+            "placeholder:text-on-surface-variant/80",
+            "focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-primary",
             "disabled:opacity-50 disabled:cursor-not-allowed",
-            error ? "border-danger focus:border-danger focus:ring-danger/20" : "border-outline-variant",
+            error ? "border-danger focus-visible:border-danger focus-visible:ring-danger/40" : "border-outline-variant",
             iconLeft ? "pl-10" : "pl-4",
             iconRight ? "pr-10" : "pr-4",
             className

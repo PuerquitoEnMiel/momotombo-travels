@@ -1,18 +1,22 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15-alpine
     container_name: momotombo_db
     restart: always
     environment:
-      POSTGRES_USER: momotombo
-      POSTGRES_PASSWORD: password123
-      POSTGRES_DB: momotombo_travels
+      POSTGRES_USER: ${POSTGRES_USER:-momotombo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password123}
+      POSTGRES_DB: ${POSTGRES_DB:-momotombo_travels}
+    # Bind to loopback only: never expose the DB on all interfaces
     ports:
-      - '5432:5432'
+      - '127.0.0.1:5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER:-momotombo} -d $${POSTGRES_DB:-momotombo_travels}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
   postgres_data:

@@ -18,16 +18,35 @@ async function bootstrap() {
 
   const config = app.get(ConfigService);
   const logger = new Logger('Bootstrap');
+  const isDev = config.get<string>('NODE_ENV') === 'development';
 
   // Trust proxy (required for rate limiting behind Cloud Run / reverse proxy)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   app.getHttpAdapter().getInstance().set('trust proxy', 1);
 
-  // Security: HTTP headers (CSP disabled in dev for easier debugging)
+  // Security: HTTP headers. CSP is always enabled — development only relaxes
+  // the few directives needed for local tooling, never disabled outright.
   app.use(
     helmet({
-      contentSecurityPolicy:
-        config.get<string>('NODE_ENV') === 'production' ? undefined : false,
+      contentSecurityPolicy: {
+        directives: {
+          'default-src': ["'self'"],
+          'base-uri': ["'self'"],
+          'font-src': ["'self'", 'data:'],
+          'form-action': ["'self'"],
+          'frame-ancestors': ["'self'"],
+          'img-src': ["'self'", 'data:', 'blob:'],
+          'object-src': ["'none'"],
+          'script-src': [
+            "'self'",
+            ...(isDev ? ["'unsafe-inline'", "'unsafe-eval'"] : []),
+          ],
+          'script-src-attr': ["'none'"],
+          'style-src': ["'self'", "'unsafe-inline'"],
+          'connect-src': ["'self'", ...(isDev ? ['ws:'] : [])],
+          'upgrade-insecure-requests': isDev ? null : [],
+        },
+      },
       crossOriginEmbedderPolicy: false,
     }),
   );
@@ -43,6 +62,16 @@ async function bootstrap() {
     .map((origin) => origin.trim())
     .filter(Boolean);
 
+  // Security: '*' cannot be combined with credentials:true (the browser rejects
+  // credentialed wildcard responses and echoing any origin leaks authenticated
+  // data). Drop the wildcard and keep the explicit allowlist.
+  const allowedOrigins = corsOrigins.filter((origin) => origin !== '*');
+  if (allowedOrigins.length !== corsOrigins.length) {
+    logger.warn(
+      'CORS: wildcard "*" is not allowed with credentials:true — ignoring "*".',
+    );
+  }
+
   app.enableCors({
     /* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument */
     origin: (origin, callback) => {
@@ -51,7 +80,7 @@ async function bootstrap() {
         callback(null, true);
         return;
       }
-      if (corsOrigins.includes(origin) || corsOrigins.includes('*')) {
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
         return;
       }
@@ -94,7 +123,7 @@ async function bootstrap() {
   logger.log(
     `📦 Environment: ${config.get<string>('NODE_ENV', 'development')}`,
   );
-  logger.log(`🌐 CORS origins: ${corsOrigins.join(', ')}`);
+  logger.log(`🌐 CORS origins: ${allowedOrigins.join(', ')}`);
 }
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();

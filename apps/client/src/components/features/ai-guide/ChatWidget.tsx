@@ -1,9 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkle, ChatTeardropDots } from "@phosphor-icons/react";
-import { ChatInterface } from "./ChatInterface";
+
+// Lazy: the chat subtree pulls DOMPurify + AI services + framer — only load
+// it once the user actually opens the widget.
+const ChatInterface = dynamic(
+  () => import("./ChatInterface").then((m) => ({ default: m.ChatInterface })),
+  { ssr: false }
+);
 
 export function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
@@ -70,6 +77,7 @@ export function ChatWidget() {
                     id="chat-widget-toggle"
                     className="relative bg-linear-to-br from-primary to-secondary text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center"
                     title="Hablar con Kary"
+                    aria-label="Hablar con Kary"
                 >
                     <AnimatePresence mode="wait">
                         {isOpen ? (

@@ -69,9 +69,11 @@ export function Navbar() {
       id="main-navbar"
       aria-label={tCommon("appName")}
       className={cn(
+        // z-sticky is NOT generated from --z-sticky (Tailwind v4.1 has no --z-* theme
+        // namespace); z-1100 is a bare-value utility and equals --z-sticky: 1100.
         "fixed top-0 left-0 w-full z-1100 transition-all duration-300 ease-out-expo",
         isScrolled
-          ? "bg-surface/90 dark:bg-volcano-black/90 backdrop-blur-md py-3 border-b border-outline-variant/30 shadow-sm"
+          ? "bg-surface/90 backdrop-blur-md py-3 border-b border-outline-variant/30 shadow-sm"
           : "bg-transparent py-5"
       )}
     >
@@ -82,7 +84,7 @@ export function Navbar() {
           className="flex items-center gap-2.5 group transition-opacity hover:opacity-95"
         >
           {/* Volcán Momotombo Isotype */}
-          <div className="w-9 h-9 rounded-xl bg-surface-container-high/80 dark:bg-volcano-black border border-outline-variant/40 flex items-center justify-center p-1.5 shadow-xs group-hover:border-primary/50 transition-colors">
+          <div className="w-9 h-9 rounded-xl bg-surface-container-high/80 border border-outline-variant/40 flex items-center justify-center p-1.5 shadow-xs group-hover:border-primary/50 transition-colors">
             <svg
               viewBox="0 0 32 32"
               fill="none"
@@ -92,7 +94,7 @@ export function Navbar() {
             >
               <path
                 d="M16 5L26 23H6L16 5Z"
-                className="fill-primary dark:fill-primary-container"
+                className="fill-primary"
               />
               <circle cx="16" cy="7.5" r="2" fill="#ff4500" />
               <path
@@ -253,7 +255,7 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-            className="md:hidden bg-surface-container-lowest dark:bg-volcano-black border-t border-outline-variant/30 overflow-hidden"
+            className="md:hidden bg-surface-container-lowest border-t border-outline-variant/30 overflow-hidden"
           >
             <div className="px-6 py-5 flex flex-col gap-4 max-h-[80vh] overflow-y-auto">
               {NAV_LINKS.map((link) => (

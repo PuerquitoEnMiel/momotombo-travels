@@ -84,6 +84,30 @@ export class TokensService {
     user: { id: string; email: string; role: 'TRAVELER' | 'GUIDE' | 'ADMIN' },
     meta: { userAgent?: string; ipAddress?: string; family?: string } = {},
   ): Promise<AuthTokenPair> {
+    const { pair, refreshRow } = await this.signTokenPair(user, meta);
+    await this.prisma.refreshToken.create({ data: refreshRow });
+    return pair;
+  }
+
+  /**
+   * Signs a new access/refresh JWT pair without touching the database and
+   * returns the refresh-token row that must be persisted with it, so callers
+   * can create that row inside a transaction.
+   */
+  private async signTokenPair(
+    user: { id: string; email: string; role: 'TRAVELER' | 'GUIDE' | 'ADMIN' },
+    meta: { userAgent?: string; ipAddress?: string; family?: string } = {},
+  ): Promise<{
+    pair: AuthTokenPair;
+    refreshRow: {
+      userId: string;
+      tokenHash: string;
+      family: string;
+      expiresAt: Date;
+      userAgent?: string;
+      ipAddress?: string;
+    };
+  }> {
     const accessPayload: AccessTokenPayload = {
       sub: user.id,
       email: user.email,
@@ -111,8 +135,14 @@ export class TokensService {
       Date.now() + this.parseExpiresToMs(this.refreshExpiresIn),
     );
 
-    await this.prisma.refreshToken.create({
-      data: {
+    return {
+      pair: {
+        accessToken,
+        accessExpiresIn: this.parseExpiresToSeconds(this.accessExpiresIn),
+        refreshToken,
+        refreshExpiresIn: this.parseExpiresToSeconds(this.refreshExpiresIn),
+      },
+      refreshRow: {
         userId: user.id,
         tokenHash: this.hashToken(refreshToken),
         family,
@@ -120,19 +150,19 @@ export class TokensService {
         userAgent: meta.userAgent,
         ipAddress: meta.ipAddress,
       },
-    });
-
-    return {
-      accessToken,
-      accessExpiresIn: this.parseExpiresToSeconds(this.accessExpiresIn),
-      refreshToken,
-      refreshExpiresIn: this.parseExpiresToSeconds(this.refreshExpiresIn),
     };
   }
 
   /**
    * Rotates a refresh token. If a stolen token is presented, the entire family
    * is revoked (token reuse detection).
+   *
+   * Revoking the old token and creating the new one happen in a single
+   * transaction, and the revoke is conditional (revokedAt: null) so a
+   * concurrent rotation or replay is detected instead of racing.
+   *
+   * Every failure surfaces the same generic external message; the specific
+   * reason is kept in server logs only (the reason itself is an oracle).
    */
   async rotateRefreshToken(
     refreshToken: string,
@@ -142,9 +172,15 @@ export class TokensService {
     try {
       payload = await this.jwt.verifyAsync<RefreshTokenPayload>(refreshToken);
     } catch {
+      this.logger.debug('Refresh token rejected: JWT verification failed');
       throw new Error('Invalid refresh token');
     }
-    if (payload.type !== 'refresh') throw new Error('Invalid token type');
+    if (payload.type !== 'refresh') {
+      this.logger.debug(
+        `Refresh token rejected: wrong token type '${String(payload.type)}'`,
+      );
+      throw new Error('Invalid refresh token');
+    }
 
     const tokenHash = this.hashToken(refreshToken);
     const stored = await this.prisma.refreshToken.findUnique({
@@ -155,13 +191,16 @@ export class TokensService {
       // Reuse detected: revoke entire family
       await this.revokeFamily(payload.family);
       this.logger.warn(
-        `Refresh token reuse detected for family ${payload.family} (user ${payload.sub})`,
+        `Refresh token reuse detected for family ${payload.family} (user ${payload.sub}); family revoked`,
       );
-      throw new Error('Refresh token reuse detected');
+      throw new Error('Invalid refresh token');
     }
 
     if (stored.expiresAt < new Date()) {
-      throw new Error('Refresh token expired');
+      this.logger.debug(
+        `Refresh token rejected: expired (user ${payload.sub})`,
+      );
+      throw new Error('Invalid refresh token');
     }
 
     const user = await this.prisma.user.findUnique({
@@ -175,28 +214,56 @@ export class TokensService {
       },
     });
     if (!user || !user.isActive || user.deletedAt) {
-      throw new Error('User is not active');
+      this.logger.warn(
+        `Refresh token rejected: user ${payload.sub} is not active`,
+      );
+      throw new Error('Invalid refresh token');
     }
 
-    // Mark old token as replaced
-    const newPair = await this.issueTokenPair(
+    const { pair, refreshRow } = await this.signTokenPair(
       { id: user.id, email: user.email, role: user.role },
       { ...meta, family: stored.family },
     );
-    const newHash = this.hashToken(newPair.refreshToken);
-    const newStored = await this.prisma.refreshToken.findUnique({
-      where: { tokenHash: newHash },
-    });
 
-    await this.prisma.refreshToken.update({
-      where: { id: stored.id },
-      data: {
-        revokedAt: new Date(),
-        replacedBy: newStored?.id,
-      },
-    });
+    // Revoke the old token and create the new one atomically. The revoke is
+    // conditional: `count === 0` means the token was already rotated (reuse),
+    // so the whole rotation — including the new record — rolls back.
+    try {
+      await this.prisma.$transaction(async (tx) => {
+        const revoked = await tx.refreshToken.updateMany({
+          where: { id: stored.id, revokedAt: null },
+          data: { revokedAt: new Date() },
+        });
+        if (revoked.count === 0) {
+          throw new Error('REFRESH_TOKEN_REUSE');
+        }
+        const created = await tx.refreshToken.create({
+          data: refreshRow,
+          select: { id: true },
+        });
+        await tx.refreshToken.update({
+          where: { id: stored.id },
+          data: { replacedBy: created.id },
+        });
+      });
+    } catch (err) {
+      if (err instanceof Error && err.message === 'REFRESH_TOKEN_REUSE') {
+        // Presented token was already rotated: revoke the whole family.
+        await this.revokeFamily(stored.family);
+        this.logger.warn(
+          `Refresh token reuse detected for family ${stored.family} (user ${payload.sub}); family revoked`,
+        );
+      } else {
+        this.logger.error(
+          `Refresh token rotation failed for user ${payload.sub}: ${
+            err instanceof Error ? err.message : 'unknown error'
+          }`,
+        );
+      }
+      throw new Error('Invalid refresh token');
+    }
 
-    return newPair;
+    return pair;
   }
 
   async revokeFamily(family: string): Promise<void> {

@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Momotombo Travels — Client
 
-## Getting Started
+Next.js 16 (App Router) + React 19 + Tailwind v4 frontend for Momotombo Travels. Includes the AI travel guide ("El Guía Nica"), destination exploration, itineraries, bookings, blog, and the admin dashboard. Port **3000** in development.
 
-First, run the development server:
+This app is part of an npm-workspaces monorepo. Install dependencies from the repository root only (`npm install` at the root) — see the [root README](../../README.md) for full setup instructions.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Commands (run from `apps/client`)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Task | Command |
+|---|---|
+| Dev server (port 3000) | `npm run dev` |
+| Production build | `npm run build` |
+| Start built app | `npm run start` |
+| Lint | `npm run lint` |
+| Unit tests (Vitest + Testing Library) | `npm run test` |
+| Unit tests, single run (CI) | `npm run test:ci` |
+| Unit tests with coverage | `npm run test:coverage` |
+| E2E tests (Playwright) | `npm run test:e2e` |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables (`.env.local`, names only)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
+- `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID`
+- `NEXT_PUBLIC_API_URL`
+- `NEXT_PUBLIC_SITE_URL` (optional; inlined at build time)
 
-## Learn More
+`NEXT_PUBLIC_*` values are inlined by Next.js at build time — set them before `npm run build`. Never commit real values; `.env.local` is gitignored.
 
-To learn more about Next.js, take a look at the following resources:
+## Notes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Path alias `@/*` maps to `./src/*`.
+- Tailwind v4 is configured CSS-first in `src/app/globals.css` via `@theme` (no `tailwind.config.ts`).
+- TypeScript runs with `strict: true`.
+- Icons come from `@phosphor-icons/react`; Unicode emojis are not allowed in the UI.
+- The Next.js `output: 'standalone'` setting is required by the Dockerfile — do not change it.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See the [root README](../../README.md) and [ARCHITECTURE.md](../../ARCHITECTURE.md) for the bigger picture.

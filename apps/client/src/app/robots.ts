@@ -8,10 +8,19 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/auth/", "/perfil", "/planificar/", "/api/"],
+        disallow: [
+          "/admin/",
+          "/auth/",
+          "/perfil",
+          "/planificar/",
+          "/itinerarios/",
+          "/checkout/",
+          "/bookings/",
+          "/proveedores/",
+          "/api/",
+        ],
       },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,
-    host: BASE_URL,
   };
 }

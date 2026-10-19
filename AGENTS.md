@@ -2,7 +2,7 @@
 
 ## Repo layout
 
-npm workspaces monorepo. Root `package.json` defines `workspaces: ["apps/*"]`. Each app has its own `package.json` and lockfile. Run `npm install` from the root to install all workspace dependencies.
+npm workspaces monorepo (Node.js 20+). Root `package.json` defines `workspaces: ["apps/*"]`. Each app has its own `package.json`; a single root `package-lock.json` is the source of truth (per-app lockfiles were removed). Install dependencies ONLY from the repo root with `npm install` — never run `npm install` inside `apps/*`.
 
 ```
 apps/client  →  Next.js 16 + React 19 + Tailwind v4 + TypeScript
@@ -40,6 +40,8 @@ src/
 | Dev server (client) | `npm run dev:client` |
 | Dev server (server) | `npm run dev:server` |
 | Build both | `npm run build` |
+| Lint both | `npm run lint` |
+| Test both | `npm run test` |
 | Full startup (Docker) | `.\start.ps1` or `.\start.ps1 --seed` |
 
 ### Client (`apps/client`)
@@ -71,7 +73,7 @@ PostgreSQL on port 5432, database `momotombo_travels`. Two options:
 After connecting, run `npx prisma migrate deploy` then `npx prisma db seed` from `apps/server`.
 
 ### Deploy
-`.\deploy.ps1` — builds & deploys both apps to Google Cloud Run (region: `us-central1`). Dockerfiles use repo root as build context.
+GitHub Actions (`.github/workflows/deploy.yml`) or `.\deploy.ps1` (mirrors the workflow) builds & deploys to Google Cloud Run (`us-central1`): services `momotombo-client` (port 3000) and `momotombo-server` (port 3001), secrets via Secret Manager, then the `momotombo-migrate` Cloud Run job runs `prisma migrate deploy`. Dockerfiles use repo root as build context.
 
 ## Key conventions
 
@@ -83,9 +85,9 @@ After connecting, run `npx prisma migrate deploy` then `npx prisma db seed` from
 - **Tailwind v4**: CSS-first config in `globals.css` via `@theme` (no `tailwind.config.ts`). Uses `@tailwindcss/postcss` plugin. Custom utilities defined with `@utility`.
 - **Prettier**: single quotes, trailing commas (`.prettierrc` in server). ESLint enforces Prettier on server.
 - **Server ESLint**: `@typescript-eslint/no-explicit-any` is **off**; `no-floating-promises` and `no-unsafe-argument` are **warn** only.
-- **Rate limiting**: `ThrottlerModule` global guard, 10 req/min per IP.
+- **Rate limiting**: `ThrottlerModule` global guard, 20 req/min per IP by default, configurable via `THROTTLE_TTL_MS` / `THROTTLE_LIMIT` env vars.
 - **CORS**: enabled globally (no origin restriction).
-- **Fonts**: Inter, Outfit, Newsreader (Google Fonts via `next/font`).
+- **Fonts**: Inter, Newsreader (Google Fonts via `next/font`; Newsreader = display serif).
 - **Icons & Emojis**: STRICT NO-EMOJI RULE across the entire UI. Never use Unicode emojis (flags, smileys, star emojis, etc.) in text, buttons, tags, or dropdowns. ALWAYS use SVG icons from `@phosphor-icons/react`.
 
 ## Architecture notes

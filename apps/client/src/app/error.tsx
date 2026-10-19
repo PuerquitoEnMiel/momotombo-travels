@@ -27,10 +27,11 @@ export default function GlobalError({
           Algo salió mal
         </h1>
         <p className="text-on-surface-variant mb-8 max-w-md mx-auto text-pretty">
-          Ocurrió un error inesperado. Nuestro equipo ha sido notificado. Por favor intenta nuevamente.
+          Ocurrió un error inesperado. Intenta nuevamente; si el problema
+          persiste, vuelve a intentarlo más tarde.
         </p>
         {error.digest && (
-          <p className="text-xs text-on-surface-variant/60 mb-6 font-mono">
+          <p className="text-xs text-on-surface-variant/80 mb-6 font-mono">
             ID del error: {error.digest}
           </p>
         )}

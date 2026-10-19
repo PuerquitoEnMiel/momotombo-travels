@@ -165,7 +165,17 @@ export class StripeService {
     }
 
     if (this.isMock) {
-      await this.bookings['prisma'].booking.update({
+      const claimedMock = await this.prisma.payment.updateMany({
+        where: { id: successfulPayment.id, status: 'SUCCEEDED' },
+        data: {
+          status: 'REFUNDED',
+          refundedAmount: successfulPayment.amount,
+        },
+      });
+      if (claimedMock.count === 0) {
+        throw new BadRequestException('Payment already refunded');
+      }
+      await this.prisma.booking.update({
         where: { id: bookingId },
         data: {
           status: 'REFUNDED' as BookingStatus,
@@ -174,28 +184,51 @@ export class StripeService {
       });
       return {
         refundId: `re_mock_${bookingId}`,
-        amount: booking.totalPrice,
-        status: 'REFUNDED',
+        amount: booking.totalPrice.toNumber(),
+        status: 'REFUNDED' as PaymentStatus,
       };
     }
 
-    const refund = await this.stripe.refunds.create({
-      payment_intent: successfulPayment.stripePaymentIntentId,
-      ...(reason ? { reason: 'requested_by_customer' } : {}),
-      metadata: { bookingId, userId, reason: reason ?? '' },
+    // Claim the payment first so concurrent refund requests cannot issue
+    // two Stripe refunds for the same payment.
+    const claimed = await this.prisma.payment.updateMany({
+      where: { id: successfulPayment.id, status: 'SUCCEEDED' },
+      data: { status: 'PROCESSING' },
     });
+    if (claimed.count === 0) {
+      throw new BadRequestException('Refund already in progress or completed');
+    }
 
-    await this.prisma.payment.update({
-      where: { id: successfulPayment.id },
-      data: {
-        status: 'REFUNDED',
-        refundedAmount: successfulPayment.amount,
-      },
-    });
-    await this.prisma.booking.update({
-      where: { id: bookingId },
-      data: { status: 'REFUNDED', refundAmount: booking.totalPrice },
-    });
+    let refund;
+    try {
+      refund = await this.stripe.refunds.create({
+        payment_intent: successfulPayment.stripePaymentIntentId,
+        ...(reason ? { reason: 'requested_by_customer' } : {}),
+        metadata: { bookingId, userId, reason: reason ?? '' },
+      });
+    } catch (error) {
+      // Release the claim so the refund can be retried
+      await this.prisma.payment.updateMany({
+        where: { id: successfulPayment.id, status: 'PROCESSING' },
+        data: { status: 'SUCCEEDED' },
+      });
+      this.logger.error('Stripe refund failed', error as Error);
+      throw new BadRequestException('Refund failed');
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.payment.update({
+        where: { id: successfulPayment.id },
+        data: {
+          status: 'REFUNDED',
+          refundedAmount: successfulPayment.amount,
+        },
+      }),
+      this.prisma.booking.update({
+        where: { id: bookingId },
+        data: { status: 'REFUNDED', refundAmount: booking.totalPrice },
+      }),
+    ]);
 
     return {
       refundId: refund.id,
@@ -210,16 +243,18 @@ export class StripeService {
     signature: string,
     payload: Buffer,
   ): Promise<{ received: true; eventType: string }> {
-    if (this.isMock || !this.webhookSecret) {
-      this.logger.warn('Skipping webhook verification (mock mode)');
-      // In mock mode we still need to handle the event for testing.
-    }
-
     let event: StripeEvent;
     try {
-      if (!this.webhookSecret) {
-        // Parse without verification (mock only)
+      if (this.isMock) {
+        // Mock mode only: there is no real Stripe account to sign against
         event = JSON.parse(payload.toString());
+      } else if (!this.webhookSecret) {
+        // Never trust an unsigned webhook when a real Stripe integration is
+        // configured: anyone could POST a forged checkout.session.completed.
+        this.logger.error(
+          'STRIPE_WEBHOOK_SECRET missing — rejecting webhook payload',
+        );
+        throw new BadRequestException('Webhook not configured');
       } else {
         event = this.stripe.webhooks.constructEvent(
           payload,
@@ -246,14 +281,42 @@ export class StripeService {
         const session = event.data.object;
         const bookingId =
           session.client_reference_id ?? session.metadata?.bookingId;
-        if (bookingId && session.payment_intent) {
-          await this.bookings.markPaid(
-            bookingId,
-            typeof session.payment_intent === 'string'
-              ? session.payment_intent
-              : session.payment_intent.id,
+        if (!bookingId || !session.payment_intent) break;
+
+        // Only accept genuinely paid sessions
+        if (session.payment_status !== 'paid') {
+          this.logger.warn(
+            `Ignoring checkout session ${session.id}: payment_status=${String(session.payment_status)}`,
           );
+          break;
         }
+
+        // Verify the captured amount matches the booking total
+        const booking = await this.prisma.booking.findUnique({
+          where: { id: bookingId },
+          select: { totalPrice: true },
+        });
+        if (!booking) {
+          this.logger.error(`Webhook referenced unknown booking ${bookingId}`);
+          break;
+        }
+        if (
+          typeof session.amount_total === 'number' &&
+          Math.round(booking.totalPrice.toNumber() * 100) !==
+            session.amount_total
+        ) {
+          this.logger.error(
+            `Amount mismatch for booking ${bookingId}: expected ${Math.round(booking.totalPrice.toNumber() * 100)}, got ${String(session.amount_total)}`,
+          );
+          break;
+        }
+
+        await this.bookings.markPaid(
+          bookingId,
+          typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : session.payment_intent.id,
+        );
         break;
       }
 

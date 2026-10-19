@@ -30,9 +30,15 @@ export class AdminService {
       this.prisma.user.count({ where: { isActive: true, deletedAt: null } }),
       this.prisma.destination.count({ where: { deletedAt: null } }),
       this.prisma.booking.count(),
+      // Net revenue: SUM(amount) - SUM(refundedAmount) for settled payments.
+      // NOTE: amounts are summed across all currencies while the response key
+      // is `totalUsd` (payments are USD today); a currency filter would be
+      // trivial here (`currency: 'USD'` in the where) if multi-currency lands.
+      // Payment.amount/refundedAmount are Prisma.Decimal at runtime, hence
+      // `.toNumber()` below.
       this.prisma.payment.aggregate({
-        where: { status: 'SUCCEEDED' },
-        _sum: { amount: true },
+        where: { status: { in: ['SUCCEEDED', 'PARTIALLY_REFUNDED'] } },
+        _sum: { amount: true, refundedAmount: true },
       }),
       this.prisma.review.count({ where: { isHidden: false, deletedAt: null } }),
       this.prisma.itinerary.count(),
@@ -80,7 +86,11 @@ export class AdminService {
       itineraries: { total: totalItineraries },
       reviews: { total: totalReviews, reported: pendingReviews },
       comments: { flagged: pendingComments },
-      revenue: { totalUsd: totalRevenue._sum.amount ?? 0 },
+      revenue: {
+        totalUsd:
+          (totalRevenue._sum.amount?.toNumber() ?? 0) -
+          (totalRevenue._sum.refundedAmount?.toNumber() ?? 0),
+      },
     };
   }
 
@@ -139,6 +149,16 @@ export class AdminService {
     const updated = await this.prisma.user.update({
       where: { id: userId },
       data: { role: newRole },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isActive: true,
+        emailVerified: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
     await this.audit.log({
       userId: adminId,
@@ -153,6 +173,16 @@ export class AdminService {
     const user = await this.prisma.user.update({
       where: { id: userId },
       data: { isActive: false, deletedAt: new Date() },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isActive: true,
+        emailVerified: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
     await this.audit.log({
       userId: adminId,
@@ -174,6 +204,16 @@ export class AdminService {
     const user = await this.prisma.user.update({
       where: { id: userId },
       data: { isActive: true, deletedAt: null },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        isActive: true,
+        emailVerified: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
     await this.audit.log({
       userId: adminId,

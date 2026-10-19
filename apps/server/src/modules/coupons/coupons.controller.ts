@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { Type } from 'class-transformer';
 import {
   IsDateString,
@@ -23,7 +24,6 @@ import {
   MinLength,
 } from 'class-validator';
 import { CouponsService } from './coupons.service';
-import { Public } from '../../common/decorators/public.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -118,9 +118,9 @@ export class CouponsController {
     });
   }
 
-  @Public()
   @Post('validate')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @UseGuards(JwtAuthGuard)
   validate(
     @CurrentUser() user: AuthenticatedUser,

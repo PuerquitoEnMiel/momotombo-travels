@@ -227,15 +227,33 @@ See `.env.example` in each app for required variables.
 
 ## Testing Strategy
 
-### Unit Tests
-- **Client**: Vitest + Testing Library
-- **Server**: Jest + Supertest
-- Coverage target: 80%
+### Current state (honest snapshot)
+
+Test coverage is **limited**. The toolchains are in place — client: Vitest + Testing Library; server: Jest + ts-jest; E2E: Playwright (client) and Jest + Supertest (server) — but only a small slice of the codebase is actually covered. The repository currently tracks **11 test files**:
+
+| Area | Tooling | Test files |
+|---|---|---|
+| Client unit | Vitest + Testing Library | 1 (`components/ui/Button.test.tsx`) |
+| Server unit | Jest + ts-jest | 8 (`app.controller`, `auth.controller`, `auth.service`, `destinations.controller`, `destinations.service`, `gemini-agent.controller`, `gemini-agent.service`, `prisma.service` — all `*.spec.ts`) |
+| E2E | Playwright (client) / Supertest (server) | 2 (`apps/client/e2e/home.spec.ts`, `apps/server/test/app.e2e-spec.ts`) |
+
+**Untested modules** (no unit or integration tests at time of writing): `users`, `itineraries`, `bookings`, `reviews`, `blogs`, `comments`, `tags`, `categories`, `coupons`, `search`, `admin`, `audit`, `gamification`, and the upload flow.
+
+### Testing backlog (next up)
+
+1. **Bookings** — booking lifecycle, Stripe payment/refund flows, state transitions.
+2. **Itineraries** — day/item CRUD, sharing and forking, AI-generated plan parsing.
+3. **Coupons** — validation, discount calculation, expiry and usage limits.
+4. **Upload** — file type/size validation, storage adapter behavior.
+5. **Admin** — moderation endpoints, role enforcement, audit logging.
+
+Once these land, set a coverage target (e.g. 80%) and enforce it in CI.
 
 ### E2E Tests
-- **Playwright** for critical user flows
-- Runs in CI on PRs
-- Covers: auth, explore, booking, admin
+- **Playwright** for critical user flows (currently only the home page smoke spec).
+- Server E2E via Jest + Supertest (currently only the app health smoke spec).
+- Runs in CI on PRs.
+- Target flows to cover: auth, explore, booking, admin.
 
 ### Manual Testing
 - Staging environment for QA

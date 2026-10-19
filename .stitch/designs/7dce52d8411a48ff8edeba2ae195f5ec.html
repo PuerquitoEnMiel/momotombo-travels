@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Momotombo Travels - Editorial Journal &amp; Field Expedition Chronicles (Cuaderno de Campo)</title>
+<!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-tint": "#9a442f",
+            "background": "#fff8f4",
+            "on-tertiary-fixed-variant": "#5d4200",
+            "surface-container-high": "#eee7e2",
+            "primary-container": "#8a3824",
+            "on-tertiary-container": "#ecbe65",
+            "tertiary": "#4e3700",
+            "surface": "#fff8f4",
+            "on-primary": "#ffffff",
+            "surface-container-low": "#faf2ed",
+            "primary-fixed": "#ffdad2",
+            "secondary-container": "#c6e7d6",
+            "surface-bright": "#fff8f4",
+            "on-surface-variant": "#55423e",
+            "on-primary-container": "#ffb2a0",
+            "outline-variant": "#dbc1bb",
+            "on-tertiary-fixed": "#261900",
+            "on-error-container": "#93000a",
+            "surface-variant": "#e9e1dc",
+            "on-error": "#ffffff",
+            "secondary-fixed-dim": "#adcebd",
+            "surface-container-lowest": "#ffffff",
+            "inverse-primary": "#ffb4a2",
+            "on-secondary-container": "#4b695b",
+            "surface-dim": "#e0d9d4",
+            "secondary-fixed": "#c9ead9",
+            "on-tertiary": "#ffffff",
+            "surface-container-highest": "#e9e1dc",
+            "on-secondary": "#ffffff",
+            "inverse-on-surface": "#f7efea",
+            "primary": "#6c2210",
+            "tertiary-fixed-dim": "#eec067",
+            "tertiary-container": "#6b4c00",
+            "surface-container": "#f4ece7",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "secondary": "#476557",
+            "outline": "#88726d",
+            "inverse-surface": "#33302c",
+            "on-surface": "#1e1b18",
+            "on-secondary-fixed": "#022016",
+            "on-primary-fixed-variant": "#7c2d1a",
+            "on-background": "#1e1b18",
+            "tertiary-fixed": "#ffdea4",
+            "on-secondary-fixed-variant": "#2f4d40",
+            "on-primary-fixed": "#3c0700",
+            "primary-fixed-dim": "#ffb4a2"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "margin": "2rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Playfair Display"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "display-xl-mobile": ["Playfair Display"],
+            "headline-lg": ["Playfair Display"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-sm": ["Playfair Display"],
+            "display-xl": ["Playfair Display"]
+          },
+          "fontSize": {
+            "headline-md": ["28px", { "lineHeight": "36px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "display-xl-mobile": ["38px", { "lineHeight": "46px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-sm": ["22px", { "lineHeight": "30px", "letterSpacing": "0.005em", "fontWeight": "600" }],
+            "display-xl": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Subtle editorial travertine grid texture */
+    .bg-travertine-grid {
+      background-color: #fff8f4;
+      background-image: radial-gradient(rgba(108, 34, 16, 0.04) 1px, transparent 0);
+      background-size: 32px 32px;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased selection:bg-primary selection:text-on-primary">
+<!-- TOP STATUS BANNER (Diplomatic Telemetry) -->
+<div class="w-full bg-inverse-surface text-inverse-on-surface px-8 py-1.5 border-b border-outline/30 text-label-sm font-label-sm tracking-widest flex justify-between items-center z-50">
+<div class="flex items-center gap-4">
+<span class="inline-flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed animate-ping"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span>
+        ESTADO TELEMÉTRICO: ACTIVO
+      </span>
+<span class="hidden md:inline text-outline-variant">|</span>
+<span class="hidden md:inline text-surface-container-high">OBSERVATORIO INETER CH-16 · 156.800 MHz</span>
+</div>
+<div class="flex items-center gap-6">
+<span class="hidden sm:inline">12°29'N 86°32'W · MOMOTOMBO 1,297 msnm</span>
+<span class="text-tertiary-fixed">ACCESO VIP DIPLOMÁTICO REGISTRADO</span>
+</div>
+</div>
+<!-- SHARED COMPONENT: TopNavBar -->
+<header class="bg-surface/90 backdrop-blur-md text-primary docked full-width top-0 sticky z-50 border-b border-outline-variant/30 shadow-sm">
+<div class="flex justify-between items-center w-full px-8 py-5 max-w-[1440px] mx-auto">
+<!-- Monogram Crest & Brand Typography -->
+<div class="flex items-center gap-4">
+<a class="flex items-center gap-3 group" href="/">
+<div class="w-10 h-10 border border-primary/40 bg-surface-container-low flex items-center justify-center p-1 transition-all duration-300 group-hover:border-primary">
+<div class="w-full h-full border border-tertiary/40 flex items-center justify-center bg-primary text-on-primary font-headline-md text-headline-sm font-bold">
+              M
+            </div>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md tracking-widest text-primary font-bold leading-tight">MOMOTOMBO</span>
+<span class="font-label-sm text-label-sm text-outline tracking-wider font-semibold">EXPEDITIONS ATELIER DIPLOMÁTICO</span>
+</div>
+</a>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-8 text-label-lg font-label-lg tracking-wider">
+<a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#expeditions">
+          Expeditions
+        </a>
+<a class="text-primary border-b-2 border-primary pb-1 font-semibold" href="#chronicles">
+          Chronicles
+        </a>
+<a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#fleet">
+          The Fleet
+        </a>
+<a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#sanctuaries">
+          Sanctuaries
+        </a>
+<a class="text-on-surface-variant hover:text-primary transition-colors pb-1" href="#charters">
+          Private Charters
+        </a>
+</nav>
+<!-- Trailing Action Icons & Diplomatic Access CTA -->
+<div class="flex items-center gap-4">
+<!-- Search trigger -->
+<button aria-label="Search" class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200" type="button">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</button>
+<button aria-label="Language selector" class="p-2 text-on-surface-variant hover:text-primary transition-colors duration-200" type="button">
+<span class="material-symbols-outlined text-[20px]">language</span>
+</button>
+<!-- Diplomatic Desk Button -->
+<a class="hidden lg:inline-flex items-center gap-2 px-4 py-2 text-label-sm font-label-sm tracking-widest text-on-surface border border-outline hover:bg-surface-container-high transition-all duration-200" href="#diplomatic">
+<span class="material-symbols-outlined text-[16px] text-tertiary">lock</span>
+<span>Diplomatic Desk</span>
+</a>
+<!-- Request Passage CTA -->
+<a class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-container text-on-primary hover:bg-primary transition-all duration-200 shadow-sm text-label-sm font-label-sm tracking-widest" href="#passage">
+<span>Request Passage</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</header>
+<!-- MAIN EDITORIAL CANVAS -->
+<main class="bg-travertine-grid min-h-screen">
+<!-- EDITORIAL MASTHEAD BANNER -->
+<section class="max-w-[1440px] mx-auto px-8 pt-10 pb-6 border-b border-outline-variant/30">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container border border-tertiary/30 text-tertiary font-label-sm text-label-sm tracking-widest mb-3">
+<span class="material-symbols-outlined text-[14px]">auto_stories</span>
+<span>CUADERNO DE CAMPO · EDICIÓN VOLCÁNICA OTOÑO 2026</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">
+            Crónicas de Fuego, Selva y Piedra Colonial
+          </h1>
+</div>
+<div class="text-right pb-1">
+<p class="font-label-sm text-label-sm text-outline tracking-widest uppercase">REGISTRO GEOLÓGICO Y CULTURAL</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Archivos de Campo Vol. IX · Curaduría Exclusiva INETER</p>
+</div>
+</div>
+</section>
+<!-- SECTION 2: HERO EDITORIAL DISPATCH (Asymmetric Magazine Spread) -->
+<section class="max-w-[1440px] mx-auto px-8 py-10">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+<!-- Left Column: Cinematic Visual & Overlay (7 cols) -->
+<div class="lg:col-span-7 relative min-h-[520px] bg-inverse-surface overflow-hidden group shadow-md border border-outline-variant/40">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" data-alt="Cinematic wide-angle vista of the majestic volcanic caldera of Masaya and Lake Nicaragua at dusk, with glowing molten rock reflections in volcanic steam, dense canopy emerald rainforest foliage in foreground, warm golden terracotta twilight light, and extreme editorial travel magazine composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjxkZo9JKYoNCMQk6xq1HHTeotGXetfROMM0SEslvwLqcLVwDumAKLtNkUemlg7Wz09eCEc_WEgp-BzMJNi8r-Yuhw9pwW_2MC2-XQKMYVBZxxZqOQZJowDp7qbYPl0GaeVMGJmcM3mzm1l_zQU3RzYRbILNu8lTJ49hXX3iX5Lu36dF7lOopYUkers4zjvfwcAeQ84MGB2fMwu4NJmmHE1TeW2mKUAXry3gAbRGl8cbIqjVRfPf_qcMGfagAclPYG2VHUS1rrzfOA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface via-inverse-surface/40 to-transparent"></div>
+<!-- Top badging -->
+<div class="absolute top-6 left-6 right-6 flex flex-wrap justify-between items-center gap-2">
+<span class="px-3 py-1 bg-primary text-on-primary text-label-sm font-label-sm tracking-widest uppercase border border-primary-fixed-dim/30">
+              DESPACHO DESTACADO · VULCANOLOGÍA ACTIVA
+            </span>
+<span class="px-3 py-1 bg-surface/90 backdrop-blur text-primary text-label-sm font-label-sm tracking-widest uppercase border border-outline-variant">
+              MISIÓN NICA-SNT-88
+            </span>
+</div>
+<!-- Base telemetry pin -->
+<div class="absolute bottom-6 left-6 right-6 flex items-center justify-between text-surface-bright text-label-sm font-label-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed">farsight_digital</span>
+<span>PROFUNDIDAD FUMARÓLICA: 240m</span>
+</div>
+<div class="text-tertiary-fixed font-mono">11°59'04"N 86°10'05"W</div>
+</div>
+</div>
+<!-- Right Column: Travertine Floating Narrative Block (5 cols) -->
+<div class="lg:col-span-5 bg-surface-container-lowest border border-outline-variant/40 p-8 sm:p-10 flex flex-col justify-between shadow-sm">
+<div>
+<!-- Metadata Strip -->
+<div class="flex items-center gap-3 text-label-sm font-label-sm tracking-wider text-outline mb-4">
+<span class="text-primary font-bold uppercase">EXPEDICIÓN CIENTÍFICA</span>
+<span>·</span>
+<span>18 OCTUBRE 2026</span>
+<span>·</span>
+<span class="inline-flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 12 MIN DE LECTURA
+              </span>
+</div>
+<!-- Headline -->
+<h2 class="font-headline-md text-headline-md text-on-surface leading-tight mb-5 hover:text-primary transition-colors cursor-pointer">
+              Los Secretos del Coloso de Fuego: Expedición Científica al Cráter Santiago
+            </h2>
+<!-- Excerpt -->
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-6">
+              Una inmersión al corazón telúrico del Volcán Masaya junto a vulcanólogos del INETER, explorando cámaras de lava viva, emanaciones sulfurosas y los mitos precolombinos de la montaña sagrada. Una experiencia reservada bajo salvaguardas de vulcanología diplomática.
+            </p>
+<!-- Curated Quote Callout -->
+<blockquote class="pl-4 border-l-2 border-tertiary text-primary italic font-headline-sm text-headline-sm text-[18px] leading-snug mb-8 bg-surface-container-low/50 py-2 pr-2">
+              «El magma no es un vacío; es el latido continuo que forja los cimientos de Mesoamérica.»
+            </blockquote>
+</div>
+<!-- Bottom: Author byline & Action -->
+<div class="pt-6 border-t border-outline-variant/30">
+<div class="flex items-center gap-3.5 mb-6">
+<div class="w-11 h-11 rounded-full border border-primary/30 overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Editorial portrait of Dr. Silvio Bermudez, senior vulcanologist in field explorer attire with basalt cliff and volcanic caldera background, sharp golden-hour natural light, refined portraiture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKyAK1qEzjk_EAETS_FPuAziflfj78lOj-ca-jnk9wWN0u0lW6l47fxuE8d1xwaFM0CfGkqM11RueO8JOee1lxotGEmuLkMoeM73XkMIPmw0-Ei77fPeo_JqlcmCQpuCadXcgS1UncT-WpUJY_XtzuxXJAMQV2-iLURpcSBn0m8JAIwBG5yoNX7qez8HoEsjAuCDDAu78P-NmmVcp2P1YJnJ9UF50pOlvMlKDNnsllJuXsRk2Z1w1Ejdunz7YF_BMgCRFvLw9KosLO"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-semibold">Dr. Silvio Bermúdez</p>
+<p class="font-body-sm text-body-sm text-outline">Vulcanólogo Jefe INETER · Fellow Relais &amp; Châteaux</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<a class="flex-1 inline-flex justify-center items-center gap-2 px-6 py-3.5 bg-primary-container text-on-primary hover:bg-primary transition-all duration-200 text-label-sm font-label-sm tracking-widest shadow-sm" href="#read-santiago">
+<span>Leer Crónica Completa</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+<button aria-label="Guardar en Bitácora" class="p-3.5 border border-outline hover:border-primary text-on-surface-variant hover:text-primary transition-all duration-200 bg-surface" type="button">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: FILTER & THEMATIC CATEGORIES STRIP -->
+<section class="max-w-[1440px] mx-auto px-8 py-6">
+<div class="bg-surface-container-low border border-outline-variant/40 p-4 flex flex-col xl:flex-row items-center justify-between gap-4">
+<!-- Filter Pills Bar -->
+<div class="flex flex-wrap items-center gap-2 w-full xl:w-auto">
+<!-- Active Pill: Canopy Emerald -->
+<button class="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-on-secondary text-label-sm font-label-sm tracking-wider shadow-sm transition-all">
+<span>Todas las Crónicas</span>
+<span class="px-1.5 py-0.2 bg-secondary-container text-on-secondary-container rounded text-[11px] font-bold">18</span>
+</button>
+<!-- Inactive Category Pills -->
+<button class="inline-flex items-center gap-2 px-4 py-2 bg-surface text-on-surface-variant hover:text-primary hover:bg-surface-container-high border border-outline-variant/50 text-label-sm font-label-sm tracking-wider transition-all">
+<span>Vulcanología Activa</span>
+<span class="px-1.5 py-0.2 bg-surface-container-highest text-on-surface-variant rounded text-[11px]">6</span>
+</button>
+<button class="inline-flex items-center gap-2 px-4 py-2 bg-surface text-on-surface-variant hover:text-primary hover:bg-surface-container-high border border-outline-variant/50 text-label-sm font-label-sm tracking-wider transition-all">
+<span>Rutas Lacustres</span>
+<span class="px-1.5 py-0.2 bg-surface-container-highest text-on-surface-variant rounded text-[11px]">4</span>
+</button>
+<button class="inline-flex items-center gap-2 px-4 py-2 bg-surface text-on-surface-variant hover:text-primary hover:bg-surface-container-high border border-outline-variant/50 text-label-sm font-label-sm tracking-wider transition-all">
+<span>Patrimonio Colonial</span>
+<span class="px-1.5 py-0.2 bg-surface-container-highest text-on-surface-variant rounded text-[11px]">5</span>
+</button>
+<button class="inline-flex items-center gap-2 px-4 py-2 bg-surface text-on-surface-variant hover:text-primary hover:bg-surface-container-high border border-outline-variant/50 text-label-sm font-label-sm tracking-wider transition-all">
+<span>Tierras Altas del Café</span>
+<span class="px-1.5 py-0.2 bg-surface-container-highest text-on-surface-variant rounded text-[11px]">3</span>
+</button>
+</div>
+<!-- Secondary Controls: Search & Sort -->
+<div class="flex items-center gap-3 w-full xl:w-auto justify-end">
+<div class="relative flex-1 sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 text-body-sm font-body-sm bg-surface-container-lowest border border-outline-variant/60 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface placeholder:text-outline/70" placeholder="Buscar por cordillera o palabra clave..." type="text"/>
+</div>
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-outline border border-outline-variant/60 px-3 py-2 bg-surface-container-lowest">
+<span>Ordenar por:</span>
+<select class="bg-transparent border-0 text-on-surface font-semibold text-label-sm p-0 focus:ring-0 cursor-pointer">
+<option>Más Recientes</option>
+<option>Mayor Altitud</option>
+<option>Tiempo de Lectura</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: EDITORIAL CHRONICLES GRID (6 Curated Stories Bento Layout) -->
+<section class="max-w-[1440px] mx-auto px-8 py-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- CARD 1: Maderas Volcano -->
+<article class="bg-surface-container-lowest border border-outline-variant/40 flex flex-col justify-between group hover:shadow-lg transition-all duration-300">
+<div>
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-dim">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Mystical misty cloud forest crater lagoon summit of Maderas volcano on Ometepe island, lush prehistoric giant ferns, volcanic turquoise water reflection, deep emerald and basalt tones, editorial travel photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF0Hlg4APZVwqAAP6Lfz-EgaEMztn6Tap9l2ZQkdA0zn7mbY-u3YZkY9WCFD0WCs8pgzVJs89_PHBcChg7DCItKTgpmO9qT-58TFqMb8XkqvTqH1zESK9hElBeia_2deDKV6w6vzoHAhAcHudLOZxAOPAZwZwmaX83x4-LmDGmHPaPaPWdN5W6Np76yiz0ocGurpVekcCkF5w9evbwXHneGz9X2YYMxxglf7W8fh3GwNjg_2unpKBtc_X6BsFVFkgDb0DGIBhsZpat"/>
+<div class="absolute top-4 left-4">
+<span class="px-2.5 py-1 bg-surface-container-low text-tertiary border border-tertiary/40 font-label-sm text-label-sm font-bold uppercase tracking-wider">
+                  ALTA MONTAÑA
+                </span>
+</div>
+<div class="absolute bottom-3 right-3 px-2 py-0.5 bg-inverse-surface/80 text-surface-bright text-[11px] font-mono backdrop-blur-sm">
+                1,394 msnm
+              </div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-outline mb-2">
+<span>14 OCTUBRE 2026</span>
+<span>·</span>
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">schedule</span> 8 MIN LECTURA
+                </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors leading-snug mb-2">
+                Guía Definitiva para Escalar el Volcán Maderas: Laguna Cráterica y Bosque Nuboso
+              </h3>
+<p class="font-label-sm text-label-sm text-tertiary font-semibold tracking-wider mb-3 uppercase">
+                Isla de Ometepe · Reserva de Biósfera UNESCO
+              </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Caminata técnica entre petroglifos precolombinos y helechos gigantes hasta la laguna esmeralda que corona el coloso dormido en medio del Gran Lago.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0 border-t border-outline-variant/20 flex items-center justify-between mt-4">
+<a class="inline-flex items-center gap-1.5 text-primary hover:text-primary-container font-label-sm text-label-sm font-bold tracking-widest uppercase transition-all group-hover:translate-x-1" href="#cronica-1">
+<span>Leer Crónica</span>
+<span class="material-symbols-outlined text-[16px]">east</span>
+</a>
+<span class="text-outline text-label-sm">Dificultad: Avanzada</span>
+</div>
+</article>
+<!-- CARD 2: Costa Esmeralda -->
+<article class="bg-surface-container-lowest border border-outline-variant/40 flex flex-col justify-between group hover:shadow-lg transition-all duration-300">
+<div>
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-dim">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Secluded pristine Pacific cove in Nicaragua Costa Esmeralda, private architectural teak villas perched above dramatic basalt sea cliffs, turquoise breaks and golden sunset sand, high-end travel magazine style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV2RKL7xWLezz9DDWapNDG-C7r3jfC3YlU99zr50SNujNCMk3uV-0IIc1X1dkwMgHINaSqtEFPbQ5exCx9OXfTqLxuzW_eBnSrn7gVYz_E6i2lB3pZSAaMTwGIHWNJWF_U29uLOjQCOn1IBGtC_4TLJLD-3W3drXU939UeBi0i29hsiep8JGOhKdCsm0SevB1nSCa9huqe2h5k2qlM6j87sSWTY-pONfpgHt4BiPE94Tbd4teK0kLDeG_Y-FqucG2e97R7AGLPck73"/>
+<div class="absolute top-4 left-4">
+<span class="px-2.5 py-1 bg-surface-container-low text-secondary border border-secondary/40 font-label-sm text-label-sm font-bold uppercase tracking-wider">
+                  COSTAS VÍRGENES
+                </span>
+</div>
+<div class="absolute bottom-3 right-3 px-2 py-0.5 bg-inverse-surface/80 text-surface-bright text-[11px] font-mono backdrop-blur-sm">
+                CHARTER MARÍTIMO
+              </div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-outline mb-2">
+<span>09 OCTUBRE 2026</span>
+<span>·</span>
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">schedule</span> 6 MIN LECTURA
+                </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors leading-snug mb-2">
+                5 Playas Vírgenes en San Juan del Sur: El Refugio Oculto del Pacífico
+              </h3>
+<p class="font-label-sm text-label-sm text-tertiary font-semibold tracking-wider mb-3 uppercase">
+                Rivas · Litoral Esmeralda
+              </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Acantilados basálticos, rompientes solitarias y villas de teca donde el rugido de las olas sustituye al reloj civil en completa soberanía natural.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0 border-t border-outline-variant/20 flex items-center justify-between mt-4">
+<a class="inline-flex items-center gap-1.5 text-primary hover:text-primary-container font-label-sm text-label-sm font-bold tracking-widest uppercase transition-all group-hover:translate-x-1" href="#cronica-2">
+<span>Leer Crónica</span>
+<span class="material-symbols-outlined text-[16px]">east</span>
+</a>
+<span class="text-outline text-label-sm">Temporada Óptima</span>
+</div>
+</article>
+<!-- CARD 3: Granada Colonial -->
+<article class="bg-surface-container-lowest border border-outline-variant/40 flex flex-col justify-between group hover:shadow-lg transition-all duration-300">
+<div>
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-dim">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Sunlit cobblestone colonial alleyway in Granada framed by historic stone arches, bougainvillea in vibrant crimson magenta, yellow baroque cathedral bell tower in distance, elegant Spanish colonial architecture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdt2hPjpoZuCJYhQ6xTSTcM7MSeqPnOPGuH1bRAK-bnsaTWzXDSe1veLGYvhnHLAV6lyOP8iVNxYZsLl2QaL80RmIneQNhcQK6OjRYX79LVo6X0otV9BFeeT6HWGJYcPPdXN6ntvRxHJK-Yw7igS0VlBt7KWqjjdeE8sJ7tiihHHYdI36ub7B9sLmD8YBrW70TcUdOvrt1MfpTblFMfWeIazdNsIJhpThKUZdSOvG37Yej_Hbcevgt5BKSPYACVg5SKhMcAYaa_Ntb"/>
+<div class="absolute top-4 left-4">
+<span class="px-2.5 py-1 bg-surface-container-low text-tertiary border border-tertiary/40 font-label-sm text-label-sm font-bold uppercase tracking-wider">
+                  PATRIMONIO UNESCO
+                </span>
+</div>
+<div class="absolute bottom-3 right-3 px-2 py-0.5 bg-inverse-surface/80 text-surface-bright text-[11px] font-mono backdrop-blur-sm">
+                AÑO 1524 FUNDACIÓN
+              </div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-outline mb-2">
+<span>02 OCTUBRE 2026</span>
+<span>·</span>
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">schedule</span> 10 MIN LECTURA
+                </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors leading-snug mb-2">
+                El Güegüense y la Resistencia Satírica: Patrimonio Oral de la Humanidad
+              </h3>
+<p class="font-label-sm text-label-sm text-tertiary font-semibold tracking-wider mb-3 uppercase">
+                Diriamba &amp; Granada Señorial
+              </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Análisis filológico e histórico de la primera obra teatral y satírica de América colonial bajo los claustros señoriales con techos de teja de barro cocido.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0 border-t border-outline-variant/20 flex items-center justify-between mt-4">
+<a class="inline-flex items-center gap-1.5 text-primary hover:text-primary-container font-label-sm text-label-sm font-bold tracking-widest uppercase transition-all group-hover:translate-x-1" href="#cronica-3">
+<span>Leer Crónica</span>
+<span class="material-symbols-outlined text-[16px]">east</span>
+</a>
+<span class="text-outline text-label-sm">Crónica Cultural</span>
+</div>
+</article>
+<!-- CARD 4: Mombacho & Cocibolca -->
+<article class="bg-surface-container-lowest border border-outline-variant/40 flex flex-col justify-between group hover:shadow-lg transition-all duration-300">
+<div>
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-dim">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Lake Nicaragua Cocibolca calm mirror waters reflecting twin volcanic cones at twilight, handcrafted wooden pier with lantern lights and private expedition boat moored, deep indigo and copper dusk colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuQld4J0Vt79LxIdSJkAZpmgd_HdBTlYGEcGgQmmaWN_DurrB7LupcfnWYsFVxBZ6pZ0pXfT9WmlXk5jlZbYQttNWTrdJmZx7QetU0p-e_X1w_VZfNVf37qwbywoyZCrYD-vgr0TyPF9Q98BEZyV4RVh58LPQhEHGG_yWKrEZYI2OTc4fdbQFuDoNIfyNNXFVN54wEQKnJIrrhqNt5D-QaGcQ81WOMz6P-unK4uv1PTc1f9vvH2XGW__ZDTRnQEIzIga6KLMEn_j_V"/>
+<div class="absolute top-4 left-4">
+<span class="px-2.5 py-1 bg-surface-container-low text-secondary border border-secondary/40 font-label-sm text-label-sm font-bold uppercase tracking-wider">
+                  NAVEGACIÓN PRIVADA
+                </span>
+</div>
+<div class="absolute bottom-3 right-3 px-2 py-0.5 bg-inverse-surface/80 text-surface-bright text-[11px] font-mono backdrop-blur-sm">
+                365 ISLETAS
+              </div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-outline mb-2">
+<span>26 SEPTIEMBRE 2026</span>
+<span>·</span>
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">schedule</span> 7 MIN LECTURA
+                </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors leading-snug mb-2">
+                Navegación Nocturna en el Gran Lago Cocibolca: La Ruta de los Galeones
+              </h3>
+<p class="font-label-sm text-label-sm text-tertiary font-semibold tracking-wider mb-3 uppercase">
+                Archipiélago de Isletas · Granada
+              </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Travesía privada en falúa de teca por canales volcánicos milenarios bajo cielos limpios y las campanas lejanas de la torre de La Merced.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0 border-t border-outline-variant/20 flex items-center justify-between mt-4">
+<a class="inline-flex items-center gap-1.5 text-primary hover:text-primary-container font-label-sm text-label-sm font-bold tracking-widest uppercase transition-all group-hover:translate-x-1" href="#cronica-4">
+<span>Leer Crónica</span>
+<span class="material-symbols-outlined text-[16px]">east</span>
+</a>
+<span class="text-outline text-label-sm">Expedición Fluvial</span>
+</div>
+</article>
+<!-- CARD 5: Selva Negra Coffee Highlands -->
+<article class="bg-surface-container-lowest border border-outline-variant/40 flex flex-col justify-between group hover:shadow-lg transition-all duration-300">
+<div>
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-dim">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Interior of an ultra-luxury eco-lodge nestled in lush tropical jungle, warm ambient lantern lighting, polished tropical teak wood beams, handwoven textiles, coffee cupping setup, serene night terrace." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCd2e8f07Dl0BhkREl8HarTn_q1yJ0biwPqb8qHfL1SQry2eXaB7Zrat2Sa_ULGoE60S0GUmPoph-Kw4m9pIpSe3XfIkc-nCIpTavMIjFGMxph2gF1Nkw38Hl-AXxqP6VVbM1F-JUS0wWF1w38503broooW1rnLoJyMFEO8H3-wHkSMGokgntpXGUjzRP8IiJPlZgWBrOhsLK5rD_DQgBY0z9IMr-38IVEdRxEAi1acNkZa04x5QjGhD8o40pRi6p7px0CYZiZiL7Gm"/>
+<div class="absolute top-4 left-4">
+<span class="px-2.5 py-1 bg-surface-container-low text-tertiary border border-tertiary/40 font-label-sm text-label-sm font-bold uppercase tracking-wider">
+                  GASTRONOMÍA &amp; ORIGEN
+                </span>
+</div>
+<div class="absolute bottom-3 right-3 px-2 py-0.5 bg-inverse-surface/80 text-surface-bright text-[11px] font-mono backdrop-blur-sm">
+                1,400 msnm COSECHA
+              </div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-outline mb-2">
+<span>19 SEPTIEMBRE 2026</span>
+<span>·</span>
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">schedule</span> 9 MIN LECTURA
+                </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors leading-snug mb-2">
+                Degustación de Grano Geisha en las Nuboselvas de Matagalpa
+              </h3>
+<p class="font-label-sm text-label-sm text-tertiary font-semibold tracking-wider mb-3 uppercase">
+                Cordillera Dariense · Tierras Altas
+              </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Procesos de lavado artesanal a 1,400 msnm, notas florales de jazmín y bergamota en la centenaria finca cafetalera en el corazón de la niebla.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0 border-t border-outline-variant/20 flex items-center justify-between mt-4">
+<a class="inline-flex items-center gap-1.5 text-primary hover:text-primary-container font-label-sm text-label-sm font-bold tracking-widest uppercase transition-all group-hover:translate-x-1" href="#cronica-5">
+<span>Leer Crónica</span>
+<span class="material-symbols-outlined text-[16px]">east</span>
+</a>
+<span class="text-outline text-label-sm">Cata Exclusiva</span>
+</div>
+</article>
+<!-- CARD 6: Cerro Negro Ashboarding -->
+<article class="bg-surface-container-lowest border border-outline-variant/40 flex flex-col justify-between group hover:shadow-lg transition-all duration-300">
+<div>
+<div class="relative aspect-[16/10] overflow-hidden bg-surface-dim">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Dusk landscape view of Cerro Negro volcano with black basalt volcanic cinder slopes, contrast with lush green tropical plain, dramatic clouds touched by orange sunset, pristine geological expedition view." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxbhEXx5rfXB903WdfSyefekfDBL21Do3ilZGnIPTJzEFJcGToiWKBGKcy4BoOH7Zp2XjIWP_9LElovB5u0rL8SoDfrQtnuX8uIli8bbPZIgfYtAA-P-k7nF9Azk7r--uszDFseUhpBMEDXya3K5H7Kf7tJkgHMFPr_D9f45SjmaJfFegiSlapF-FBZL3ah5lABUQU6sAdUScg4XHgq7kE3IsMC80kyNfbBKLUIBXZTuRU8MvcWR1YwQqAqllA9i_2ebqc71oh8m3k"/>
+<div class="absolute top-4 left-4">
+<span class="px-2.5 py-1 bg-surface-container-low text-primary border border-primary/40 font-label-sm text-label-sm font-bold uppercase tracking-wider">
+                  ADRENALINA GEOLÓGICA
+                </span>
+</div>
+<div class="absolute bottom-3 right-3 px-2 py-0.5 bg-inverse-surface/80 text-surface-bright text-[11px] font-mono backdrop-blur-sm">
+                VELOCIDAD: 90 KM/H
+              </div>
+</div>
+<div class="p-6">
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-outline mb-2">
+<span>11 SEPTIEMBRE 2026</span>
+<span>·</span>
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">schedule</span> 5 MIN LECTURA
+                </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors leading-snug mb-2">
+                Cerro Negro al Límite: Descenso en Tabla de Ceniza a 90 km/h
+              </h3>
+<p class="font-label-sm text-label-sm text-tertiary font-semibold tracking-wider mb-3 uppercase">
+                Cordillera de los Maribios · León
+              </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Equipo cerámico ignífugo, viento térmico del Pacífico y la aceleración pura sobre piroclastos en el coloso más joven y activo de Centroamérica.
+              </p>
+</div>
+</div>
+<div class="p-6 pt-0 border-t border-outline-variant/20 flex items-center justify-between mt-4">
+<a class="inline-flex items-center gap-1.5 text-primary hover:text-primary-container font-label-sm text-label-sm font-bold tracking-widest uppercase transition-all group-hover:translate-x-1" href="#cronica-6">
+<span>Leer Crónica</span>
+<span class="material-symbols-outlined text-[16px]">east</span>
+</a>
+<span class="text-outline text-label-sm">Expedición Extrema</span>
+</div>
+</article>
+</div>
+</section>
+<!-- SECTION 5: NEWSLETTER & FIELD DISPATCH ENCLAVE -->
+<section class="max-w-[1440px] mx-auto px-8 py-16">
+<div class="bg-inverse-surface text-inverse-on-surface border border-tertiary-fixed-dim/30 p-8 md:p-14 relative overflow-hidden shadow-2xl">
+<!-- Background Monogram Watermark -->
+<div class="absolute -right-16 -bottom-20 opacity-5 pointer-events-none select-none font-headline-lg text-[320px] text-tertiary font-bold">
+          M
+        </div>
+<div class="max-w-2xl relative z-10">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-highest/20 border border-tertiary-fixed-dim/40 text-tertiary-fixed font-label-sm text-label-sm tracking-widest mb-4">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+<span>CIRCULAR DIPLOMÁTICA RESTRINGIDA</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-inverse-on-surface tracking-tight mb-4">
+            Suscripción al Despacho Privado de Campo
+          </h2>
+<p class="font-body-md text-body-md text-surface-variant mb-8 leading-relaxed">
+            Reciba mensualmente análisis geofísicos, guías de expedición inéditas y accesos prioritarios a rutas restringidas de la Cordillera de los Maribios y reservas biológicas de soberanía protegida.
+          </p>
+<!-- Subscription Form -->
+<form class="flex flex-col sm:flex-row gap-3" onsubmit="event.preventDefault();">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline-variant text-[20px]">mail</span>
+<input class="w-full pl-11 pr-4 py-3 bg-inverse-surface border border-outline/50 text-inverse-on-surface placeholder:text-outline-variant focus:border-tertiary-fixed-dim focus:ring-1 focus:ring-tertiary-fixed-dim text-body-md" placeholder="Introduzca su correo institucional o privado..." required="" type="email"/>
+</div>
+<button class="px-8 py-3 bg-primary-container hover:bg-primary text-on-primary transition-all duration-200 font-label-sm text-label-sm tracking-widest uppercase font-semibold flex items-center justify-center gap-2 shadow-sm" type="submit">
+<span>Suscribirse al Despacho</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</form>
+<!-- Security and Guarantee Footnote -->
+<div class="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-outline/20 text-label-sm font-label-sm text-outline-variant">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-tertiary-fixed">lock</span>
+              Cifrado SSL 256-Bit
+            </span>
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-tertiary-fixed">shield</span>
+              Cero Spam
+            </span>
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-tertiary-fixed">grade</span>
+              Exclusividad INETER
+            </span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: GEOLOGICAL LOGISTICS DISPATCH FOOTER (Pre-Footer Strip) -->
+<section class="max-w-[1440px] mx-auto px-8 pb-12">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-surface-container border border-outline-variant/40 p-6 text-on-surface">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[24px]">support_agent</span>
+<div>
+<p class="font-label-sm text-label-sm text-outline tracking-wider uppercase font-semibold">24/7 CONCIERGE HOTLINE</p>
+<p class="font-headline-sm text-headline-sm text-[18px] text-primary">+505 2249-2760</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Atención Prioritaria para Pasajeros y Huéspedes</p>
+</div>
+</div>
+<div class="flex items-start gap-3 border-t md:border-t-0 md:border-l border-outline-variant/40 pt-4 md:pt-0 md:pl-6">
+<span class="material-symbols-outlined text-tertiary text-[24px]">sensors</span>
+<div>
+<p class="font-label-sm text-label-sm text-outline tracking-wider uppercase font-semibold">EMERGENCIA EN RUTA</p>
+<p class="font-headline-sm text-headline-sm text-[18px] text-on-surface">CANAL VHF 144.200 MHz</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Protocolo de Contingencia y Alerta Sísmica INETER</p>
+</div>
+</div>
+<div class="flex items-start gap-3 border-t md:border-t-0 md:border-l border-outline-variant/40 pt-4 md:pt-0 md:pl-6">
+<span class="material-symbols-outlined text-secondary text-[24px]">military_tech</span>
+<div>
+<p class="font-label-sm text-label-sm text-outline tracking-wider uppercase font-semibold">LICENCIA Y ACREDITACIÓN</p>
+<p class="font-headline-sm text-headline-sm text-[18px] text-secondary">Licencia Oficial Nº 402-NI</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Momotombo Expeditions Atelier S.A. Registrada</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- SHARED COMPONENT: Footer -->
+<footer class="bg-inverse-surface text-inverse-primary border-t border-outline/30 docked full-width bottom">
+<div class="w-full px-8 py-16 max-w-[1440px] mx-auto flex flex-col gap-10">
+<!-- Top Row: Brand & Links -->
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-8 pb-8 border-b border-outline/20">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 border border-tertiary-fixed-dim/40 bg-surface-container-lowest text-primary font-headline-md font-bold flex items-center justify-center text-label-md">
+            M
+          </div>
+<span class="font-headline-md text-headline-md tracking-widest text-inverse-on-surface font-bold">
+            MOMOTOMBO
+          </span>
+</div>
+<!-- Links from Shared Components JSON -->
+<nav class="flex flex-wrap items-center gap-6 text-label-sm font-label-sm">
+<a class="text-outline-variant hover:text-surface transition-colors" href="#charter-protocol">
+            Charter Protocol
+          </a>
+<a class="text-outline-variant hover:text-surface transition-colors" href="#geological-survey">
+            Geological Survey Registry
+          </a>
+<a class="text-outline-variant hover:text-surface transition-colors" href="#vhf-advisory">
+            VHF Marine Advisory
+          </a>
+<a class="text-outline-variant hover:text-surface transition-colors" href="#courier-enclave">
+            Diplomatic Courier Enclave
+          </a>
+<a class="text-outline-variant hover:text-surface transition-colors" href="#privacy-accord">
+            Privacy &amp; Sovereign Accord
+          </a>
+</nav>
+</div>
+<!-- Bottom Row: Copyright text from Shared Components JSON -->
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-body-sm font-body-sm text-outline-variant">
+<p>© MCMXXIV Momotombo Travel Company. Registered Diplomatic Outfitter No. 418. Frequency 156.800 MHz Ch 16 Standby.</p>
+<div class="flex items-center gap-4 text-label-sm font-label-sm text-tertiary-fixed font-semibold">
+<span>Manifiesto Geológico</span>
+<span>·</span>
+<span>Salvaguarda Ambiental</span>
+<span>·</span>
+<span>Certificación INETER</span>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

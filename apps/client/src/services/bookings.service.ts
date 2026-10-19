@@ -17,10 +17,11 @@ export const bookingsService = {
 
   async createCheckoutSession(
     bookingId: string,
+    couponCode?: string,
   ): Promise<{ url: string; sessionId: string }> {
     return api.post<{ url: string; sessionId: string }>(
       `${API_URL}/stripe/create-checkout-session`,
-      { bookingId }
+      { bookingId, ...(couponCode ? { couponCode } : {}) }
     );
   },
 };

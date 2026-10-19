@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { MapTrifold, DotsSixVertical, CheckCircle, Clock, ShareNetwork, Download, Trash, Plus } from "@phosphor-icons/react";
 import dayjs from "dayjs";
-import "dayjs/locale/es";
-import { API_URL } from "@/lib/api";
 
-dayjs.locale("es");
+import { toast } from "sonner";
+import { API_URL } from "@/lib/api";
+import { api } from "@/services/api";
+
+
 
 interface ItineraryItem {
     id: string;
@@ -23,17 +25,18 @@ interface ItineraryDay {
     items: ItineraryItem[];
 }
 
-export default function ItineraryEditor({ params }: { params: { id: string } }) {
+export default function ItineraryEditor({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
     const [loading, setLoading] = useState(true);
     const [title, setTitle] = useState("Cargando...");
     const [days, setDays] = useState<ItineraryDay[]>([]);
 
     useEffect(() => {
-        const token = localStorage.getItem("authToken");
-        fetch(`${API_URL}/itineraries/${params.id}`, { headers: { Authorization: `Bearer ${token}` } })
-            .then(res => res.ok ? res.json() : null)
-            .then(data => {
-                if (data) {
+        let mounted = true;
+        api
+            .get<any>(`${API_URL}/itineraries/${id}`)
+            .then((data) => {
+                if (mounted && data) {
                     setTitle(data.title);
                     setDays(data.days.map((d: any) => ({
                         id: d.id,
@@ -42,12 +45,19 @@ export default function ItineraryEditor({ params }: { params: { id: string } }) 
                         items: d.items.map((i: any) => ({ id: i.id, content: i.customTitle || i.activity?.name || "Actividad" }))
                     })));
                 }
-                setLoading(false);
             })
-            .catch(() => setLoading(false));
-    }, [params.id]);
+            .catch(() => {
+                if (mounted) toast.error("No se pudo cargar el itinerario. Intenta de nuevo.");
+            })
+            .finally(() => {
+                if (mounted) setLoading(false);
+            });
+        return () => {
+            mounted = false;
+        };
+    }, [id]);
 
-    const onDragEnd = (result: DropResult) => {
+    const onDragEnd = async (result: DropResult) => {
         const { source, destination } = result;
 
         if (!destination) return;
@@ -56,9 +66,11 @@ export default function ItineraryEditor({ params }: { params: { id: string } }) 
         const sourceDayIndex = days.findIndex(d => d.id === source.droppableId);
         const destDayIndex = days.findIndex(d => d.id === destination.droppableId);
 
-        const newDays = [...days];
-        const sourceItems = [...newDays[sourceDayIndex].items];
-        const destItems = source.droppableId === destination.droppableId ? sourceItems : [...newDays[destDayIndex].items];
+        // Copia profunda superficial: cada día y su lista se copian para poder revertir
+        const previousDays = days;
+        const newDays = days.map(d => ({ ...d, items: [...d.items] }));
+        const sourceItems = newDays[sourceDayIndex].items;
+        const destItems = source.droppableId === destination.droppableId ? sourceItems : newDays[destDayIndex].items;
 
         const [removed] = sourceItems.splice(source.index, 1);
         destItems.splice(destination.index, 0, removed);
@@ -71,13 +83,13 @@ export default function ItineraryEditor({ params }: { params: { id: string } }) 
         setDays(newDays);
 
         // Guardar en Backend
-        const token = localStorage.getItem("authToken");
         const itemsToUpdate = [{ id: removed.id, itineraryDayId: destination.droppableId }];
-        fetch(`${API_URL}/itineraries/${params.id}/items/reorder`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-            body: JSON.stringify({ items: itemsToUpdate })
-        });
+        try {
+            await api.post(`${API_URL}/itineraries/${id}/items/reorder`, { items: itemsToUpdate });
+        } catch {
+            setDays(previousDays);
+            toast.error("No se pudo guardar el nuevo orden. Se revirtió el cambio.");
+        }
     };
 
     if (loading) {

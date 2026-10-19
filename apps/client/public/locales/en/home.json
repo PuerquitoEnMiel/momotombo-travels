@@ -1,10 +1,28 @@
 {
   "hero": {
-    "badge": "Curated Excellence",
-    "title": "Discover the real Nicaragua with AI",
-    "subtitle": "Personalized itineraries, expert local guides, and instant bookings in the land of lakes and volcanoes.",
-    "ctaPrimary": "Generate Itinerary",
-    "ctaSecondary": "Explore Destinations"
+    "badge": "Land of Lakes and Volcanoes",
+    "title": "Discover the Soul of",
+    "titleAccent": "Nicaragua",
+    "subtitle": "Expeditions designed with artificial intelligence that fuse volcanic power and wild nature with the most exclusive colonial hospitality. Travel, reinvented.",
+    "ctaPrimary": "Design AI Expedition",
+    "ctaSecondary": "Explore Destinations",
+    "imageAlt": "Mombacho Volcano and viewpoint toward Colonial Granada",
+    "trust": {
+      "volcanologists": "Certified Volcanologists",
+      "curation": "AI & Human Curation",
+      "partners": "Local excellence partners"
+    },
+    "card": {
+      "charter": "Private Charter",
+      "titleFallback": "Mombacho Volcano & Colonial Granada",
+      "altitude": "1,344 m.a.s.l.",
+      "categoryFallback": "Private Cloud Forest",
+      "new": "New"
+    },
+    "weather": {
+      "live": "CURRENT TEMPERATURE: {{temp}}°C",
+      "loading": "MONITORING WEATHER..."
+    }
   },
   "bento": {
     "aiNote": "Powered by AI"
@@ -38,23 +56,25 @@
     "description": "Thousands of travelers are part of the community that knows how to travel. Our responsibility is to teach you destinations around the world and accompany you during your experience."
   },
   "faq": {
-    "title": "Frequently asked questions",
+    "badge": "Clarity",
+    "title": "FAQ",
+    "subtitle": "Frequent questions and clear answers",
     "items": {
-      "ai": {
-        "question": "How does Kary's AI work?",
-        "answer": "Kary is our AI guide trained with local information from Nicaragua. It learns from your preferences and creates personalized itineraries based on real destinations, activities, and experiences."
+      "guides": {
+        "question": "How does the volcanologist accompaniment work?",
+        "answer": "All of our ascents to active craters (such as Telica Volcano, Cerro Negro or Masaya) are supervised by experienced local guides and volcano specialists, with gas monitoring equipment and satellite communication backup."
       },
-      "price": {
-        "question": "How much does Momotombo cost?",
-        "answer": "AI planning and exploring destinations is free. You only pay when you book activities or experiences, with no hidden fees."
+      "modify": {
+        "question": "Can I modify the itinerary proposed by the AI?",
+        "answer": "Absolutely. The artificial intelligence builds the optimal topographic and logistics base; afterwards, a senior travel designer on our team fine-tunes every detail to your pace and individual preferences."
       },
-      "booking": {
-        "question": "How do bookings work?",
-        "answer": "Book directly with verified local providers. Your payment stays secure until you complete the experience."
+      "transfers": {
+        "question": "What kind of internal transfers are used?",
+        "answer": "We use luxury off-road vehicles with professional chauffeurs, seaplanes and private speedboats for the Solentiname archipelago and the islets of Granada."
       },
-      "cancel": {
-        "question": "Can I cancel my booking?",
-        "answer": "Yes, you can cancel according to each activity's policy. Most allow free cancellation up to 48 hours before."
+      "destinations": {
+        "question": "What destinations can I find at Momotombo Travels?",
+        "answer": "We specialize in Nicaragua, covering everything from the colonial gems of Granada and León to the sacred geology of Ometepe, the surf of Costa Esmeralda and Caribbean rest on Corn Island."
       }
     }
   },

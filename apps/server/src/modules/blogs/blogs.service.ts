@@ -7,15 +7,15 @@ export class BlogsService {
 
   async getAllPosts() {
     return this.prisma.blogPost.findMany({
-      where: { published: true },
+      where: { published: true, deletedAt: null },
       include: { destination: { select: { name: true, slug: true } } },
       orderBy: { createdAt: 'desc' },
     });
   }
 
   async getPostBySlug(slug: string) {
-    const post = await this.prisma.blogPost.findUnique({
-      where: { slug },
+    const post = await this.prisma.blogPost.findFirst({
+      where: { slug, published: true, deletedAt: null },
       include: { destination: { select: { name: true, slug: true } } },
     });
 

@@ -10,8 +10,8 @@ Documento maestro de seguimiento para el inventario de vistas, estado de impleme
 |---|---|
 | **Vistas Totales Activas en el Sistema** | **24 Rutas** |
 | **Vistas Implementadas en Código (100% Funcionales)** | **24 Rutas** |
-| **Vistas con Pantalla Diseñada en Google Stitch** | **6 (Home Page, /explorar, /explorar/[slug], /planificar, /perfil, /itinerarios)** |
-| **Vistas Pendientes de Pantalla en Google Stitch** | **18 Rutas** |
+| **Vistas con Pantalla Diseñada en Google Stitch** | **14 (Home Page, /explorar, /explorar/[slug], /planificar, /perfil, /itinerarios, /checkout/[bookingId], /bookings/[id]/confirmation, /auth/login, /auth/registro, /auth/recuperar, /auth/reset-password, /blog, /blog/[slug])** |
+| **Vistas Pendientes de Pantalla en Google Stitch** | **10 Rutas** |
 
 ---
 
@@ -24,8 +24,8 @@ Documento maestro de seguimiento para el inventario de vistas, estado de impleme
 | `/` | `apps/client/src/app/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`e7e3ed76cbf84adb8c552462b707b2d5`) | `GET /destinations` |
 | `/explorar` | `apps/client/src/app/explorar/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`6c76d1987e194e37aadca63dec8db65b`) | `GET /destinations`, `GET /categories` |
 | `/explorar/[slug]` | `apps/client/src/app/explorar/[slug]/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`f6fb4c293bed4720a0bb64b042d69c41`) | `GET /destinations/:slug`, `POST /bookings` |
-| `/blog` | `apps/client/src/app/blog/page.tsx` | Implementada (100%) | Pendiente Stitch | `GET /blogs`, `GET /tags` |
-| `/blog/[slug]` | `apps/client/src/app/blog/[slug]/page.tsx` | Implementada (100%) | Pendiente Stitch | `GET /blogs/:slug`, `POST /comments` |
+| `/blog` | `apps/client/src/app/blog/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`7dce52d8411a48ff8edeba2ae195f5ec`) | `GET /blogs`, `GET /tags` |
+| `/blog/[slug]` | `apps/client/src/app/blog/[slug]/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`f3ec0d0f02374d2c973b05bbb69656f2`) | `GET /blogs/:slug`, `POST /comments` |
 
 ---
 
@@ -52,8 +52,8 @@ Documento maestro de seguimiento para el inventario de vistas, estado de impleme
 
 | Ruta | Archivo / Componente | Estado Código | Estado Stitch | Conexión Backend |
 |---|---|---|---|---|
-| `/checkout/[bookingId]` | `apps/client/src/app/checkout/[bookingId]/page.tsx` | **Implementada (100%)** | Pendiente Stitch | `POST /stripe/create-checkout-session`, `POST /coupons/validate` |
-| `/bookings/[id]/confirmation` | `apps/client/src/app/bookings/[id]/confirmation/page.tsx` | **Implementada (100%)** | Pendiente Stitch | `GET /bookings/:id`, `GET /stripe/create-checkout-session` |
+| `/checkout/[bookingId]` | `apps/client/src/app/checkout/[bookingId]/page.tsx` | **Implementada (100%)** | **Diseñada en Stitch** (`0b28db72274e49a68589782d0db5fafb`) | `POST /stripe/create-checkout-session`, `POST /coupons/validate` |
+| `/bookings/[id]/confirmation` | `apps/client/src/app/bookings/[id]/confirmation/page.tsx` | **Implementada (100%)** | **Diseñada en Stitch** (`4230d32c5ecd44229b0b2fe6e083d236`) | `GET /bookings/:id`, `GET /stripe/create-checkout-session` |
 
 ---
 
@@ -61,10 +61,10 @@ Documento maestro de seguimiento para el inventario de vistas, estado de impleme
 
 | Ruta | Archivo / Componente | Estado Código | Estado Stitch | Conexión Backend |
 |---|---|---|---|---|
-| `/auth/login` | `apps/client/src/app/auth/login/page.tsx` | Implementada (100%) | Pendiente Stitch | `POST /auth/login`, `GET /auth/google` |
-| `/auth/registro` | `apps/client/src/app/auth/registro/page.tsx` | Implementada (100%) | Pendiente Stitch | `POST /auth/register` |
-| `/auth/recuperar` | `apps/client/src/app/auth/recuperar/page.tsx` | Implementada (100%) | Pendiente Stitch | `POST /auth/forgot-password` |
-| `/auth/reset-password` | `apps/client/src/app/auth/reset-password/page.tsx` | **Implementada (100%)** | Pendiente Stitch | `POST /auth/reset-password` |
+| `/auth/login` | `apps/client/src/app/auth/login/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`b82886325de4490da7e32da70aae1465`) | `POST /auth/login`, `GET /auth/google` |
+| `/auth/registro` | `apps/client/src/app/auth/registro/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`538b3c6739014f6dbfe1150fd6472978`) | `POST /auth/register` |
+| `/auth/recuperar` | `apps/client/src/app/auth/recuperar/page.tsx` | Implementada (100%) | **Diseñada en Stitch** (`6d8e51c814f44b69820097fd41fe6c55`) | `POST /auth/forgot-password` |
+| `/auth/reset-password` | `apps/client/src/app/auth/reset-password/page.tsx` | **Implementada (100%)** | **Diseñada en Stitch** (`7a87b4f065204120ad3e638f5124e8cc`) | `POST /auth/reset-password` |
 
 ---
 

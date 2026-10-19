@@ -12,6 +12,10 @@ import { Public } from '../../common/decorators/public.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { RolesGuard } from '../../common/guards/roles.guard';
+import {
+  CurrentUser,
+  type AuthenticatedUser,
+} from '../../common/decorators/current-user.decorator';
 
 class CreateTagDto {
   @IsString()
@@ -60,7 +64,16 @@ export class TagsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN', 'GUIDE')
   @Post('post/:postId')
-  attach(@Param('postId') postId: string, @Body() dto: AttachTagsDto) {
-    return this.tagsService.attachToPost(postId, dto.tagIds);
+  attach(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('postId') postId: string,
+    @Body() dto: AttachTagsDto,
+  ) {
+    return this.tagsService.attachToPost(
+      postId,
+      dto.tagIds,
+      user.userId,
+      user.role,
+    );
   }
 }

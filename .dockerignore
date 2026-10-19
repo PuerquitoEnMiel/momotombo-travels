@@ -1,8 +1,21 @@
-node_modules
-dist
-.next
+# Ignore nested workspace artifacts everywhere, not just at the repo root
+**/node_modules
+**/dist
+**/.next
+**/coverage
+**/*.log
+**/*.tsbuildinfo
+
 .git
+.husky
+.stitch
+.vscode
+.github
+.agents
+
 .env
-coverage
-*.log
+**/.env
+**/.env.*
+
 *.md
+**/*.md

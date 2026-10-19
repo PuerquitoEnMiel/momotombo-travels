@@ -6,6 +6,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { MapPin, Compass, Star, ArrowRight } from "@phosphor-icons/react";
 import { destinationsService } from "@/services/destinations.service";
+import { CATEGORY_SLUGS, type CategorySlug } from "@/lib/categories";
+import { EASE_OUT_EXPO } from "@/lib/motion";
 import type { Destination } from "@/types/destination";
 
 // High-fidelity fallback imagery for curated destination photography
@@ -17,12 +19,18 @@ const CURATED_IMAGE_MAP: Record<string, string> = {
     "corn-island": "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?q=80&w=1200&auto=format&fit=crop",
 };
 
-const CATEGORY_FILTERS = [
+const CATEGORY_LABELS: Record<CategorySlug, string> = {
+    "volcanes": "Volcanes & Fuego",
+    "playas": "Playas & Surf",
+    "reservas": "Reservas & Selva",
+    "colonial": "Ciudades Coloniales",
+    "aventura": "Aventura Extrema",
+};
+
+// Pills are derived from the canonical seed slugs so they can never drift out of sync.
+const CATEGORY_FILTERS: { label: string; slug: CategorySlug | "" }[] = [
     { label: "Todas las Expediciones", slug: "" },
-    { label: "Ciudades Coloniales", slug: "colonial" },
-    { label: "Volcanes & Aventura", slug: "aventura" },
-    { label: "Playas & Surf", slug: "playa" },
-    { label: "Reservas & Selva", slug: "naturaleza" },
+    ...CATEGORY_SLUGS.map((slug) => ({ label: CATEGORY_LABELS[slug], slug })),
 ];
 
 function getPriceSymbol(level?: string | null): string {
@@ -49,7 +57,7 @@ function getDestinationImage(dest: Destination): string {
 export function FeaturedDestinations() {
     const [destinations, setDestinations] = useState<Destination[]>([]);
     const [loading, setLoading] = useState(true);
-    const [activeFilter, setActiveFilter] = useState("");
+    const [activeFilter, setActiveFilter] = useState<CategorySlug | "">("");
 
     useEffect(() => {
         let isMounted = true;
@@ -80,7 +88,7 @@ export function FeaturedDestinations() {
                 {/* Header Editorial Stitch */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                     <div className="space-y-3 max-w-2xl">
-                        <span className="font-sans font-semibold text-xs tracking-[0.2em] text-tertiary uppercase inline-flex items-center gap-2 bg-surface-container px-3.5 py-1 rounded-full border border-outline-variant/50">
+                        <span className="font-sans font-semibold text-xs tracking-[0.2em] text-tertiary-text uppercase inline-flex items-center gap-2 bg-surface-container px-3.5 py-1 rounded-full border border-outline-variant/50">
                             <Compass size={14} weight="fill" className="text-secondary" />
                             Geografía de Lagos y Fuego
                         </span>
@@ -142,7 +150,8 @@ export function FeaturedDestinations() {
                             const isSpan = (index === 0 || index === 3) && destinations.length > 2;
                             const imageUrl = getDestinationImage(dest);
                             const priceSymbol = getPriceSymbol(dest.priceLevel);
-                            const ratingScore = dest.rating || 4.8;
+                            // No fabricated fallbacks: unrated destinations are shown as "Nuevo".
+                            const ratingScore = dest.rating > 0 ? dest.rating : null;
                             const categoryName = dest.category?.name || "Expedición";
 
                             return (
@@ -150,7 +159,7 @@ export function FeaturedDestinations() {
                                     key={dest.id}
                                     initial={{ opacity: 0, y: 20 }}
                                     whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.08, ease: [0.23, 1, 0.32, 1] }}
+                                    transition={{ delay: index * 0.08, ease: EASE_OUT_EXPO }}
                                     viewport={{ once: true }}
                                     className={`group cursor-pointer active:scale-[0.985] transition-all duration-300 ${
                                         isSpan ? "md:col-span-2 lg:col-span-2" : ""
@@ -176,7 +185,7 @@ export function FeaturedDestinations() {
                                                 src={imageUrl}
                                                 alt={dest.name}
                                                 fill
-                                                className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-104"
+                                                className="object-cover transition-transform duration-700 ease-out-expo group-hover:scale-104"
                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                             />
                                             <div className="absolute inset-0 bg-linear-to-t from-volcano-black/80 via-transparent to-transparent opacity-65 group-hover:opacity-85 transition-opacity duration-300" />
@@ -188,8 +197,14 @@ export function FeaturedDestinations() {
                                                     <span>{typeof dest.location?.address === "string" ? dest.location.address : "Nicaragua"}</span>
                                                 </span>
                                                 <span className="inline-flex items-center gap-1 text-[11px] bg-black/50 backdrop-blur-xs px-2.5 py-1 rounded-md font-mono">
-                                                    <Star size={13} className="text-tertiary" weight="fill" />
-                                                    <span>{ratingScore.toFixed(1)}</span>
+                                                    {ratingScore != null ? (
+                                                        <>
+                                                            <Star size={13} className="text-tertiary" weight="fill" />
+                                                            <span>{ratingScore.toFixed(1)}</span>
+                                                        </>
+                                                    ) : (
+                                                        <span>Nuevo</span>
+                                                    )}
                                                 </span>
                                             </div>
                                         </div>
@@ -200,7 +215,7 @@ export function FeaturedDestinations() {
                                                     {dest.name}
                                                 </h3>
                                                 {dest.activities && dest.activities.length > 0 && (
-                                                    <span className="font-mono text-[11px] text-tertiary uppercase tracking-widest font-semibold">
+                                                    <span className="font-mono text-[11px] text-tertiary-text uppercase tracking-widest font-semibold">
                                                         {dest.activities.length} {dest.activities.length === 1 ? "actividad" : "actividades"}
                                                     </span>
                                                 )}

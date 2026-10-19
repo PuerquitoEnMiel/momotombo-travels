@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,7 +20,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { destinationsService } from "@/services/destinations.service";
-import type { Destination } from "@/types/destination";
+import type { Destination, PriceLevel } from "@/types/destination";
 import { Spinner, Button, Modal, Badge } from "@/components/ui";
 
 export default function AdminDestinationsPage() {
@@ -39,12 +39,23 @@ export default function AdminDestinationsPage() {
     name: "",
     slug: "",
     description: "",
-    categoryName: "Volcanes",
+    categoryId: "",
     priceLevel: "MEDIUM",
     lat: 12.35,
     lng: -86.15,
     imageUrl: "",
   });
+
+  // Real destination categories (id + name) gathered from the catalog itself.
+  const categoryOptions = useMemo(() => {
+    const map = new Map<string, { id: string; name: string }>();
+    for (const d of destinations) {
+      if (d.category?.id && !map.has(d.category.id)) {
+        map.set(d.category.id, { id: d.category.id, name: d.category.name });
+      }
+    }
+    return Array.from(map.values());
+  }, [destinations]);
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== "ADMIN")) {
@@ -72,26 +83,30 @@ export default function AdminDestinationsPage() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const payload: Partial<Destination> = {
+      const payload = {
         name: formData.name,
         slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, "-"),
         description: formData.description,
-        priceLevel: formData.priceLevel as any,
+        priceLevel: formData.priceLevel as PriceLevel,
+        categoryId: formData.categoryId,
         location: {
           lat: Number(formData.lat),
           lng: Number(formData.lng),
           address: "Nicaragua",
         },
+        images: formData.imageUrl
+          ? [{ url: formData.imageUrl, altText: formData.name, isHero: true }]
+          : [],
       };
 
-      await destinationsService.create(payload);
+      await destinationsService.create(payload as unknown as Partial<Destination>);
       toast.success("Destino creado exitosamente");
       setIsModalOpen(false);
       setFormData({
         name: "",
         slug: "",
         description: "",
-        categoryName: "Volcanes",
+        categoryId: "",
         priceLevel: "MEDIUM",
         lat: 12.35,
         lng: -86.15,
@@ -209,11 +224,12 @@ export default function AdminDestinationsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className="inline-flex items-center gap-1 font-mono text-oro-indigena font-bold">
-                          <Star size={12} weight="fill" /> {dest.rating?.toFixed(1) || "5.0"}
+                          <Star size={12} weight="fill" />{" "}
+                          {dest.rating != null ? dest.rating.toFixed(1) : "—"}
                         </span>
                       </td>
                       <td className="px-6 py-4 font-mono text-stone-400">
-                        {dest.priceLevel || "MEDIUM"}
+                        {dest.priceLevel || "—"}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="inline-flex items-center gap-2">
@@ -312,13 +328,67 @@ export default function AdminDestinationsPage() {
                 <label className="block text-stone-400 uppercase font-mono tracking-wider mb-1">
                   Categoría
                 </label>
+                <select
+                  required
+                  value={formData.categoryId}
+                  onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+                  className="w-full bg-[#24211D] border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-oro-indigena"
+                >
+                  <option value="">Selecciona una categoría</option>
+                  {categoryOptions.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                {categoryOptions.length === 0 && (
+                  <p className="text-stone-400 text-[10px] mt-1">
+                    No hay categorías disponibles todavía.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-stone-400 uppercase font-mono tracking-wider mb-1">
+                  Latitud
+                </label>
                 <input
-                  type="text"
-                  value={formData.categoryName}
-                  onChange={(e) => setFormData({ ...formData, categoryName: e.target.value })}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-hidden focus:border-oro-indigena"
+                  required
+                  type="number"
+                  step="any"
+                  value={formData.lat}
+                  onChange={(e) => setFormData({ ...formData, lat: Number(e.target.value) })}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 font-mono text-white focus:outline-hidden focus:border-oro-indigena"
                 />
               </div>
+              <div>
+                <label className="block text-stone-400 uppercase font-mono tracking-wider mb-1">
+                  Longitud
+                </label>
+                <input
+                  required
+                  type="number"
+                  step="any"
+                  value={formData.lng}
+                  onChange={(e) => setFormData({ ...formData, lng: Number(e.target.value) })}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 font-mono text-white focus:outline-hidden focus:border-oro-indigena"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-stone-400 uppercase font-mono tracking-wider mb-1">
+                URL de Imagen
+              </label>
+              <input
+                type="url"
+                placeholder="Ej. https://images.unsplash.com/..."
+                value={formData.imageUrl}
+                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 font-mono text-white focus:outline-hidden focus:border-oro-indigena"
+              />
             </div>
 
             <div className="flex justify-end gap-3 pt-4 border-t border-white/10">

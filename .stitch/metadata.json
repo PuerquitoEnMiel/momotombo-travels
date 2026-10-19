@@ -1,4 +1,4 @@
-﻿{
+{
   "projectId": "14965205256228060440",
   "projectTitle": "Momotombo Travels UI",
   "designSystem": "assets/fb842ef77f7841a69f2fda24a2ac5333",
@@ -38,6 +38,54 @@
       "id": "ac6a84d3c0d14243b96d4507a1c517c6",
       "route": "/itinerarios",
       "title": "Momotombo Travels - Expeditions & Curated Itineraries Dashboard (Mis Itinerarios)",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "0b28db72274e49a68589782d0db5fafb",
+      "route": "/checkout/[bookingId]",
+      "title": "Momotombo Travels - Ultra-Luxury Expedition Checkout & Stripe Payment Portal",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "4230d32c5ecd44229b0b2fe6e083d236",
+      "route": "/bookings/[id]/confirmation",
+      "title": "Momotombo Travels - Ultra-Luxury Expedition Confirmation & Boarding Voucher",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "b82886325de4490da7e32da70aae1465",
+      "route": "/auth/login",
+      "title": "Momotombo Travels - Ultra-Luxury Diplomatic Access & Expeditioner Login Portal",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "538b3c6739014f6dbfe1150fd6472978",
+      "route": "/auth/registro",
+      "title": "Momotombo Travels - Ultra-Luxury Diplomatic Admission & Expeditioner Registration Portal",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "6d8e51c814f44b69820097fd41fe6c55",
+      "route": "/auth/recuperar",
+      "title": "Momotombo Travels - Ultra-Luxury Diplomatic Credential Recovery & Security Clearance Portal",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "7a87b4f065204120ad3e638f5124e8cc",
+      "route": "/auth/reset-password",
+      "title": "Momotombo Travels - Ultra-Luxury Diplomatic Password Reset & Expeditioner Key Re-issuance Terminal",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "7dce52d8411a48ff8edeba2ae195f5ec",
+      "route": "/blog",
+      "title": "Momotombo Travels - Editorial Journal & Field Expedition Chronicles (Cuaderno de Campo)",
+      "deviceType": "DESKTOP"
+    },
+    {
+      "id": "f3ec0d0f02374d2c973b05bbb69656f2",
+      "route": "/blog/[slug]",
+      "title": "Momotombo Travels - Editorial Article & Scientific Field Chronicle (Ficha de Crónica Masaya Crater)",
       "deviceType": "DESKTOP"
     }
   ]

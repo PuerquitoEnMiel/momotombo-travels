@@ -16,11 +16,17 @@ import {
   type AuthenticatedUser,
 } from '../../common/decorators/current-user.decorator';
 import { BookingsService } from '../../modules/bookings/bookings.service';
-import { IsUUID } from 'class-validator';
+import { CouponsService } from '../../modules/coupons/coupons.service';
+import { IsOptional, IsString, IsUUID, Length } from 'class-validator';
 
 class CreateCheckoutDto {
   @IsUUID()
   bookingId: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(3, 40)
+  couponCode?: string;
 }
 
 interface RequestWithRawBody extends Request {
@@ -32,6 +38,7 @@ export class StripeController {
   constructor(
     private readonly stripeService: StripeService,
     private readonly bookings: BookingsService,
+    private readonly coupons: CouponsService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -45,9 +52,35 @@ export class StripeController {
       user.userId,
     );
 
-    // SECURITY: Price comes from DB, never from client
-    const amount = booking.totalPrice;
-    const title = booking.activity?.name ?? 'Expedicion Momotombo Travels';
+    // Optional coupon: validated and redeemed SERVER-SIDE, once per booking
+    if (body.couponCode && !booking.couponId && booking.status === 'PENDING') {
+      const originalAmount = booking.totalPrice.toNumber();
+      const validation = await this.coupons.validate(
+        body.couponCode,
+        user.userId,
+        originalAmount,
+      );
+      await this.coupons.redeem(
+        validation.coupon.id,
+        user.userId,
+        booking.id,
+        originalAmount,
+      );
+      await this.bookings.applyCoupon(
+        booking.id,
+        validation.coupon.id,
+        validation.discount,
+      );
+    }
+
+    const fresh = await this.bookings.getBookingById(
+      body.bookingId,
+      user.userId,
+    );
+
+    // SECURITY: Price comes from DB (coupon already applied), never from client
+    const amount = fresh.totalPrice.toNumber();
+    const title = fresh.activity?.name ?? 'Expedicion Momotombo Travels';
 
     const result = await this.stripeService.createCheckoutSession(
       user.userId,
@@ -55,7 +88,7 @@ export class StripeController {
       amount,
       title,
       user.email,
-      booking.activity?.destination?.name,
+      fresh.activity?.destination?.name,
     );
     return result;
   }

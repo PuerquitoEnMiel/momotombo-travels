@@ -30,7 +30,7 @@ export function Tag({ children, onDismiss, variant = "default", className }: Tag
         <button
           type="button"
           onClick={onDismiss}
-          className="hover:opacity-70 transition-opacity"
+          className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-full hover:opacity-70 transition-opacity"
           aria-label="Quitar"
         >
           <X size={12} weight="bold" />

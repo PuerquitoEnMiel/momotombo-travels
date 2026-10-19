@@ -12,6 +12,12 @@ export interface Booking {
     id: string;
     name: string;
     price?: number;
+    imageUrl?: string;
+    durationHours?: number;
+  };
+  user?: {
+    name?: string;
+    email?: string;
   };
 }
 

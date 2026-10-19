@@ -25,12 +25,13 @@ import {
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import Image from "next/image";
-import dayjs from "dayjs";
-import "dayjs/locale/es";
-import { API_URL, getAuthToken } from "@/lib/api";
-import { Container } from "@/components/ui";
+import { toast } from "sonner";
 
-dayjs.locale("es");
+import { API_URL, getAuthToken } from "@/lib/api";
+import { Badge, Container } from "@/components/ui";
+import { gamificationService, type GamificationData } from "@/services/gamification.service";
+
+
 
 interface ServerItinerary {
   id: string;
@@ -48,13 +49,13 @@ interface CuratedItinerary {
   location: string;
   status: "DRAFT" | "CONFIRMED" | "COMPLETED";
   statusLabel: string;
-  duration: string;
+  duration?: string;
   activitiesCount: number;
   difficulty: string;
   progress?: number;
-  description: string;
+  description?: string;
   image: string;
-  logistics: string[];
+  logistics?: string[];
   badgeEarned?: string;
 }
 
@@ -65,13 +66,11 @@ const FEATURED_EXPEDITION = {
   subtitle: "Travesía Lacustre & Cráteres Nubosos",
   dates: "18 - 22 Noviembre 2025 (5 Días / 4 Noches)",
   location: "Reserva de Biósfera Isla de Ometepe · Volcanes Concepción & Maderas",
-  status: "Confirmado · Salida en 12 Días",
   image:
     "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1200&q=80",
   route: ["Managua Heliport", "Granada Colonial", "Volcán Masaya Nocturno", "Laguna Maderas"],
   tags: [
     { label: "Vuelo Helicóptero H130", icon: AirplaneTakeoff },
-    { label: "Dr. Carlos Marenco (INETER)", icon: ShieldCheck },
     { label: "Villa Privada de Teca", icon: House },
     { label: "Cata Centenario", icon: Wine },
   ],
@@ -134,6 +133,7 @@ const CURATED_SAMPLE_ITINERARIES: CuratedItinerary[] = [
 export default function ItinerariesDashboard() {
   const router = useRouter();
   const [serverItineraries, setServerItineraries] = useState<ServerItinerary[]>([]);
+  const [gamification, setGamification] = useState<GamificationData | null>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"ALL" | "CONFIRMED" | "DRAFT" | "COMPLETED">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
@@ -155,28 +155,56 @@ export default function ItinerariesDashboard() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+
+    gamificationService
+      .me()
+      .then(setGamification)
+      .catch(() => setGamification(null));
   }, [router]);
 
-  // Combine user created itineraries with curated expedition previews
+  // User-created itineraries only. Sample previews render in their own
+  // "Ejemplos" section, never mixed with real data.
   const allItineraries = useMemo(() => {
-    const convertedServerItems: CuratedItinerary[] = serverItineraries.map((it) => ({
+    return serverItineraries.map((it) => ({
       id: it.id,
       title: it.title,
       location: "Nicaragua · Ruta Personalizada",
-      status: (it.status === "CONFIRMED" ? "CONFIRMED" : "DRAFT") as "DRAFT" | "CONFIRMED",
-      statusLabel: it.status === "CONFIRMED" ? "Confirmada" : "Borrador IA · En Edición",
-      duration: `${it.days?.length || 3} Días`,
-      activitiesCount: it.days?.reduce((acc, d) => acc + (d.activities?.length || 2), 0) || 5,
+      status: (it.status === "CONFIRMED"
+        ? "CONFIRMED"
+        : it.status === "COMPLETED"
+          ? "COMPLETED"
+          : "DRAFT") as "DRAFT" | "CONFIRMED" | "COMPLETED",
+      statusLabel:
+        it.status === "CONFIRMED"
+          ? "Confirmada"
+          : it.status === "COMPLETED"
+            ? "Completada"
+            : "Borrador · En Edición",
+      duration: it.days?.length ? `${it.days.length} Días` : undefined,
+      activitiesCount: it.days?.reduce((acc, d) => acc + (d.activities?.length || 0), 0) ?? 0,
       difficulty: "Personalizado",
-      progress: it.status === "CONFIRMED" ? 100 : 70,
-      description: "Itinerario creado con la asistencia inteligente de Kary IA y curaduría territorial.",
       image:
         "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80",
-      logistics: ["Guía Local Autorizado", "Transporte Terrestre", "Soporte Kary 24/7"],
+      progress: undefined as number | undefined,
+      badgeEarned: undefined as string | undefined,
+      logistics: undefined as string[] | undefined,
+      description: undefined as string | undefined,
     }));
-
-    return [...convertedServerItems, ...CURATED_SAMPLE_ITINERARIES];
   }, [serverItineraries]);
+
+  const statusCounts = useMemo(
+    () => ({
+      CONFIRMED: allItineraries.filter((it) => it.status === "CONFIRMED").length,
+      DRAFT: allItineraries.filter((it) => it.status === "DRAFT").length,
+      COMPLETED: allItineraries.filter((it) => it.status === "COMPLETED").length,
+    }),
+    [allItineraries]
+  );
+
+  const totalDays = useMemo(
+    () => serverItineraries.reduce((acc, it) => acc + (it.days?.length || 0), 0),
+    [serverItineraries]
+  );
 
   // Filtered & Searched Itineraries
   const filteredItineraries = useMemo(() => {
@@ -278,7 +306,7 @@ export default function ItinerariesDashboard() {
                     : "bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant/40"
                 }`}
               >
-                Confirmadas &amp; Activas (2)
+                Confirmadas &amp; Activas ({statusCounts.CONFIRMED})
               </button>
               <button
                 type="button"
@@ -289,7 +317,7 @@ export default function ItinerariesDashboard() {
                     : "bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant/40"
                 }`}
               >
-                Borradores de Planificación (1)
+                Borradores de Planificación ({statusCounts.DRAFT})
               </button>
               <button
                 type="button"
@@ -300,14 +328,14 @@ export default function ItinerariesDashboard() {
                     : "bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant/40"
                 }`}
               >
-                Completadas (1)
+                Completadas ({statusCounts.COMPLETED})
               </button>
             </div>
 
             {/* Search Bar and Sorter Dropdown */}
             <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
               <div className="relative w-full sm:w-72">
-                <span className="absolute inset-y-0 left-3 flex items-center text-outline pointer-events-none">
+                <span className="absolute inset-y-0 left-3 flex items-center text-text-muted pointer-events-none">
                   <MagnifyingGlass size={18} />
                 </span>
                 <input
@@ -315,7 +343,7 @@ export default function ItinerariesDashboard() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Buscar por destino o actividad..."
-                  className="w-full h-10 pl-10 pr-4 bg-surface-container-lowest rounded-xl border border-outline-variant/60 text-xs text-on-surface placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-hidden"
+                  className="w-full h-10 pl-10 pr-4 bg-surface-container-lowest rounded-xl border border-outline-variant/60 text-xs text-on-surface placeholder:text-text-muted focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-hidden"
                 />
               </div>
 
@@ -344,19 +372,21 @@ export default function ItinerariesDashboard() {
             <div className="bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/50 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="font-mono text-xs uppercase tracking-widest text-outline">Estado Operativo</span>
-                  <h3 className="text-xs font-bold text-on-surface-variant mt-1">
+                  <span className="font-mono text-xs uppercase tracking-widest text-text-muted">Estado Operativo</span>
+                  <h2 className="text-xs font-bold text-on-surface-variant mt-1">
                     Expediciones en Curso / Próximas
-                  </h3>
+                  </h2>
                 </div>
                 <div className="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary">
                   <Mountains size={22} weight="duotone" />
                 </div>
               </div>
               <div className="mt-4">
-                <div className="font-serif text-2xl font-bold text-primary">2 Rutas Activas</div>
+                <div className="font-serif text-2xl font-bold text-primary">
+                  {statusCounts.CONFIRMED} {statusCounts.CONFIRMED === 1 ? "Ruta Activa" : "Rutas Activas"}
+                </div>
                 <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                  Logística e itinerarios validados con vulcanólogos de INETER y custodios territoriales.
+                  Itinerarios con estado confirmado en tu bitácora personal.
                 </p>
               </div>
             </div>
@@ -365,17 +395,17 @@ export default function ItinerariesDashboard() {
             <div className="bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/50 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="font-mono text-xs uppercase tracking-widest text-outline">Densidad de Travesía</span>
-                  <h3 className="text-xs font-bold text-on-surface-variant mt-1">Días Totales en Ruta</h3>
+                  <span className="font-mono text-xs uppercase tracking-widest text-text-muted">Densidad de Travesía</span>
+                  <h2 className="text-xs font-bold text-on-surface-variant mt-1">Días Totales en Ruta</h2>
                 </div>
                 <div className="w-10 h-10 rounded-xl bg-secondary-container/60 flex items-center justify-center text-secondary">
                   <Compass size={22} weight="duotone" />
                 </div>
               </div>
               <div className="mt-4">
-                <div className="font-serif text-2xl font-bold text-on-surface">14 Días</div>
+                <div className="font-serif text-2xl font-bold text-on-surface">{totalDays} Días</div>
                 <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                  Planificados en 6 departamentos: Rivas, Granada, Masaya, León, Chinandega y Madriz.
+                  Suma de los días planificados en tus itinerarios guardados.
                 </p>
               </div>
             </div>
@@ -384,18 +414,32 @@ export default function ItinerariesDashboard() {
             <div className="bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/50 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="font-mono text-xs uppercase tracking-widest text-oro-indigena">Membresía &amp; Santuario</span>
-                  <h3 className="text-xs font-bold text-on-surface-variant mt-1">Prestigio y Recompensas</h3>
+                  <span className="font-mono text-xs uppercase tracking-widest text-tertiary-text">Puntos &amp; Medallas</span>
+                  <h2 className="text-xs font-bold text-on-surface-variant mt-1">Prestigio y Recompensas</h2>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-tertiary-container/20 flex items-center justify-center text-oro-indigena">
+                <div className="w-10 h-10 rounded-xl bg-tertiary-container/20 flex items-center justify-center text-tertiary-text">
                   <Trophy size={22} weight="duotone" />
                 </div>
               </div>
               <div className="mt-4">
-                <div className="font-serif text-2xl font-bold text-oro-indigena">+1,850 XP</div>
-                <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                  3 Medallas de Campo por desbloquear · Rango: Explorador Mayor de la Cordillera.
-                </p>
+                {gamification ? (
+                  <>
+                    <div className="font-serif text-2xl font-bold text-tertiary-text">
+                      {gamification.points} XP
+                    </div>
+                    <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
+                      {gamification.earnedBadges.length} Medallas ganadas · {gamification.availableBadges.length} por
+                      desbloquear.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <div className="font-serif text-2xl font-bold text-tertiary-text">Sin datos aún</div>
+                    <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
+                      Tus puntos y medallas aparecerán aquí a medida que completes itinerarios.
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -411,10 +455,11 @@ export default function ItinerariesDashboard() {
             <div className="flex items-center gap-2">
               <Compass size={20} className="text-primary" weight="fill" />
               <h2 className="font-serif text-xl font-bold text-on-surface">
-                Expedición Insignia Inminente
+                Ejemplo de Expedición
               </h2>
+              <Badge variant="warning">Ejemplo</Badge>
             </div>
-            <span className="font-mono text-xs text-outline uppercase tracking-wider">
+            <span className="font-mono text-xs text-text-muted uppercase tracking-wider">
               Código de Misión: {FEATURED_EXPEDITION.code}
             </span>
           </div>
@@ -431,14 +476,10 @@ export default function ItinerariesDashboard() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-inverse-surface/90 via-inverse-surface/30 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-inverse-surface/30 lg:to-inverse-surface/90" />
 
-                {/* Floating Live Status Badge */}
+                {/* Sample Content Marker (not a live status) */}
                 <div className="absolute top-6 left-6 inline-flex items-center gap-2.5 px-4 py-2 bg-inverse-surface/90 backdrop-blur-md rounded-full border border-white/20 shadow-md">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-                  </span>
                   <span className="font-mono text-xs text-white tracking-widest uppercase font-bold">
-                    {FEATURED_EXPEDITION.status}
+                    Ejemplo · Vista Previa
                   </span>
                 </div>
 
@@ -467,7 +508,7 @@ export default function ItinerariesDashboard() {
 
                   {/* Route Path Stepper Flow */}
                   <div className="space-y-2 pt-2 border-t border-outline-variant/40">
-                    <div className="font-mono text-[11px] uppercase tracking-wider text-outline font-semibold">
+                    <div className="font-mono text-[11px] uppercase tracking-wider text-text-muted font-semibold">
                       Itinerario de Vuelo y Tránsito
                     </div>
                     <div className="flex items-center text-xs text-on-surface-variant flex-wrap gap-y-1.5 gap-x-2">
@@ -500,29 +541,30 @@ export default function ItinerariesDashboard() {
                 {/* Action CTAs Cluster */}
                 <div className="space-y-3 pt-8">
                   <Link
-                    href={`/planificar/${FEATURED_EXPEDITION.id}`}
+                    href="/planificar"
                     className="w-full flex items-center justify-center gap-2 h-12 bg-primary hover:bg-primary-hover text-on-primary font-semibold text-xs tracking-wide rounded-xl shadow-md transition-all duration-200"
                   >
-                    <span>Abrir Cuaderno de Ruta</span>
+                    <span>Diseñar una Ruta Similar</span>
                     <ArrowRight size={16} />
                   </Link>
 
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"
-                      onClick={() => alert("Dossier & Voucher PDF descargado exitosamente.")}
+                      onClick={() => toast.info("Próximamente")}
                       className="flex items-center justify-center gap-1.5 h-10 px-3 bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant/60 text-xs font-semibold rounded-xl transition-colors"
                     >
                       <DownloadSimple size={14} />
                       <span>Voucher PDF</span>
                     </button>
-                    <Link
-                      href={`/itinerarios/${FEATURED_EXPEDITION.id}/compartir`}
+                    <button
+                      type="button"
+                      onClick={() => toast.info("Próximamente")}
                       className="flex items-center justify-center gap-1.5 h-10 px-3 bg-surface-container-lowest hover:bg-surface-container text-on-surface border border-outline-variant/60 text-xs font-semibold rounded-xl transition-colors"
                     >
                       <ShareNetwork size={14} />
                       <span>Compartir Ruta</span>
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -542,10 +584,10 @@ export default function ItinerariesDashboard() {
                 Tus Itinerarios Curados &amp; Archivo de Expediciones
               </h2>
               <p className="text-xs text-on-surface-variant mt-0.5">
-                Travesías diseñadas a medida, sincronizadas en tiempo real con monitoreo geofísico.
+                Itinerarios guardados en tu cuenta, listos para editar o compartir.
               </p>
             </div>
-            <span className="text-xs font-mono text-outline">
+            <span className="text-xs font-mono text-text-muted">
               {filteredItineraries.length} Rutas Listadas
             </span>
           </div>
@@ -621,10 +663,14 @@ export default function ItinerariesDashboard() {
                         </h3>
 
                         <div className="flex items-center gap-3 text-xs text-on-surface-variant font-medium">
-                          <span className="flex items-center gap-1">
-                            <Clock size={14} /> {it.duration}
-                          </span>
-                          <span>·</span>
+                          {it.duration && (
+                            <>
+                              <span className="flex items-center gap-1">
+                                <Clock size={14} /> {it.duration}
+                              </span>
+                              <span>·</span>
+                            </>
+                          )}
                           <span>{it.activitiesCount} actividades</span>
                           <span>·</span>
                           <span className="text-primary font-semibold">{it.difficulty}</span>
@@ -634,7 +680,7 @@ export default function ItinerariesDashboard() {
                         {it.progress && it.status === "DRAFT" && (
                           <div className="space-y-1.5 pt-1">
                             <div className="flex justify-between text-[11px] font-mono">
-                              <span className="text-outline uppercase">Completitud del Dossier</span>
+                              <span className="text-text-muted uppercase">Completitud del Dossier</span>
                               <span className="text-primary font-bold">{it.progress}% planificado</span>
                             </div>
                             <div className="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
@@ -649,9 +695,9 @@ export default function ItinerariesDashboard() {
                         {/* Earned Badge (if completed) */}
                         {it.badgeEarned && (
                           <div className="p-3 bg-tertiary-container/15 rounded-xl border border-oro-indigena/30 flex items-center gap-3">
-                            <Medal size={22} weight="duotone" className="text-oro-indigena shrink-0" />
+                            <Medal size={22} weight="duotone" className="text-tertiary-text shrink-0" />
                             <div>
-                              <span className="font-mono text-[10px] uppercase tracking-wider text-oro-indigena font-bold block">
+                              <span className="font-mono text-[10px] uppercase tracking-wider text-tertiary-text font-bold block">
                                 Medalla Desbloqueada
                               </span>
                               <span className="text-xs font-semibold text-on-surface">
@@ -664,7 +710,7 @@ export default function ItinerariesDashboard() {
                         {/* Logistics Tags (if confirmed) */}
                         {it.status === "CONFIRMED" && it.logistics && (
                           <div className="space-y-1.5 pt-1">
-                            {it.logistics.map((log, idx) => (
+                            {it.logistics.map((log: string, idx: number) => (
                               <div key={idx} className="flex items-center gap-2 text-xs text-on-surface">
                                 <span className="w-1.5 h-1.5 rounded-full bg-primary" />
                                 <span>{log}</span>
@@ -673,9 +719,11 @@ export default function ItinerariesDashboard() {
                           </div>
                         )}
 
-                        <p className="text-xs text-on-surface-variant leading-relaxed line-clamp-2">
-                          {it.description}
-                        </p>
+                        {it.description && (
+                          <p className="text-xs text-on-surface-variant leading-relaxed line-clamp-2">
+                            {it.description}
+                          </p>
+                        )}
                       </div>
                     </div>
 
@@ -698,7 +746,7 @@ export default function ItinerariesDashboard() {
                       <div className="flex items-center gap-1">
                         <Link
                           href={`/itinerarios/${it.id}/compartir`}
-                          className="p-2 text-outline hover:text-primary transition-colors rounded-lg"
+                          className="p-2 text-text-muted hover:text-primary transition-colors rounded-lg"
                           title="Compartir"
                           aria-label="Compartir"
                         >
@@ -706,8 +754,8 @@ export default function ItinerariesDashboard() {
                         </Link>
                         <button
                           type="button"
-                          onClick={() => alert(`Dossier PDF generado para: ${it.title}`)}
-                          className="p-2 text-outline hover:text-primary transition-colors rounded-lg"
+                          onClick={() => toast.info("Próximamente")}
+                          className="p-2 text-text-muted hover:text-primary transition-colors rounded-lg"
                           title="Descargar PDF"
                           aria-label="Descargar PDF"
                         >
@@ -724,7 +772,32 @@ export default function ItinerariesDashboard() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 5. AI CONCIERGE ROUTE OPTIMIZATION BOX (Basalt + Magma Glow) */}
+      {/* 5. SAMPLE ITINERARIES (Clearly labeled demo content) */}
+      {/* ========================================================================= */}
+      <section className="pb-10">
+        <Container size="lg" className="space-y-6">
+          <div className="border-b border-outline-variant/40 pb-3">
+            <div className="flex items-center gap-2">
+              <h2 className="font-serif text-2xl font-bold text-on-surface">
+                Ejemplos de Itinerarios
+              </h2>
+              <Badge variant="warning">Ejemplo</Badge>
+            </div>
+            <p className="text-xs text-on-surface-variant mt-0.5">
+              Contenido de demostración para inspirarte. No son rutas reales ni reservables.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {CURATED_SAMPLE_ITINERARIES.map((it) => (
+              <SampleItineraryCard key={it.id} it={it} />
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 6. AI CONCIERGE ROUTE OPTIMIZATION BOX (Basalt + Magma Glow) */}
       {/* ========================================================================= */}
       <section className="py-6 pb-16">
         <Container size="lg">
@@ -793,5 +866,71 @@ export default function ItinerariesDashboard() {
         </Container>
       </section>
     </div>
+  );
+}
+
+function SampleItineraryCard({ it }: { it: CuratedItinerary }) {
+  return (
+    <article className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/50 shadow-xs flex flex-col justify-between">
+      <div>
+        <div className="relative h-56 bg-inverse-surface overflow-hidden">
+          <Image src={it.image} alt={it.title} fill className="object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-transparent to-black/20" />
+
+          <div className="absolute top-4 right-4">
+            <Badge variant="warning">Ejemplo</Badge>
+          </div>
+
+          <div className="absolute bottom-4 left-4 text-white">
+            <span className="font-mono text-xs uppercase tracking-wider text-white/90 font-semibold">
+              {it.location}
+            </span>
+          </div>
+        </div>
+
+        <div className="p-6 space-y-4">
+          <h3 className="font-serif text-lg font-bold text-on-surface leading-snug">{it.title}</h3>
+
+          <div className="flex items-center gap-3 text-xs text-on-surface-variant font-medium">
+            {it.duration && (
+              <>
+                <span className="flex items-center gap-1">
+                  <Clock size={14} /> {it.duration}
+                </span>
+                <span>·</span>
+              </>
+            )}
+            <span>{it.activitiesCount} actividades</span>
+            <span>·</span>
+            <span className="text-primary font-semibold">{it.difficulty}</span>
+          </div>
+
+          {it.description && (
+            <p className="text-xs text-on-surface-variant leading-relaxed line-clamp-2">{it.description}</p>
+          )}
+
+          {it.logistics && (
+            <div className="space-y-1.5 pt-1">
+              {it.logistics.map((log, idx) => (
+                <div key={idx} className="flex items-center gap-2 text-xs text-on-surface">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  <span>{log}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="p-6 pt-0 border-t border-outline-variant/40 mt-4">
+        <Link
+          href="/planificar"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:gap-2.5 transition-all"
+        >
+          <span>Crear un itinerario similar</span>
+          <ArrowRight size={14} />
+        </Link>
+      </div>
+    </article>
   );
 }

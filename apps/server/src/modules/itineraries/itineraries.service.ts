@@ -11,7 +11,9 @@ export class ItinerariesService {
       include: {
         days: {
           include: {
-            items: true,
+            items: {
+              orderBy: { position: 'asc' },
+            },
           },
         },
       },
@@ -27,6 +29,7 @@ export class ItinerariesService {
           include: {
             items: {
               include: { activity: true },
+              orderBy: { position: 'asc' },
             },
           },
           orderBy: { dayNumber: 'asc' },
@@ -55,7 +58,7 @@ export class ItinerariesService {
   async reorderItems(
     userId: string,
     itineraryId: string,
-    items: { id: string; itineraryDayId: string }[],
+    items: { id: string; itineraryDayId: string; position?: number }[],
   ) {
     // Verifica si el itinerario pertenece al usuario
     const itinerary = await this.prisma.itinerary.findUnique({
@@ -64,13 +67,63 @@ export class ItinerariesService {
 
     if (!itinerary) throw new NotFoundException('Itinerario no encontrado');
 
-    // Actualiza cada item con su nuevo dia (columna en dnd)
+    // Verifica que cada item y cada dia destino pertenezcan a este itinerario
+    // (evita que se muevan items ajenos o a dias de otro itinerario)
+    const itemIds = [...new Set(items.map((item) => item.id))];
+    const dayIds = [...new Set(items.map((item) => item.itineraryDayId))];
+
+    const [dbItems, dbDays] = await Promise.all([
+      this.prisma.itineraryItem.findMany({
+        where: { id: { in: itemIds } },
+        select: { id: true, day: { select: { itineraryId: true } } },
+      }),
+      this.prisma.itineraryDay.findMany({
+        where: { id: { in: dayIds } },
+        select: { id: true, itineraryId: true },
+      }),
+    ]);
+
+    const itemIdsInItinerary = new Set(
+      dbItems
+        .filter((item) => item.day.itineraryId === itineraryId)
+        .map((item) => item.id),
+    );
+    const dayIdsInItinerary = new Set(
+      dbDays
+        .filter((day) => day.itineraryId === itineraryId)
+        .map((day) => day.id),
+    );
+
+    const allValid =
+      itemIds.every((id) => itemIdsInItinerary.has(id)) &&
+      dayIds.every((id) => dayIdsInItinerary.has(id));
+
+    if (!allValid) throw new NotFoundException('Itinerario no encontrado');
+
+    // Actualiza cada item con su nuevo dia y posicion de forma atomica.
+    // El orden del array define la posicion dentro de cada dia.
+    const positionByItem = new Map<string, number>();
+    const perDayCount = new Map<string, number>();
     for (const item of items) {
-      await this.prisma.itineraryItem.update({
-        where: { id: item.id },
-        data: { itineraryDayId: item.itineraryDayId },
-      });
+      const next = perDayCount.get(item.itineraryDayId) ?? 0;
+      positionByItem.set(
+        item.id,
+        typeof item.position === 'number' ? item.position : next,
+      );
+      perDayCount.set(item.itineraryDayId, next + 1);
     }
+
+    await this.prisma.$transaction(
+      items.map((item) =>
+        this.prisma.itineraryItem.update({
+          where: { id: item.id },
+          data: {
+            itineraryDayId: item.itineraryDayId,
+            position: positionByItem.get(item.id) ?? 0,
+          },
+        }),
+      ),
+    );
 
     return { success: true };
   }

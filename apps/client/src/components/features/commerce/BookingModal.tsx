@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Calendar, Users, CheckCircle } from "@phosphor-icons/react";
@@ -9,6 +9,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { bookingsService } from "@/services/bookings.service";
 import { cn } from "@/lib/cn";
+import { formatMoney } from "@/lib/money";
+import { MAX_GUESTS } from "@/lib/booking";
 import { ApiException } from "@/types/api";
 
 interface ActivityOption {
@@ -24,22 +26,43 @@ interface BookingModalProps {
   activities: ActivityOption[];
   destinationId?: string;
   destinationName?: string;
+  /** Initial values seeded from the caller (e.g. the destination page sidebar). */
+  initialDate?: string;
+  initialGuests?: number;
 }
 
-export function BookingModal({ isOpen, onClose, activities, destinationName }: BookingModalProps) {
+/** Local-timezone date as YYYY-MM-DD (toISOString() is UTC and can be off by one day). */
+function localISODate(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function BookingModal({ isOpen, onClose, activities, destinationName, initialDate, initialGuests }: BookingModalProps) {
   const router = useRouter();
   const { t } = useTranslation("explore", { keyPrefix: "booking" });
   const { isAuthenticated } = useAuth();
   const toast = useToast();
   const [selectedActivity, setSelectedActivity] = useState(activities[0]?.id || "");
-  const [date, setDate] = useState("");
-  const [guests, setGuests] = useState(1);
+  const [date, setDate] = useState(initialDate ?? "");
+  const [guests, setGuests] = useState(initialGuests ?? 1);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [createdBookingId, setCreatedBookingId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
+  // Re-seed the form from the caller's values whenever the modal opens.
+  useEffect(() => {
+    if (!isOpen) return;
+    setDate(initialDate ?? "");
+    setGuests(initialGuests ?? 1);
+  }, [isOpen, initialDate, initialGuests]);
+
   const activity = activities.find((a) => a.id === selectedActivity);
+  // Activities may have no published price yet: show "A consultar" instead of
+  // a fake $0 total and let the request through without a client-side total.
+  const hasPrice = typeof activity?.price === "number" && activity.price > 0;
   const totalPrice = (activity?.price || 0) * guests;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,7 +78,7 @@ export function BookingModal({ isOpen, onClose, activities, destinationName }: B
         activityId: selectedActivity,
         date,
         guests,
-        totalPrice,
+        totalPrice: hasPrice ? totalPrice : undefined,
       });
       if (res?.id) {
         setCreatedBookingId(res.id);
@@ -130,6 +153,11 @@ export function BookingModal({ isOpen, onClose, activities, destinationName }: B
 
           <fieldset>
             <legend className="block text-sm font-medium text-on-surface mb-2">{t("selectActivity")}</legend>
+            {activities.length === 0 ? (
+              <p className="p-4 rounded-xl border border-outline-variant bg-surface-container-low text-sm text-on-surface-variant">
+                {t("noActivities")}
+              </p>
+            ) : (
             <div className="space-y-2">
               {activities.map((act) => {
                 const isSelected = selectedActivity === act.id;
@@ -154,11 +182,14 @@ export function BookingModal({ isOpen, onClose, activities, destinationName }: B
                       />
                       <span className="font-medium text-on-surface text-sm">{act.name}</span>
                     </div>
-                    {act.price && <Badge variant="secondary">${act.price}</Badge>}
+                    <Badge variant="secondary">
+                      {act.price ? formatMoney(act.price) : t("priceOnRequest")}
+                    </Badge>
                   </label>
                 );
               })}
             </div>
+            )}
           </fieldset>
 
           <div className="grid grid-cols-2 gap-4">
@@ -169,16 +200,16 @@ export function BookingModal({ isOpen, onClose, activities, destinationName }: B
               value={date}
               onChange={(e) => setDate(e.target.value)}
               iconLeft={<Calendar size={18} />}
-              min={new Date().toISOString().split("T")[0]}
+              min={localISODate()}
             />
             <Input
               type="number"
               label={t("guests")}
               required
               min={1}
-              max={10}
+              max={MAX_GUESTS}
               value={guests}
-              onChange={(e) => setGuests(Math.max(1, parseInt(e.target.value) || 1))}
+              onChange={(e) => setGuests(Math.min(MAX_GUESTS, Math.max(1, parseInt(e.target.value) || 1)))}
               iconLeft={<Users size={18} />}
             />
           </div>
@@ -186,7 +217,9 @@ export function BookingModal({ isOpen, onClose, activities, destinationName }: B
           <div className="bg-surface-container-low rounded-2xl p-4 space-y-2">
             <div className="flex justify-between items-center text-sm">
               <span className="text-on-surface-variant">{t("pricePerPerson")}</span>
-              <span className="font-medium text-on-surface">${activity?.price || 0} USD</span>
+              <span className="font-medium text-on-surface">
+                {hasPrice ? formatMoney(activity.price as number) : t("priceOnRequest")}
+              </span>
             </div>
             <div className="flex justify-between items-center text-sm">
               <span className="text-on-surface-variant">{t("totalGuests")}</span>
@@ -194,12 +227,14 @@ export function BookingModal({ isOpen, onClose, activities, destinationName }: B
             </div>
             <div className="border-t border-outline-variant pt-3 flex justify-between items-center">
               <span className="font-bold text-on-surface">{t("totalToPay")}</span>
-              <span className="font-bold text-2xl text-secondary">${totalPrice} USD</span>
+              <span className="font-bold text-2xl text-secondary">
+                {hasPrice ? formatMoney(totalPrice) : t("priceOnRequest")}
+              </span>
             </div>
           </div>
 
-          <Button type="submit" variant="primary" size="lg" fullWidth loading={loading} disabled={!selectedActivity || !date} id="btn-booking-submit">
-            {loading ? t("success") : t("payButton")}
+          <Button type="submit" variant="primary" size="lg" fullWidth loading={loading} disabled={!selectedActivity || !date || loading} id="btn-booking-submit">
+            {loading ? t("submitting") : t("payButton")}
           </Button>
         </form>
       )}

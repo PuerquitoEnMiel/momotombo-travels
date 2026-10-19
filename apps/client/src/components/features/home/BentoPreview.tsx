@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Sparkle } from "@phosphor-icons/react";
+import { EASE_OUT_EXPO } from "@/lib/motion";
 
 export function BentoPreview() {
     const containerVariants = {
@@ -23,7 +24,7 @@ export function BentoPreview() {
             y: 0,
             transition: {
                 duration: 0.6,
-                ease: [0.23, 1, 0.32, 1] as const
+                ease: EASE_OUT_EXPO
             }
         }
     };
@@ -52,7 +53,7 @@ export function BentoPreview() {
                         </h2>
                     </div>
                     <Link
-                        href="/explorar/ometepe"
+                        href="/explorar/isla-de-ometepe"
                         id="bento-details-button"
                         className="inline-flex items-center gap-2 text-oro-indigena hover:text-white transition-colors duration-200 font-sans font-semibold text-xs tracking-wider uppercase group"
                     >
@@ -173,7 +174,7 @@ export function BentoPreview() {
                 {/* Mobile detail link */}
                 <div className="mt-8 text-center md:hidden">
                     <Link
-                        href="/explorar/ometepe"
+                        href="/explorar/isla-de-ometepe"
                         className="inline-flex items-center gap-1.5 text-white hover:text-oro-indigena transition-colors duration-200 font-sans font-semibold text-xs tracking-wider uppercase"
                     >
                         <span>Ver Itinerario Completo</span>

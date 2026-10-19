@@ -11,7 +11,7 @@ export default function NotFound() {
         <div className="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
           <Compass size={40} weight="duotone" />
         </div>
-        <p className="text-sm font-bold uppercase tracking-widest text-oro-indigena mb-3">
+        <p className="text-sm font-bold uppercase tracking-widest text-tertiary-text mb-3">
           Error 404
         </p>
         <h1 className="font-serif text-4xl md:text-5xl font-bold text-on-surface mb-4 text-balance">

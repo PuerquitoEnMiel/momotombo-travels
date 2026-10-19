@@ -7,6 +7,14 @@ export interface AiSearchResponse {
   summary: string;
 }
 
+export interface FavoriteEntry {
+  id: string;
+  userId: string;
+  destinationId: string;
+  destination?: Destination;
+  createdAt?: string;
+}
+
 export const destinationsService = {
   async list(categorySlug?: string): Promise<Destination[]> {
     const endpoint = categorySlug
@@ -36,5 +44,24 @@ export const destinationsService = {
 
   async delete(id: string): Promise<{ success: boolean }> {
     return api.delete<{ success: boolean }>(`${API_URL}/destinations/${id}`);
+  },
+
+  // Favorites — REST resource `/favorites` (matches the Prisma `Favorite`
+  // model). The current user is resolved from the auth token server-side.
+  async listFavorites(): Promise<FavoriteEntry[]> {
+    return api.get<FavoriteEntry[]>(`${API_URL}/favorites`);
+  },
+
+  async addFavorite(destinationId: string): Promise<FavoriteEntry> {
+    return api.post<FavoriteEntry>(
+      `${API_URL}/favorites/${encodeURIComponent(destinationId)}`,
+      {}
+    );
+  },
+
+  async removeFavorite(destinationId: string): Promise<{ success: boolean }> {
+    return api.delete<{ success: boolean }>(
+      `${API_URL}/favorites/${encodeURIComponent(destinationId)}`
+    );
   },
 };

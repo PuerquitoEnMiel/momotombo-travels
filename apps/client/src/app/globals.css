@@ -26,6 +26,7 @@
   /* === Heritage & Energy Accents === */
   --color-ocean-deep: #00386e; /* Deep Nica Oceanic Blue */
   --color-nica-blue: #004f96;
+  --color-nica-white: #ffffff;
   --color-volcan-magma: #ff4500; /* Active Volcanic Magma */
   --color-sunset-orange: #ff7849;
   --color-colonial-cream: #faf3e0;
@@ -34,8 +35,12 @@
   --color-oro-indigena: #c49a45;
   --color-selva-esmeralda: #1e3b2f;
 
+  /* WCAG-safe text companions (the accents above fail AA as text on light) */
+  --color-tertiary-text: #7a5c17; /* gold for text/icons on light surfaces */
+  --color-text-muted: #6f5b56; /* muted body text, >= 4.5:1 on warm canvas */
+
   /* === Surface system (Warm Travertine & Basalt) === */
-  --color-background: #fbf9f5; /* Warm Travertine */
+  --color-background: #fff8f4; /* Warm Travertine (matches .stitch mockups) */
   --color-on-background: #1e1b18; /* Basalt Charcoal */
   --color-on-surface: #1e1b18;
   --color-on-surface-variant: #55423e;
@@ -76,20 +81,20 @@
   --color-primary-rgb: 138, 56, 36;
   --color-volcan-magma-rgb: 255, 69, 0;
   --color-oro-indigena-rgb: 196, 154, 69;
-  --color-volcano-black-rgb: 30, 27, 24;
+  --color-volcano-black-rgb: 24, 21, 19;
   --color-success-rgb: 27, 135, 63;
   --color-danger-rgb: 200, 30, 30;
   --color-info-rgb: 0, 56, 110;
   --color-secondary-rgb: 30, 59, 47;
 
-  /* === Border radius === */
-  --radius-xs: 0.375rem;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-  --radius-2xl: 2rem;
-  --radius-3xl: 2.5rem;
+  /* === Border radius (Tailwind defaults: cards run 16-24px per DESIGN.md) === */
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
   --radius-pill: 9999px;
 
   /* === Shadow / elevation === */
@@ -140,27 +145,11 @@
 }
 
 :root {
-  --background: #fbf9f5;
+  /* Single light canvas — matches the .stitch mockups (#fff8f4) */
+  --background: #fff8f4;
   --foreground: #1e1b18;
   --ease-out: var(--ease-out-expo);
   --ease-in-out: var(--ease-in-out-expo);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--color-volcano-black);
-    --foreground: #f7efea;
-  }
-  .dark {
-    --color-background: #12100e;
-    --color-surface: #1e1b18;
-    --color-surface-container: #26221f;
-    --color-surface-container-low: #201c19;
-    --color-surface-container-high: #2e2926;
-    --color-on-background: #f7efea;
-    --color-on-surface: #f7efea;
-    --color-outline-variant: #423b37;
-  }
 }
 
 body {

@@ -1,38 +1,45 @@
 ---
 name: Momotombo Travels Eco-Luxury
 colors:
-  primary: "#004f96"
+  primary: "#8a3824"
   on-primary: "#ffffff"
-  primary-container: "#0067c0"
-  on-primary-container: "#dbe7ff"
-  secondary: "#006e2a"
+  primary-hover: "#6f2c1c"
+  primary-container: "#8a3824"
+  on-primary-container: "#ffb2a0"
+  secondary: "#1e3b2f"
   on-secondary: "#ffffff"
-  secondary-container: "#86fb96"
-  on-secondary-container: "#00752d"
-  tertiary: "#c9a900"
-  volcano-black: "#121212"
+  secondary-container: "#c6e7d6"
+  on-secondary-container: "#4b695b"
+  tertiary: "#c49a45"
+  tertiary-text: "#7a5c17"
+  on-tertiary: "#ffffff"
+  volcano-black: "#181513"
   volcan-magma: "#ff4500"
   sunset-orange: "#ff7849"
-  ocean-deep: "#003a6e"
+  ocean-deep: "#00386e"
+  nica-blue: "#004f96"
   colonial-cream: "#faf3e0"
   laguna-blue: "#4ba3c7"
-  surface: "#f9f9ff"
-  on-surface: "#191c21"
-  surface-container: "#ecedf6"
-  outline: "#717783"
-  outline-variant: "#c1c6d4"
+  background: "#fff8f4"
+  surface: "#ffffff"
+  on-surface: "#1e1b18"
+  on-surface-variant: "#55423e"
+  text-muted: "#6f5b56"
+  surface-container: "#faf2ed"
+  outline: "#88726d"
+  outline-variant: "#e8e2d5"
   error: "#c81e1e"
 typography:
   display:
-    fontFamily: Outfit
+    fontFamily: Newsreader
     fontSize: 48px
     fontWeight: 700
   headline:
-    fontFamily: Outfit
+    fontFamily: Newsreader
     fontSize: 36px
     fontWeight: 600
   title:
-    fontFamily: Outfit
+    fontFamily: Newsreader
     fontSize: 24px
     fontWeight: 600
   body-md:
@@ -48,10 +55,12 @@ typography:
     fontSize: 18px
     fontWeight: 400
 rounded:
-  sm: 8px
-  md: 12px
-  lg: 16px
-  xl: 24px
+  sm: 4px
+  md: 6px
+  lg: 8px
+  xl: 12px
+  2xl: 16px
+  3xl: 24px
   pill: 9999px
 ---
 
@@ -63,30 +72,29 @@ Visual identity balances volcanic majesty, colonial elegance, and lush tropical 
 The interface feels premium, warm, authentic, and modern — never generic, sterile, or corporate.
 
 ## Color Palette
-- **Primary (Nica Blue)** (`#004f96`): Primary buttons, active brand navigation, trust, key interactive states.
-- **Secondary (Selva Esmeralda)** (`#006e2a`): Eco-tourism badges, nature highlights, sustainability tags.
-- **Tertiary (Oro Indígena)** (`#c9a900`): Premium ratings, VIP badges, golden accents, curated badges.
+- **Primary (Terracota Volcánica)** (`#8a3824`): Primary buttons, active brand navigation, key interactive states. Hover: `#6f2c1c`.
+- **Secondary (Selva Esmeralda)** (`#1e3b2f`): Eco-tourism badges, nature highlights, sustainability tags.
+- **Tertiary (Oro Indígena)** (`#c49a45`): Premium ratings, VIP badges, golden accents on DARK surfaces. For text/icons on light surfaces use **Tertiary Text** (`#7a5c17`, WCAG AA).
 - **Volcano Magma** (`#ff4500`): Adventure badges, urgent CTAs, volcanic tour markers.
 - **Sunset Orange** (`#ff7849`): Secondary highlights, notifications, sunset cruise highlights.
 - **Colonial Cream** (`#faf3e0`): Warm subtle card backdrops and pill containers.
 - **Laguna Blue** (`#4ba3c7`): Water activities, lagoon excursions, lake tags.
-- **Surface** (`#f9f9ff`): Crisp clean background in light mode.
-- **Volcano Black** (`#121212`): Dark mode canvas, high-contrast dark sections, hero backdrops.
-- **On-Surface** (`#191c21`): High contrast readable body text.
+- **Background** (`#fff8f4`): Warm travertine canvas in light mode (the single app canvas).
+- **Volcano Black** (`#181513`): High-contrast dark sections, hero backdrops.
+- **On-Surface** (`#1e1b18`): High contrast readable body text. Muted text: **Text Muted** (`#6f5b56`).
 
 ## Typography
-- **Headings & Hero Displays**: Outfit (Google Fonts) — modern geometric sans with warm character.
+- **Headings & Hero Displays**: Newsreader (Google Fonts) — elegant editorial serif.
 - **Body, UI & Data**: Inter (Google Fonts) — clean, highly readable, structured.
-- **Editorial & Quotes**: Newsreader (Google Fonts) — elegant serif for cultural narratives and testimonials.
 
 ## Component Patterns
 - **Isotype & Brand Iconography**:
   - **Momotombo Volcano Glyph**: Iconic triangular conical silhouette (`viewBox="0 0 32 32"`), magma vent apex, and horizontal stylized ripple waves representing Lake Xolotlán (Lake Managua).
   - Used in Navbar header, hero watermarks, and brand badges. Never replace with generic plane/globe travel stock icons.
 - **Buttons & Action Triggers**:
-  - Primary: Nica Blue background (`#004f96`), white text, rounded-xl (12px) or pill (9999px), subtle hover lift.
+  - Primary: Terracota Volcánica background (`#8a3824`), white text, rounded-xl (12px) or pill (9999px), hover to `#6f2c1c` with subtle lift.
   - Magma Action (High-Energy CTA): Linear gradient `from-volcan-magma to-sunset-orange` (`#ff4500` to `#ff7849`) paired with `shadow-glow-magma-intense` (`0 10px 25px -5px rgba(255, 69, 0, 0.45)`). Used for key conversion moments (e.g. "Comenzar Viaje", "Reservar Expedición").
-  - Secondary: Selva Esmeralda (`#006e2a`) for eco-tourism and nature-first actions.
+  - Secondary: Selva Esmeralda (`#1e3b2f`) for eco-tourism and nature-first actions.
   - Ghost / Outline: 1px border with `color-primary` or white/20 on dark volcanic backgrounds.
 - **Cards & Geographic Tiles**:
   - 16px to 24px border-radius (`rounded-2xl` / `rounded-3xl`).
@@ -94,7 +102,7 @@ The interface feels premium, warm, authentic, and modern — never generic, ster
   - Image header: Aspect ratio 16:9 or 4:3 with gradient darkening vignette (`from-black/70 via-black/20 to-transparent`) for overlay contrast.
   - **Geographic Card Anatomy**:
     - Top badges: Category pill (`Selva Esmeralda` or `Volcán Magma`) + UNESCO / Biosphere recognition.
-    - Title: Bold Outfit typography with destination name.
+    - Title: Bold Newsreader typography with destination name.
     - Altitude badge: Metric elevation (`msnm` - metros sobre el nivel del mar) giving true volcanic/mountain terrain context.
     - Seasonality badge: Micro-pill highlighting best travel period (`Nov - May: Seca` or `Jun - Oct: Verde`).
     - Region & Location: Map pin with department/region (e.g. "León / La Paz Centro").
@@ -107,7 +115,7 @@ The interface feels premium, warm, authentic, and modern — never generic, ster
   - Clear brand logo with volcano glyph + direct route shortcuts (Ruta Volcánica, Explorar, Planificar con IA).
 
 ## Do's and Don'ts
-- **DO** combine volcano warm tones (`#ff4500`) with tropical greens (`#006e2a`) and deep blues (`#004f96`) in balanced harmony.
+- **DO** combine volcano warm tones (`#ff4500`) with tropical greens (`#1e3b2f`) and terracotta (`#8a3824`) in balanced harmony.
 - **DO** incorporate authentic local geographical indicators: altitude in `msnm`, lake proximity, and dry/rainy seasons.
 - **DO** use the authentic Momotombo Volcano + Lake Xolotlán silhouette isotype across high-impact surfaces.
 - **DO** use rounded cards and glassmorphism with generous whitespace.

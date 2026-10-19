@@ -14,6 +14,24 @@ import type { RegisterDto, LoginDto, ResetPasswordDto } from './dto/auth.dto';
 
 const BCRYPT_ROUNDS = 12;
 
+// Precomputed bcrypt hash (12 rounds) of a throwaway string. Compared against
+// when an account is missing so that login takes the same time as a wrong
+// password — otherwise response timing leaks account existence.
+const DUMMY_PASSWORD_HASH =
+  '$2b$12$.ohhgyqF.jgcZcGJNzhYZu1aXEQSeZf.561q6Ds5.Xwvltaq97yne';
+
+/**
+ * Dev-only escape hatch: raw verification/reset tokens are returned in API
+ * responses only when running in development AND explicitly enabled via
+ * ENABLE_DEV_TOKENS=true. Never in test or production.
+ */
+function devTokensEnabled(): boolean {
+  return (
+    process.env.NODE_ENV === 'development' &&
+    process.env.ENABLE_DEV_TOKENS === 'true'
+  );
+}
+
 interface RequestMeta {
   userAgent?: string;
   ipAddress?: string;
@@ -91,12 +109,17 @@ export class AuthService {
       },
     });
 
-    if (!user || user.deletedAt || !user.isActive) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    // Same code path for unknown-user and wrong-password: always run
+    // bcrypt.compare (against a dummy hash when the account is missing or
+    // inactive) and return an identical response so timing cannot be used to
+    // enumerate accounts.
+    const hashToCheck =
+      user && !user.deletedAt && user.isActive
+        ? user.password
+        : DUMMY_PASSWORD_HASH;
+    const valid = await bcrypt.compare(dto.password, hashToCheck);
 
-    const valid = await bcrypt.compare(dto.password, user.password);
-    if (!valid) {
+    if (!user || user.deletedAt || !user.isActive || !valid) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -130,9 +153,13 @@ export class AuthService {
     try {
       return await this.tokens.rotateRefreshToken(refreshToken, meta);
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'Invalid refresh token';
-      throw new UnauthorizedException(message);
+      // One generic external message for every refresh failure — the specific
+      // reason (reuse detection, expiry, unknown token) is an oracle. Detail is
+      // kept in server logs only.
+      this.logger.warn(
+        `Refresh token rejected: ${err instanceof Error ? err.message : 'unknown error'}`,
+      );
+      throw new UnauthorizedException('Invalid refresh token');
     }
   }
 
@@ -217,7 +244,7 @@ export class AuthService {
     return {
       success: true,
       message: 'Verification email sent',
-      ...(process.env.NODE_ENV !== 'production' && { _devToken: token }),
+      ...(devTokensEnabled() && { _devToken: token }),
     };
   }
 
@@ -235,7 +262,7 @@ export class AuthService {
       return {
         success: true,
         message: 'If the email exists, a reset link has been sent',
-        ...(process.env.NODE_ENV !== 'production' && { _devToken: token }),
+        ...(devTokensEnabled() && { _devToken: token }),
       };
     }
     return {

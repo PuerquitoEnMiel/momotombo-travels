@@ -13,8 +13,8 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "es",
     categories: ["travel", "lifestyle", "productivity"],
     icons: [
-      { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "maskable" },
-      { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      // Only reference assets that exist in /public (icon-192.png and
+      // icon-512.png were never generated and broke PWA validation).
       { src: "/icons/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
     ],
   };

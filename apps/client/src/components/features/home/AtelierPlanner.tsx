@@ -44,10 +44,11 @@ export function AtelierPlanner() {
                     <form onSubmit={handleGenerate} className="p-8 md:p-12">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                             <div>
-                                <label className="block font-sans font-semibold text-xs text-on-surface uppercase tracking-wider mb-2.5">
+                                <label htmlFor="atelier-focus" className="block font-sans font-semibold text-xs text-on-surface uppercase tracking-wider mb-2.5">
                                     ¿Cuál es tu enfoque de viaje?
                                 </label>
                                 <select 
+                                    id="atelier-focus"
                                     value={focus}
                                     onChange={(e) => setFocus(e.target.value)}
                                     className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 text-on-surface font-sans text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all cursor-pointer"
@@ -60,10 +61,11 @@ export function AtelierPlanner() {
                             </div>
 
                             <div>
-                                <label className="block font-sans font-semibold text-xs text-on-surface uppercase tracking-wider mb-2.5">
+                                <label htmlFor="atelier-duration" className="block font-sans font-semibold text-xs text-on-surface uppercase tracking-wider mb-2.5">
                                     Duración estimada
                                 </label>
                                 <select 
+                                    id="atelier-duration"
                                     value={duration}
                                     onChange={(e) => setDuration(e.target.value)}
                                     className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 text-on-surface font-sans text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all cursor-pointer"
@@ -78,7 +80,7 @@ export function AtelierPlanner() {
                                 <label className="block font-sans font-semibold text-xs text-on-surface uppercase tracking-wider mb-2.5">
                                     Estilo de Hospedaje
                                 </label>
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Estilo de Hospedaje">
                                     <label 
                                         onClick={() => setLodge("mansiones")}
                                         className={`flex items-center gap-2.5 p-3 border rounded-lg cursor-pointer transition-all ${
@@ -117,10 +119,11 @@ export function AtelierPlanner() {
                             </div>
 
                             <div>
-                                <label className="block font-sans font-semibold text-xs text-on-surface uppercase tracking-wider mb-2.5">
+                                <label htmlFor="atelier-email" className="block font-sans font-semibold text-xs text-on-surface uppercase tracking-wider mb-2.5">
                                     Tu Correo para recibir el Dossier
                                 </label>
                                 <input 
+                                    id="atelier-email"
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}

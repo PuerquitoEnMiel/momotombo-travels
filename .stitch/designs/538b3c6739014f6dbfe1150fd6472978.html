@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Portal de Registro de Expedicionario Titular · Momotombo Atelier</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration matching Volcanic Elegance design system -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary": "#4e3700",
+            "primary-container": "#8a3824",
+            "surface-container-highest": "#e9e1dc",
+            "surface-container-low": "#faf2ed",
+            "error": "#ba1a1a",
+            "surface-variant": "#e9e1dc",
+            "surface-bright": "#fff8f4",
+            "outline": "#88726d",
+            "tertiary-fixed": "#ffdea4",
+            "on-secondary-fixed-variant": "#2f4d40",
+            "secondary-container": "#c6e7d6",
+            "on-tertiary-container": "#ecbe65",
+            "primary-fixed": "#ffdad2",
+            "background": "#fff8f4",
+            "on-tertiary-fixed": "#261900",
+            "inverse-on-surface": "#f7efea",
+            "surface-container-lowest": "#ffffff",
+            "surface-tint": "#9a442f",
+            "on-primary-container": "#ffb2a0",
+            "on-background": "#1e1b18",
+            "on-error": "#ffffff",
+            "on-error-container": "#93000a",
+            "on-secondary": "#ffffff",
+            "on-primary": "#ffffff",
+            "surface-container": "#f4ece7",
+            "surface": "#fff8f4",
+            "on-primary-fixed": "#3c0700",
+            "inverse-primary": "#ffb4a2",
+            "error-container": "#ffdad6",
+            "primary": "#6c2210",
+            "secondary-fixed": "#c9ead9",
+            "on-secondary-fixed": "#022016",
+            "secondary": "#476557",
+            "tertiary-fixed-dim": "#eec067",
+            "secondary-fixed-dim": "#adcebd",
+            "on-tertiary-fixed-variant": "#5d4200",
+            "on-primary-fixed-variant": "#7c2d1a",
+            "surface-container-high": "#eee7e2",
+            "outline-variant": "#dbc1bb",
+            "on-secondary-container": "#4b695b",
+            "tertiary-container": "#6b4c00",
+            "inverse-surface": "#33302c",
+            "surface-dim": "#e0d9d4",
+            "on-surface": "#1e1b18",
+            "on-surface-variant": "#55423e",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#ffb4a2"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "2.5rem",
+            "gutter": "1.5rem",
+            "margin": "2rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "label-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["Playfair Display"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Playfair Display"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "display-xl-mobile": ["Playfair Display"],
+            "body-md": ["Plus Jakarta Sans"],
+            "display-xl": ["Playfair Display"]
+          },
+          "fontSize": {
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+            "headline-sm": ["22px", { "lineHeight": "30px", "letterSpacing": "0.005em", "fontWeight": "600" }],
+            "headline-md": ["28px", { "lineHeight": "36px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "0em", "fontWeight": "500" }],
+            "display-xl": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "display-xl-mobile": ["38px", { "lineHeight": "46px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f4ece7;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #dbc1bb;
+      border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #88726d;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface h-full font-body-md text-body-md antialiased selection:bg-primary-container selection:text-white">
+<!-- Main Container: Strict 50:50 Desktop Split Layout -->
+<div class="min-h-screen w-full flex flex-col lg:flex-row bg-background">
+<!-- LEFT COLUMN: Sanctuary & Diplomatic Spread (50% desktop, full bleed cinematic visual) -->
+<section class="relative w-full lg:w-1/2 min-h-[600px] lg:min-h-screen flex flex-col justify-between p-8 lg:p-14 overflow-hidden bg-inverse-surface text-inverse-on-surface">
+<!-- Full-bleed Scenic Photography -->
+<img alt="Amanecer volcánico en la isla de Ometepe, reflejando conos perfectos sobre las aguas calmas del Lago Cocibolca con una pasarela de madera en primer plano y cielo en tonos terracota y ámbar" class="absolute inset-0 w-full h-full object-cover object-center transform scale-105 transition-transform duration-1000 ease-out hover:scale-100" src="https://lh3.googleusercontent.com/aida/AEtjO1UGxoGd88_GEqoAVnbywg-7l8y0DfC15PH25CTV8vGnBY4huq5G76A4KScwohnZk2abzYWVmeRROwmV9zMzs3zoWwjxL1ZhXxCSC_7_h31iP1E_OM-rBfQWvehQbGo2RCS15j_9bV35Z53iRu2B2YCMhYpat0ZgKllKRqZYWarXRcAydpmElXK2K8Yu9qEa-DJDrrByjOid0bJBQNF65AMTJ8Z8-Ng5pxR5NONxukUnLz441UPzvtkTMNc"/>
+<!-- Atmospheric Multi-Stop Vignette Overlay (Rich Basalt & Warm Terracotta) -->
+<div class="absolute inset-0 bg-gradient-to-t from-[#1e1b18] via-[#1e1b18]/65 to-[#8a3824]/30 mix-blend-multiply pointer-events-none"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-[#1e1b18]/80 via-transparent to-[#1e1b18]/40 pointer-events-none"></div>
+<!-- Top Archival Badge & Protocol Status -->
+<header class="relative z-10 flex flex-wrap items-center justify-between gap-4">
+<div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-lg bg-inverse-surface/80 backdrop-blur-md border border-tertiary-fixed-dim/40 shadow-sm">
+<span class="material-symbols-outlined text-tertiary-fixed text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-tertiary-fixed">
+            MEMBRESÍA EXPEDICIONARIA EXCLUSIVA · ATELIER DIPLOMÁTICO
+          </span>
+</div>
+<div class="hidden sm:inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10">
+<span class="inline-block w-2 h-2 rounded-full bg-secondary-fixed animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-stone-200 uppercase tracking-wider">Protocolo Nivel Diplomático</span>
+</div>
+</header>
+<!-- Center & Lower Editorial Narrative & Glass Card -->
+<div class="relative z-10 my-auto py-12 flex flex-col justify-end space-y-8 max-w-xl">
+<!-- Archival Monogram Watermark Accent -->
+<div class="flex items-center gap-3">
+<span class="h-px w-10 bg-tertiary-fixed-dim/60"></span>
+<span class="font-label-md text-label-md tracking-widest uppercase text-tertiary-fixed-dim font-medium">Archivos Cordillera de los Maribios</span>
+</div>
+<!-- Majestic Quote in Playfair Display italics -->
+<blockquote class="font-headline-md text-headline-md lg:font-headline-lg lg:text-headline-lg italic font-normal text-white leading-tight drop-shadow-sm">
+          “Inscriba su nombre en las bitácoras de los Maribios. Una membresía diseñada para el viajero de alta exigencia.”
+        </blockquote>
+<!-- Diplomatic Privileges Glass Card -->
+<div class="rounded-xl p-6 bg-inverse-surface/85 backdrop-blur-lg border border-white/15 shadow-[0_16px_36px_-4px_rgba(33,30,27,0.4)] space-y-4">
+<div class="flex items-center justify-between border-b border-white/10 pb-3">
+<span class="font-label-md text-label-md text-tertiary-fixed tracking-wider uppercase">Privilegios Soberanos Incluidos</span>
+<span class="font-label-sm text-label-sm text-stone-300">Validez 2025–2026</span>
+</div>
+<ul class="space-y-3.5">
+<li class="flex items-start gap-3.5">
+<span class="material-symbols-outlined text-secondary-container mt-0.5 text-[20px]" data-icon="flight">flight</span>
+<div>
+<p class="font-body-md text-body-md text-white font-medium">Acceso prioritario a charters aéreos Airbus H130</p>
+<p class="font-body-sm text-body-sm text-stone-300">Conexiones directas Managua – Isla de Ometepe – Corn Island sin demoras.</p>
+</div>
+</li>
+<li class="flex items-start gap-3.5">
+<span class="material-symbols-outlined text-tertiary-fixed-dim mt-0.5 text-[20px]" data-icon="terrain">terrain</span>
+<div>
+<p class="font-body-md text-body-md text-white font-medium">Asignación personal de vulcanólogos senior INETER</p>
+<p class="font-body-sm text-body-sm text-stone-300">Acompañamiento científico de campo en cráteres activos y calderas reservadas.</p>
+</div>
+</li>
+<li class="flex items-start gap-3.5">
+<span class="material-symbols-outlined text-secondary-container mt-0.5 text-[20px]" data-icon="shield">shield</span>
+<div>
+<p class="font-body-md text-body-md text-white font-medium">Custodia bancaria protegida en Escrow para cada expedición</p>
+<p class="font-body-sm text-body-sm text-stone-300">Fondos retenidos en fideicomiso suizo hasta confirmación de cumplimiento.</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Live Status Pills Strip -->
+<div class="flex flex-wrap items-center gap-2.5 pt-2">
+<span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-highest/20 backdrop-blur-sm border border-white/10 font-label-sm text-label-sm text-stone-200">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed animate-ping"></span>
+            Admisión Oficial por Expediente
+          </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-highest/20 backdrop-blur-sm border border-white/10 font-label-sm text-label-sm text-stone-200">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed">health_and_safety</span>
+            Seguro Aeromédico VIP
+          </span>
+<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-highest/20 backdrop-blur-sm border border-white/10 font-label-sm text-label-sm text-stone-200">
+<span class="material-symbols-outlined text-[16px] text-stone-300">lock</span>
+            Clave Cifrada SHA-256
+          </span>
+</div>
+</div>
+<!-- Left Column Bottom Caption -->
+<footer class="relative z-10 pt-4 flex items-center justify-between border-t border-white/10 text-stone-400 font-label-sm text-label-sm">
+<span>Momotombo Atelier · Archivos Cartográficos de Nicaragua</span>
+<span>Volcán Concepción &amp; Maderas · 11°32′16″N</span>
+</footer>
+</section>
+<!-- RIGHT COLUMN: Diplomatic Registration Portal & Expeditioner Form (50% desktop) -->
+<main class="w-full lg:w-1/2 min-h-screen bg-surface px-6 sm:px-12 lg:px-16 py-10 flex flex-col justify-between overflow-y-auto custom-scrollbar">
+<!-- Top Navigation Cluster -->
+<header class="w-full flex items-center justify-between pb-8 border-b border-outline-variant/40">
+<!-- Return Link -->
+<a class="group inline-flex items-center gap-2 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="/">
+<span class="material-symbols-outlined text-[18px] transition-transform duration-200 group-hover:-translate-x-1" data-icon="arrow_back">arrow_back</span>
+<span>Volver al Inicio</span>
+</a>
+<!-- Center Monogram Crest -->
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-lg border border-primary/20 bg-surface-container flex items-center justify-center text-primary font-headline-sm text-headline-sm font-semibold shadow-sm">
+            M
+          </div>
+<div class="hidden sm:block text-left">
+<p class="font-headline-sm text-[16px] leading-tight text-primary uppercase font-bold tracking-tight">Momotombo</p>
+<p class="font-label-sm text-label-sm text-outline tracking-widest uppercase">Atelier S.A.</p>
+</div>
+</div>
+<!-- Encrypted Session Pill -->
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary-container/40 border border-secondary/20">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="material-symbols-outlined text-[16px] text-secondary" data-icon="lock">lock</span>
+<span class="font-label-sm text-label-sm text-on-secondary-fixed-variant tracking-wider font-semibold">TLS 256-bit</span>
+</div>
+</header>
+<!-- Portal Form Content Container -->
+<div class="w-full max-w-lg mx-auto py-8 lg:py-12 flex-1 flex flex-col justify-center">
+<!-- Form Header Area -->
+<div class="mb-8 space-y-3">
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-surface-container-high border border-outline-variant/50">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant">SOLICITUD DE ADMISIÓN ATELIER · NUEVO EXPEDIENTE</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg lg:text-headline-lg text-primary tracking-tight font-medium">
+            Registro de Expedicionario Titular
+          </h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Cree su expediente personal para acceder a itinerarios restringidos, reservar vuelos heli-charter y gestionar credenciales de campo con validez diplomática.
+          </p>
+</div>
+<!-- Social SSO Luxury Authentication -->
+<div class="space-y-4 mb-6">
+<button class="w-full h-12 px-4 rounded-lg bg-surface-container-lowest border border-outline-variant hover:border-primary/50 hover:bg-surface-container-low transition-all duration-200 flex items-center justify-center gap-3 text-on-surface font-label-lg text-label-lg shadow-[0_2px_6px_-1px_rgba(33,30,27,0.04)] active:scale-[0.99]" type="button">
+<!-- Google Official G Icon SVG -->
+<svg class="w-5 h-5" viewbox="0 0 24 24">
+<path d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z" fill="#4285F4"></path>
+<path d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z" fill="#34A853"></path>
+<path d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z" fill="#FBBC05"></path>
+<path d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z" fill="#EA4335"></path>
+</svg>
+<span>Registrarse con Google Workspace</span>
+</button>
+<!-- Divider -->
+<div class="relative flex items-center justify-center py-2">
+<div class="w-full border-t border-outline-variant/60"></div>
+<span class="absolute bg-surface px-4 font-label-sm text-label-sm uppercase tracking-wider text-outline">
+              o complete su expediente diplomático
+            </span>
+</div>
+</div>
+<!-- Diplomatic Registration Form -->
+<form class="space-y-5" onsubmit="event.preventDefault();">
+<!-- Input A: Full Name -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-label-md text-on-surface" for="full_name">
+              Nombre Completo del Expedicionario <span class="text-primary">*</span>
+</label>
+<div class="relative rounded-lg shadow-sm">
+<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="person">person</span>
+</div>
+<input class="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest pl-11 pr-4 py-3 text-on-surface placeholder:text-outline/70 font-body-md text-body-md focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none" id="full_name" name="full_name" placeholder="Ej. Sofía Bermúdez de la Vega" required="" type="text"/>
+</div>
+</div>
+<!-- Input B: Official Email -->
+<div class="space-y-1.5">
+<label class="block font-label-md text-label-md text-on-surface" for="email">
+              Correo Electrónico Oficial <span class="text-primary">*</span>
+</label>
+<div class="relative rounded-lg shadow-sm">
+<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="mail">mail</span>
+</div>
+<input class="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest pl-11 pr-4 py-3 text-on-surface placeholder:text-outline/70 font-body-md text-body-md focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none" id="email" name="email" placeholder="s.bermudez@cordillera-atelier.ni" required="" type="email"/>
+</div>
+<p class="font-label-sm text-label-sm text-outline pl-1">Se enviará un código de verificación criptográfica de un solo uso.</p>
+</div>
+<!-- Input C: Password -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="block font-label-md text-label-md text-on-surface" for="password">
+                Contraseña de Enclave <span class="text-primary">*</span>
+</label>
+<span class="font-label-sm text-label-sm text-secondary font-medium">Seguridad de grado bancario</span>
+</div>
+<div class="relative rounded-lg shadow-sm">
+<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="key">key</span>
+</div>
+<input class="block w-full rounded-lg border border-outline-variant bg-surface-container-lowest pl-11 pr-11 py-3 text-on-surface placeholder:text-outline/70 font-body-md text-body-md focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all outline-none" id="password" name="password" placeholder="••••••••••••" required="" type="password"/>
+<button aria-label="Mostrar contraseña" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-outline hover:text-on-surface transition-colors" onclick="togglePasswordVisibility()" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility" id="password-toggle-icon">visibility</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pl-1">
+              Mínimo 8 caracteres, combinación alfanumérica y caracteres seguros.
+            </p>
+</div>
+<!-- Terms & Escrow Privacy Agreement Checkbox -->
+<div class="pt-2">
+<label class="flex items-start gap-3 cursor-pointer group">
+<div class="flex items-center h-5 mt-0.5">
+<input class="h-4.5 w-4.5 rounded border-outline-variant text-primary-container focus:ring-primary-container/30 cursor-pointer" id="terms" name="terms" required="" type="checkbox"/>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors leading-relaxed">
+                Acepto los <a class="text-primary font-medium underline underline-offset-2 hover:text-primary-container" href="#">Términos de Membresía Diplomática</a> y la <a class="text-primary font-medium underline underline-offset-2 hover:text-primary-container" href="#">Custodia Confidencial de Expediente</a> según las normativas de INETER y Relais &amp; Châteaux.
+              </span>
+</label>
+</div>
+<!-- Primary Action Button -->
+<button class="w-full h-13 py-3.5 px-6 rounded-lg bg-primary-container text-surface-bright font-label-lg text-label-lg tracking-wider uppercase flex items-center justify-center gap-3 shadow-[0_4px_20px_-2px_rgba(138,56,36,0.3)] hover:bg-primary transition-all duration-200 transform hover:-translate-y-0.5 active:scale-[0.99] group" type="submit">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+<span>Emitir Expediente &amp; Solicitar Admisión</span>
+<span class="material-symbols-outlined text-[20px] transition-transform duration-200 group-hover:translate-x-1" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</form>
+<!-- Footnote & Login Switch -->
+<div class="mt-8 text-center pt-4 border-t border-outline-variant/30">
+<p class="font-body-md text-body-md text-on-surface-variant">
+            ¿Ya posee una credencial diplomática activa? 
+            <a class="text-primary font-semibold hover:text-primary-container inline-flex items-center gap-1 group ml-1" href="/login">
+<span>Inicie Sesión en su Bitácora</span>
+<span class="material-symbols-outlined text-[16px] transition-transform group-hover:translate-x-0.5" data-icon="chevron_right">chevron_right</span>
+</a>
+</p>
+</div>
+</div>
+<!-- Bottom Security Trust & Hotline Bar -->
+<footer class="w-full pt-6 border-t border-outline-variant/40 space-y-3">
+<div class="flex flex-wrap items-center justify-between gap-3 text-outline font-label-sm text-label-sm">
+<div class="flex items-center gap-4">
+<span class="inline-flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-secondary">encrypted</span>
+              Cifrado SHA-256 de Extremo a Extremo
+            </span>
+<span class="inline-block w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="inline-flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-tertiary-container">account_balance</span>
+              Protección Escrow Garantizada
+            </span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="support_agent">support_agent</span>
+<span>24/7 Concierge Hotline:</span>
+<a class="font-semibold text-primary hover:underline" href="tel:+50522492760">+505 2249-2760</a>
+<span class="text-outline">· Canal VHF 144.200 MHz</span>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-outline font-label-sm text-label-sm pt-2">
+<p>© 2025 Momotombo Expeditions Atelier S.A. Licencia INETER N° 402-NI.</p>
+<div class="flex items-center gap-4">
+<a class="hover:text-primary transition-colors" href="#">Diplomatic Escrow Protocol</a>
+<a class="hover:text-primary transition-colors" href="#">Security Clearance</a>
+<a class="hover:text-primary transition-colors" href="#">Vulcanological Advisory Council</a>
+</div>
+</div>
+</footer>
+</main>
+</div>
+<!-- Inline Micro-Interactions Script -->
+<script>
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.getElementById('password-toggle-icon');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.textContent = 'visibility_off';
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.textContent = 'visibility';
+      }
+    }
+  </script>
+</body></html>

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { API_URL } from "@/lib/api";
+import { api } from "@/services/api";
 import { formatAndSanitize, sanitizeHtml } from "@/lib/sanitize";
 
 interface SuggestedDestination {
@@ -116,18 +117,12 @@ export function ChatInterface() {
 
         try {
             const history = messages.map((m) => ({ role: m.role, content: m.content }));
-            const response = await fetch(`${API_URL}/gemini-agent/chat`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: userMessage, history }),
-            });
+            const data = await api.post<{
+                message: string;
+                suggested_destinations?: SuggestedDestination[];
+                action_type?: string;
+            }>(`${API_URL}/gemini-agent/chat`, { message: userMessage, history });
 
-            if (!response.ok) {
-                const err = await response.json().catch(() => ({}));
-                throw new Error(err.message || "Error conectando con Kary");
-            }
-
-            const data = await response.json();
             setMessages((prev) => [
                 ...prev,
                 {
@@ -260,14 +255,18 @@ export function ChatInterface() {
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.nativeEvent.isComposing) sendMessage();
+                        }}
                         placeholder="Pregunta sobre un destino..."
+                        aria-label="Mensaje para Kary"
                         className="flex-1 bg-transparent outline-none text-sm text-gray-700 placeholder-gray-400"
                         disabled={isLoading}
                     />
                     <button
                         onClick={() => sendMessage()}
                         disabled={isLoading || !input.trim()}
+                        aria-label="Enviar mensaje"
                         className="w-8 h-8 bg-nica-blue hover:bg-selva-esmeralda disabled:bg-gray-200 disabled:text-gray-400 text-white rounded-full flex items-center justify-center transition-all shrink-0"
                     >
                         <PaperPlaneRight size={14} />

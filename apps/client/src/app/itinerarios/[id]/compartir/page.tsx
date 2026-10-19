@@ -166,7 +166,7 @@ export default function SharedItineraryPage() {
           <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight text-white mb-4">
             {itinerary?.title || "Expedición Personalizada en Nicaragua"}
           </h1>
-          <p className="text-sm text-stone-400 max-w-2xl leading-relaxed">
+          <p className="text-sm text-stone-300 max-w-2xl leading-relaxed">
             Diseñado en la plataforma Momotombo Travels con asistencia de inteligencia artificial y curaduría vulcanológica local.
           </p>
 
@@ -195,7 +195,7 @@ export default function SharedItineraryPage() {
             </div>
             <div>
               <p className="text-xs font-mono uppercase tracking-wider text-white">¿Te gusta este plan de viaje?</p>
-              <p className="text-xs text-stone-400">Puedes personalizar tu propio itinerario en segundos.</p>
+              <p className="text-xs text-stone-300">Puedes personalizar tu propio itinerario en segundos.</p>
             </div>
           </div>
 
@@ -235,7 +235,7 @@ export default function SharedItineraryPage() {
                   <span className="text-2xl sm:text-3xl font-serif text-oro-indigena font-light">
                     Día 0{day.dayNumber}
                   </span>
-                  <span className="text-xs font-mono uppercase tracking-wider text-stone-400">
+                  <span className="text-xs font-mono uppercase tracking-wider text-stone-300">
                     · Expedición y Actividades
                   </span>
                 </div>
@@ -260,14 +260,14 @@ export default function SharedItineraryPage() {
                           {item.activity?.name || "Actividad Exploratoria"}
                         </h4>
                         {item.notes && (
-                          <p className="text-xs text-stone-400 mt-1 leading-relaxed">
+                          <p className="text-xs text-stone-300 mt-1 leading-relaxed">
                             {item.notes}
                           </p>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4 text-xs font-mono text-stone-400 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-white/5">
+                    <div className="flex items-center gap-4 text-xs font-mono text-stone-300 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-white/5">
                       {item.activity?.duration && (
                         <span className="flex items-center gap-1">
                           <Clock size={12} className="text-oro-indigena" />

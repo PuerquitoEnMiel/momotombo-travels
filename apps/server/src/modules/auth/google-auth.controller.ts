@@ -31,12 +31,15 @@ export class GoogleAuthController {
       return res.redirect(`${clientUrl}/auth/login?error=google_failed`);
     }
 
-    const params = new URLSearchParams({
+    // The access token travels in the URL fragment (never sent to servers,
+    // Referer headers or proxy logs). The client page consumes it and
+    // replaces the history entry immediately. Only the short-lived access
+    // token is exposed — the refresh token never leaves the server.
+    const fragment = new URLSearchParams({
       access_token: user.tokens.accessToken,
-      refresh_token: user.tokens.refreshToken,
     });
     return res.redirect(
-      `${clientUrl}/auth/google/success?${params.toString()}`,
+      `${clientUrl}/auth/google/success#${fragment.toString()}`,
     );
   }
 }

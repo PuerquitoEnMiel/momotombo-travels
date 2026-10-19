@@ -14,9 +14,6 @@ import {
   Mountains,
   Compass,
   Warning,
-  Users,
-  Sun,
-  Gauge,
   Plus,
   Minus,
   ArrowRight,
@@ -28,20 +25,15 @@ import Image from "next/image";
 import { BookingModal } from "@/components/features/commerce/BookingModal";
 import { ReviewModal } from "@/components/features/commerce/ReviewModal";
 import { Button } from "@/components/ui/Button";
-import { Container, Spinner, ErrorState } from "@/components/ui";
+import { Container, Spinner, ErrorState, Modal } from "@/components/ui";
+import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/useToast";
 import { destinationsService } from "@/services/destinations.service";
+import { formatMoney } from "@/lib/money";
+import { ApiException } from "@/types/api";
 import type { Destination, PriceLevel, Activity } from "@/types/destination";
 
 /* ─── helpers ─────────────────────────────────────────────────────────────── */
-
-const PRICE_LABELS: Record<PriceLevel, string> = {
-  FREE: "Gratis",
-  LOW: "Desde $25 USD",
-  MEDIUM: "Desde $75 USD",
-  HIGH: "Desde $200 USD",
-  LUXURY: "Desde $800 USD",
-};
 
 const PRICE_LEVEL_LABEL: Record<PriceLevel, string> = {
   FREE: "Gratuito",
@@ -50,6 +42,19 @@ const PRICE_LEVEL_LABEL: Record<PriceLevel, string> = {
   HIGH: "$$$",
   LUXURY: "$$$$",
 };
+
+/** The API includes `department` on destinations; the shared client type predates it. */
+type DestinationWithDepartment = Destination & {
+  department?: { id?: string; name?: string; slug?: string } | null;
+};
+
+/** Local-timezone date as YYYY-MM-DD (toISOString() is UTC and can be off by one day). */
+function localISODate(date: Date = new Date()): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
   return (
@@ -65,7 +70,7 @@ function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
           weight={s <= Math.round(rating) ? "fill" : "regular"}
           className={
             s <= Math.round(rating)
-              ? "text-[#C49A45]"
+              ? "text-tertiary-text"
               : "text-[#dbc1bb]"
           }
         />
@@ -75,6 +80,8 @@ function StarRow({ rating, size = 14 }: { rating: number; size?: number }) {
 }
 
 function ActivityCard({ act }: { act: Activity }) {
+  const [showDetails, setShowDetails] = useState(false);
+
   return (
     <article className="flex items-start gap-4 py-4 border-b border-[#E8E2D5] last:border-0">
       {/* thumbnail placeholder */}
@@ -82,7 +89,7 @@ function ActivityCard({ act }: { act: Activity }) {
         <Mountains size={24} className="text-outline" aria-hidden="true" />
       </div>
       <div className="flex-1 min-w-0">
-        <h3 className="font-semibold text-[#1e1b18] text-sm leading-snug mb-1">
+        <h3 className="font-semibold text-on-surface text-sm leading-snug mb-1">
           {act.name}
         </h3>
         <div className="flex items-center gap-2 flex-wrap">
@@ -96,7 +103,7 @@ function ActivityCard({ act }: { act: Activity }) {
           )}
           {act.price != null && act.price > 0 && (
             <span className="text-xs font-semibold text-[#6c2210] bg-[#ffdad2] rounded-full px-2 py-0.5">
-              +${act.price} USD
+              +{formatMoney(act.price)}
             </span>
           )}
           {act.price === 0 && (
@@ -105,12 +112,19 @@ function ActivityCard({ act }: { act: Activity }) {
             </span>
           )}
         </div>
+        {showDetails && act.description && (
+          <p className="text-xs text-on-surface-variant leading-relaxed mt-2">
+            {act.description}
+          </p>
+        )}
       </div>
       <button
         type="button"
-        className="text-xs text-[#8a3824] font-semibold underline underline-offset-4 hover:no-underline shrink-0 transition-colors"
+        onClick={() => setShowDetails((v) => !v)}
+        aria-expanded={showDetails}
+        className="text-xs text-primary font-semibold underline underline-offset-4 hover:no-underline shrink-0 transition-colors"
       >
-        Ver detalles
+        {showDetails ? "Ocultar detalles" : "Ver detalles"}
       </button>
     </article>
   );
@@ -122,14 +136,19 @@ export default function DestinationDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
   const toast = useToast();
+  const { isAuthenticated } = useAuth();
 
   const [dest, setDest] = useState<Destination | null>(null);
   const [related, setRelated] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteBusy, setFavoriteBusy] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  // Sidebar booking controls — passed to BookingModal as initial values.
+  const [startDate, setStartDate] = useState("");
   const [guests, setGuests] = useState(2);
 
   const loadDestination = useCallback(async () => {
@@ -154,6 +173,59 @@ export default function DestinationDetailPage() {
     void loadDestination();
   }, [loadDestination]);
 
+  // Restore the persisted favorite state for the signed-in user (best-effort).
+  useEffect(() => {
+    if (!isAuthenticated || !dest) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const favorites = await destinationsService.listFavorites();
+        if (cancelled) return;
+        setIsFavorite(
+          favorites.some(
+            (f) => f.destinationId === dest.id || f.destination?.slug === slug
+          )
+        );
+      } catch {
+        // Favorites could not be loaded: leave the heart in its default state.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, dest, slug]);
+
+  const handleToggleFavorite = useCallback(async () => {
+    if (!dest || favoriteBusy) return;
+    if (!isAuthenticated) {
+      toast.info("Inicia sesión para guardar favoritos");
+      return;
+    }
+    const previous = isFavorite;
+    const next = !previous;
+    setIsFavorite(next); // optimistic
+    setFavoriteBusy(true);
+    try {
+      if (next) {
+        await destinationsService.addFavorite(dest.id);
+      } else {
+        await destinationsService.removeFavorite(dest.id);
+      }
+    } catch (err) {
+      setIsFavorite(previous); // rollback
+      const statusCode = err instanceof ApiException ? err.statusCode : undefined;
+      if (statusCode === 404 || statusCode === 405) {
+        toast.info(
+          "Los favoritos estarán disponibles próximamente. Tu cambio no se ha guardado."
+        );
+      } else {
+        toast.error("No pudimos guardar tu favorito. Inténtalo de nuevo.");
+      }
+    } finally {
+      setFavoriteBusy(false);
+    }
+  }, [dest, favoriteBusy, isAuthenticated, isFavorite, toast]);
+
   const handleShare = useCallback(async () => {
     const url = typeof window !== "undefined" ? window.location.href : "";
     if (navigator.share && dest) {
@@ -172,12 +244,12 @@ export default function DestinationDetailPage() {
   if (loading) {
     return (
       <main
-        className="min-h-screen bg-[#fff8f4] flex items-center justify-center"
+        className="min-h-screen bg-background flex items-center justify-center"
         role="status"
         aria-live="polite"
       >
         <div className="flex flex-col items-center gap-4">
-          <Spinner size="xl" className="text-[#8a3824]" />
+          <Spinner size="xl" className="text-primary" />
           <p className="text-on-surface-variant text-sm tracking-wide">
             Cargando destino...
           </p>
@@ -188,7 +260,7 @@ export default function DestinationDetailPage() {
 
   if (error || !dest) {
     return (
-      <main className="min-h-screen flex items-center justify-center pt-20 bg-[#fff8f4]">
+      <main className="min-h-screen flex items-center justify-center pt-20 bg-background">
         <Container size="md" className="py-16">
           <ErrorState
             icon={<Compass size={40} weight="duotone" />}
@@ -206,13 +278,26 @@ export default function DestinationDetailPage() {
   const hasHero = !!heroImage?.url;
   const galleryImages = images.slice(0, 3);
 
+  /* derived from real data only — no invented operational facts */
+  const departmentName =
+    (dest as DestinationWithDepartment).department?.name ?? null;
+  const activityCount = dest.activities?.length ?? 0;
+  const hasRating = dest.rating > 0;
+  const pricedActivities = (dest.activities ?? []).filter(
+    (a) => typeof a.price === "number" && a.price > 0
+  );
+  const minActivityPrice =
+    pricedActivities.length > 0
+      ? Math.min(...pricedActivities.map((a) => a.price))
+      : null;
+
   /* derived location */
   const loc = dest.location as
     | { lat?: number; lng?: number; address?: string }
     | undefined;
 
   return (
-    <main className="min-h-screen bg-[#fff8f4]" id="destination-detail-page">
+    <main className="min-h-screen bg-background" id="destination-detail-page">
       {/* ── HERO ──────────────────────────────────────────────────────────── */}
       <section className="relative h-screen min-h-[640px] w-full overflow-hidden bg-[#211e1b]">
         {/* background image */}
@@ -223,7 +308,7 @@ export default function DestinationDetailPage() {
             fill
             sizes="100vw"
             className="object-cover"
-            priority
+            preload
           />
         ) : (
           <div className="absolute inset-0 bg-linear-to-br from-[#3d1f14] to-[#211e1b] flex items-center justify-center">
@@ -253,7 +338,7 @@ export default function DestinationDetailPage() {
           <ol className="flex items-center gap-2 text-xs text-white/60">
             <li>
               <Link href="/" className="hover:text-white transition-colors">
-                Home
+                Inicio
               </Link>
             </li>
             <li aria-hidden="true" className="text-white/30">›</li>
@@ -298,11 +383,12 @@ export default function DestinationDetailPage() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => setIsFavorite(!isFavorite)}
+                  onClick={() => void handleToggleFavorite()}
                   id="btn-favorite-hero"
                   aria-label={isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
                   aria-pressed={isFavorite}
-                  className={`w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center border transition-all focus-visible:outline-2 focus-visible:outline-[#C49A45] ${
+                  disabled={favoriteBusy}
+                  className={`w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center border transition-all focus-visible:outline-2 focus-visible:outline-[#C49A45] disabled:opacity-60 disabled:cursor-wait ${
                     isFavorite
                       ? "bg-[#8a3824]/80 border-[#8a3824] text-white"
                       : "bg-white/10 border-white/20 text-white hover:bg-white/20"
@@ -329,25 +415,34 @@ export default function DestinationDetailPage() {
               >
                 {/* header row */}
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-bold tracking-widest uppercase text-outline">
-                    Tarifa Expedición
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-text-muted">
+                    Tarifa por persona
                   </span>
                   <span className="text-[10px] font-bold tracking-wide uppercase bg-secondary-container text-[#1e3b2f] rounded-full px-2.5 py-0.5">
-                    All-Inclusive
+                    {PRICE_LEVEL_LABEL[dest.priceLevel]}
                   </span>
                 </div>
-                {/* price */}
-                <p className="font-serif text-[26px] font-semibold text-[#1e1b18] mb-1 leading-tight">
-                  {PRICE_LABELS[dest.priceLevel]}
-                  <span className="text-sm font-normal text-outline ml-1">/ pers</span>
+                {/* price — derived from real activity prices, never invented */}
+                <p className="font-serif text-[26px] font-semibold text-on-surface mb-1 leading-tight">
+                  {minActivityPrice != null
+                    ? `Desde ${formatMoney(minActivityPrice)}`
+                    : "A consultar"}
                 </p>
                 {/* rating */}
                 <div className="flex items-center gap-2 mt-2">
-                  <StarRow rating={dest.rating ?? 0} size={14} />
-                  <span className="text-sm font-bold text-[#1e1b18]">
-                    {dest.rating?.toFixed(1) ?? "—"}
-                  </span>
-                  <span className="text-xs text-outline">
+                  {hasRating ? (
+                    <>
+                      <StarRow rating={dest.rating} size={14} />
+                      <span className="text-sm font-bold text-on-surface">
+                        {dest.rating.toFixed(1)}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-sm font-bold text-on-surface">
+                      Nuevo
+                    </span>
+                  )}
+                  <span className="text-xs text-text-muted">
                     ({dest.reviews?.length ?? 0} reseñas verificadas)
                   </span>
                 </div>
@@ -357,30 +452,34 @@ export default function DestinationDetailPage() {
         </div>
       </section>
 
-      {/* ── QUICK STATS BAR ───────────────────────────────────────────────── */}
+      {/* ── QUICK STATS BAR — only facts derived from real destination data ── */}
       <div className="border-y border-[#E8E2D5] bg-surface-container">
         <div className="max-w-[1440px] mx-auto px-8">
           <dl className="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#E8E2D5]">
             {[
               {
-                icon: <Clock size={18} className="text-[#8a3824]" aria-hidden="true" />,
-                label: "Duración",
-                value: "1 – 3 días",
+                icon: (
+                  <Star size={18} className="text-primary" weight="fill" aria-hidden="true" />
+                ),
+                label: "Calificación",
+                value: hasRating ? `${dest.rating.toFixed(1)} / 5` : "Nuevo",
               },
               {
-                icon: <Gauge size={18} className="text-[#8a3824]" aria-hidden="true" />,
-                label: "Dificultad",
-                value: "Moderado",
+                icon: (
+                  <MapPin size={18} className="text-primary" weight="fill" aria-hidden="true" />
+                ),
+                label: "Ubicación",
+                value: departmentName ?? loc?.address ?? "Nicaragua",
               },
               {
-                icon: <Sun size={18} className="text-[#8a3824]" aria-hidden="true" />,
-                label: "Mejor Época",
-                value: "Nov – Abr",
+                icon: <Mountains size={18} className="text-primary" aria-hidden="true" />,
+                label: "Actividades",
+                value: `${activityCount} ${activityCount === 1 ? "actividad" : "actividades"}`,
               },
               {
-                icon: <Users size={18} className="text-[#8a3824]" aria-hidden="true" />,
-                label: "Capacidad",
-                value: "Hasta 20 personas",
+                icon: <Compass size={18} className="text-primary" aria-hidden="true" />,
+                label: "Rango de precios",
+                value: PRICE_LEVEL_LABEL[dest.priceLevel],
               },
             ].map(({ icon, label, value }) => (
               <div
@@ -389,10 +488,10 @@ export default function DestinationDetailPage() {
               >
                 {icon}
                 <div>
-                  <dt className="text-[10px] font-bold uppercase tracking-widest text-outline">
+                  <dt className="text-[10px] font-bold uppercase tracking-widest text-text-muted">
                     {label}
                   </dt>
-                  <dd className="text-sm font-semibold text-[#1e1b18] mt-0.5">
+                  <dd className="text-sm font-semibold text-on-surface mt-0.5">
                     {value}
                   </dd>
                 </div>
@@ -411,7 +510,7 @@ export default function DestinationDetailPage() {
             <section aria-labelledby="section-about">
               <h2
                 id="section-about"
-                className="font-serif text-3xl font-medium text-[#1e1b18] mb-5"
+                className="font-serif text-3xl font-medium text-on-surface mb-5"
               >
                 Sobre el Destino
               </h2>
@@ -425,7 +524,7 @@ export default function DestinationDetailPage() {
               <section aria-labelledby="section-activities">
                 <h2
                   id="section-activities"
-                  className="font-serif text-3xl font-medium text-[#1e1b18] mb-6"
+                  className="font-serif text-3xl font-medium text-on-surface mb-6"
                 >
                   Actividades Disponibles
                 </h2>
@@ -442,7 +541,7 @@ export default function DestinationDetailPage() {
               <section aria-labelledby="section-amenities">
                 <h2
                   id="section-amenities"
-                  className="font-serif text-3xl font-medium text-[#1e1b18] mb-6"
+                  className="font-serif text-3xl font-medium text-on-surface mb-6"
                 >
                   Amenidades
                 </h2>
@@ -458,7 +557,7 @@ export default function DestinationDetailPage() {
                         weight="fill"
                         aria-hidden="true"
                       />
-                      <span className="text-sm text-[#1e1b18]">{am.name}</span>
+                      <span className="text-sm text-on-surface">{am.name}</span>
                     </li>
                   ))}
                 </ul>
@@ -470,7 +569,7 @@ export default function DestinationDetailPage() {
               <section aria-labelledby="section-gallery">
                 <h2
                   id="section-gallery"
-                  className="font-serif text-3xl font-medium text-[#1e1b18] mb-6"
+                  className="font-serif text-3xl font-medium text-on-surface mb-6"
                 >
                   Galería
                 </h2>
@@ -516,7 +615,9 @@ export default function DestinationDetailPage() {
                 {images.length > 3 && (
                   <button
                     type="button"
-                    className="mt-3 text-sm text-[#8a3824] font-semibold underline underline-offset-4 hover:no-underline transition-colors"
+                    onClick={() => setIsGalleryOpen(true)}
+                    id="btn-open-gallery"
+                    className="mt-3 text-sm text-primary font-semibold underline underline-offset-4 hover:no-underline transition-colors"
                   >
                     Ver galería completa ({images.length} fotos)
                   </button>
@@ -528,7 +629,7 @@ export default function DestinationDetailPage() {
             <section aria-labelledby="section-map">
               <h2
                 id="section-map"
-                className="font-serif text-3xl font-medium text-[#1e1b18] mb-6"
+                className="font-serif text-3xl font-medium text-on-surface mb-6"
               >
                 Mapa de Ubicación
               </h2>
@@ -536,7 +637,7 @@ export default function DestinationDetailPage() {
                 <div className="h-52 bg-surface-dim flex flex-col items-center justify-center gap-3">
                   <MapPin
                     size={40}
-                    className="text-[#8a3824]"
+                    className="text-primary"
                     weight="fill"
                     aria-hidden="true"
                   />
@@ -551,13 +652,13 @@ export default function DestinationDetailPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       id="link-google-maps"
-                      className="inline-flex items-center gap-1.5 text-sm text-[#8a3824] font-semibold hover:underline focus-visible:underline"
+                      className="inline-flex items-center gap-1.5 text-sm text-primary font-semibold hover:underline focus-visible:underline"
                     >
                       Ver en Google Maps
                       <ArrowUpRight size={14} aria-hidden="true" />
                     </a>
                   ) : (
-                    <span className="text-sm text-outline">
+                    <span className="text-sm text-text-muted">
                       Coordenadas no disponibles
                     </span>
                   )}
@@ -571,7 +672,7 @@ export default function DestinationDetailPage() {
                 <div className="flex items-center gap-3">
                   <h2
                     id="section-reviews"
-                    className="font-serif text-3xl font-medium text-[#1e1b18]"
+                    className="font-serif text-3xl font-medium text-on-surface"
                   >
                     Reseñas
                   </h2>
@@ -601,17 +702,17 @@ export default function DestinationDetailPage() {
                       <div className="flex items-start justify-between flex-wrap gap-2 mb-3">
                         <div className="flex items-center gap-3">
                           <div className="w-9 h-9 rounded-full bg-surface-dim border border-[#dbc1bb] flex items-center justify-center">
-                            <span className="text-sm font-bold text-[#8a3824]">
+                            <span className="text-sm font-bold text-primary">
                               {(rev.user?.name ?? "A")[0]?.toUpperCase()}
                             </span>
                           </div>
                           <div>
-                            <p className="font-semibold text-sm text-[#1e1b18]">
+                            <p className="font-semibold text-sm text-on-surface">
                               {rev.user?.name ?? "Viajero anónimo"}
                             </p>
                             <time
                               dateTime={rev.createdAt}
-                              className="text-[11px] text-outline"
+                              className="text-[11px] text-text-muted"
                             >
                               {new Date(rev.createdAt).toLocaleDateString(
                                 "es-NI",
@@ -639,7 +740,7 @@ export default function DestinationDetailPage() {
                   <p className="text-sm text-on-surface-variant mb-1">
                     Aún no hay reseñas para este destino.
                   </p>
-                  <p className="text-xs text-outline">
+                  <p className="text-xs text-text-muted">
                     ¡Sé el primero en compartir tu experiencia!
                   </p>
                 </div>
@@ -658,46 +759,38 @@ export default function DestinationDetailPage() {
                     "0 16px 36px -4px rgba(33,30,27,0.08), 0 4px 12px -2px rgba(33,30,27,0.03)",
                 }}
               >
-                {/* price */}
-                <p className="font-serif text-2xl font-semibold text-[#1e1b18] mb-1">
-                  {PRICE_LABELS[dest.priceLevel]}
+                {/* price — derived from real activity prices, never invented */}
+                <p className="font-serif text-2xl font-semibold text-on-surface mb-1">
+                  {minActivityPrice != null
+                    ? `Desde ${formatMoney(minActivityPrice)}`
+                    : "A consultar"}
                 </p>
-                <p className="text-xs text-outline mb-5">por persona</p>
+                <p className="text-xs text-text-muted mb-5">por persona</p>
 
                 <div className="border-t border-[#E8E2D5] pt-5 space-y-4">
-                  {/* date pickers */}
-                  <div className="grid grid-cols-2 gap-3">
+                  {/* start date — carried into the booking modal */}
+                  <div>
                     <label className="block">
-                      <span className="text-[10px] font-bold tracking-[0.08em] uppercase text-outline mb-1.5 block">
-                        Check-in
+                      <span className="text-[10px] font-bold tracking-[0.08em] uppercase text-text-muted mb-1.5 block">
+                        Fecha de inicio
                       </span>
-                      <div className="flex items-center gap-2 border border-[#dbc1bb] rounded-lg px-3 py-2.5 bg-white focus-within:border-[#8a3824] focus-within:shadow-[0_0_0_3px_rgba(138,56,36,0.12)] transition-all">
+                      <div className="flex items-center gap-2 border border-[#dbc1bb] rounded-lg px-3 py-2.5 bg-white focus-within:border-primary focus-within:shadow-[0_0_0_3px_rgba(138,56,36,0.12)] transition-all">
                         <Calendar size={14} className="text-outline" aria-hidden="true" />
                         <input
                           type="date"
-                          className="text-xs text-[#1e1b18] bg-transparent outline-none w-full"
-                          aria-label="Fecha de check-in"
-                        />
-                      </div>
-                    </label>
-                    <label className="block">
-                      <span className="text-[10px] font-bold tracking-[0.08em] uppercase text-outline mb-1.5 block">
-                        Check-out
-                      </span>
-                      <div className="flex items-center gap-2 border border-[#dbc1bb] rounded-lg px-3 py-2.5 bg-white focus-within:border-[#8a3824] focus-within:shadow-[0_0_0_3px_rgba(138,56,36,0.12)] transition-all">
-                        <Calendar size={14} className="text-outline" aria-hidden="true" />
-                        <input
-                          type="date"
-                          className="text-xs text-[#1e1b18] bg-transparent outline-none w-full"
-                          aria-label="Fecha de check-out"
+                          value={startDate}
+                          min={localISODate()}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          className="text-xs text-on-surface bg-transparent outline-none w-full"
+                          aria-label="Fecha de inicio"
                         />
                       </div>
                     </label>
                   </div>
 
-                  {/* guests stepper */}
+                  {/* guests stepper — carried into the booking modal */}
                   <div>
-                    <span className="text-[10px] font-bold tracking-[0.08em] uppercase text-outline mb-1.5 block">
+                    <span className="text-[10px] font-bold tracking-[0.08em] uppercase text-text-muted mb-1.5 block">
                       Huéspedes
                     </span>
                     <div className="flex items-center justify-between border border-[#dbc1bb] rounded-lg px-4 py-2.5">
@@ -705,12 +798,12 @@ export default function DestinationDetailPage() {
                         type="button"
                         aria-label="Reducir huéspedes"
                         onClick={() => setGuests((g) => Math.max(1, g - 1))}
-                        className="w-7 h-7 rounded-full bg-surface-dim hover:bg-[#ffdad2] text-[#1e1b18] flex items-center justify-center transition-colors"
+                        className="w-7 h-7 rounded-full bg-surface-dim hover:bg-[#ffdad2] text-on-surface flex items-center justify-center transition-colors"
                       >
                         <Minus size={12} aria-hidden="true" />
                       </button>
                       <span
-                        className="text-sm font-semibold text-[#1e1b18]"
+                        className="text-sm font-semibold text-on-surface"
                         aria-live="polite"
                       >
                         {guests} {guests === 1 ? "persona" : "personas"}
@@ -719,7 +812,7 @@ export default function DestinationDetailPage() {
                         type="button"
                         aria-label="Aumentar huéspedes"
                         onClick={() => setGuests((g) => Math.min(20, g + 1))}
-                        className="w-7 h-7 rounded-full bg-surface-dim hover:bg-[#ffdad2] text-[#1e1b18] flex items-center justify-center transition-colors"
+                        className="w-7 h-7 rounded-full bg-surface-dim hover:bg-[#ffdad2] text-on-surface flex items-center justify-center transition-colors"
                       >
                         <Plus size={12} aria-hidden="true" />
                       </button>
@@ -729,18 +822,24 @@ export default function DestinationDetailPage() {
                   {/* price summary */}
                   <div className="bg-surface-container rounded-xl p-4 space-y-2">
                     <div className="flex justify-between text-xs text-on-surface-variant">
-                      <span>Precio base</span>
-                      <span className="font-medium text-[#1e1b18]">
-                        {PRICE_LEVEL_LABEL[dest.priceLevel]}
+                      <span>Precio por persona (desde)</span>
+                      <span className="font-medium text-on-surface">
+                        {minActivityPrice != null
+                          ? formatMoney(minActivityPrice)
+                          : "A consultar"}
                       </span>
                     </div>
                     <div className="flex justify-between text-xs text-on-surface-variant">
                       <span>Viajeros</span>
-                      <span className="font-medium text-[#1e1b18]">{guests}</span>
+                      <span className="font-medium text-on-surface">{guests}</span>
                     </div>
-                    <div className="border-t border-[#dbc1bb] pt-2 flex justify-between text-sm font-bold text-[#1e1b18]">
+                    <div className="border-t border-[#dbc1bb] pt-2 flex justify-between text-sm font-bold text-on-surface">
                       <span>Subtotal estimado</span>
-                      <span className="text-[#8a3824]">A consultar</span>
+                      <span className="text-primary">
+                        {minActivityPrice != null
+                          ? `Desde ${formatMoney(minActivityPrice * guests)}`
+                          : "A consultar"}
+                      </span>
                     </div>
                   </div>
 
@@ -749,7 +848,7 @@ export default function DestinationDetailPage() {
                     type="button"
                     onClick={() => setIsBookingOpen(true)}
                     id="btn-book-now"
-                    className="w-full bg-[#8a3824] hover:bg-[#6c2210] text-white font-semibold text-sm tracking-wide py-3.5 rounded-lg transition-all duration-200 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-[#C49A45]"
+                    className="w-full bg-primary hover:bg-primary-hover text-white font-semibold text-sm tracking-wide py-3.5 rounded-lg transition-all duration-200 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-[#C49A45]"
                   >
                     Reservar Ahora
                   </button>
@@ -757,45 +856,46 @@ export default function DestinationDetailPage() {
                     type="button"
                     onClick={() => window.dispatchEvent(new Event("open-chat"))}
                     id="btn-add-itinerary"
-                    className="w-full border border-[#1e1b18] text-[#1e1b18] hover:bg-[#1e1b18] hover:text-white font-semibold text-sm tracking-wide py-3.5 rounded-lg transition-all duration-200 focus-visible:outline-2 focus-visible:outline-[#C49A45]"
+                    className="w-full border border-on-surface text-on-surface hover:bg-on-surface hover:text-white font-semibold text-sm tracking-wide py-3.5 rounded-lg transition-all duration-200 focus-visible:outline-2 focus-visible:outline-[#C49A45]"
                   >
-                    Añadir a mi Itinerario
+                    Diseñar con Kary IA
                   </button>
 
-                  <p className="text-center text-[11px] text-outline">
-                    Cancelación gratuita hasta 48h antes
+                  <p className="text-center text-[11px] text-text-muted">
+                    Cancelación gratuita hasta 48 horas antes del inicio de la expedición.
                   </p>
                 </div>
               </div>
 
-              {/* guide concierge card */}
+              {/* Kary IA concierge card */}
               <div className="bg-white border border-[#E8E2D5] rounded-2xl p-5">
-                <p className="text-sm font-semibold text-[#1e1b18] mb-1">
+                <p className="text-sm font-semibold text-on-surface mb-1">
                   ¿Necesitas ayuda?
                 </p>
-                <p className="text-xs text-outline mb-4">
-                  Habla con uno de nuestros guías certificados.
+                <p className="text-xs text-text-muted mb-4">
+                  Consulta con Kary IA, tu asistente de viaje.
                 </p>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-full bg-surface-dim border border-[#dbc1bb] flex items-center justify-center">
-                    <span className="text-sm font-bold text-[#8a3824]">G</span>
+                    <span className="text-sm font-bold text-primary">K</span>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-[#1e1b18]">
-                      Guía Experto
+                    <p className="text-xs font-semibold text-on-surface">
+                      Kary IA
                     </p>
-                    <p className="text-[11px] text-outline">
-                      Respuesta en &lt; 1 hora
+                    <p className="text-[11px] text-text-muted">
+                      Respuesta inmediata
                     </p>
                   </div>
                 </div>
                 <button
                   type="button"
+                  onClick={() => window.dispatchEvent(new Event("open-chat"))}
                   id="btn-contact-guide"
-                  className="w-full border border-[#dbc1bb] text-on-surface-variant hover:border-[#8a3824] hover:text-[#8a3824] text-xs font-semibold py-2.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                  className="w-full border border-[#dbc1bb] text-on-surface-variant hover:border-primary hover:text-primary text-xs font-semibold py-2.5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
                 >
                   <ChatsCircle size={14} aria-hidden="true" />
-                  Hablar con un Guía
+                  Consultar con Kary IA
                 </button>
               </div>
             </div>
@@ -813,13 +913,13 @@ export default function DestinationDetailPage() {
             <div className="flex items-center justify-between mb-8">
               <h2
                 id="section-related"
-                className="font-serif text-3xl font-medium text-[#1e1b18]"
+                className="font-serif text-3xl font-medium text-on-surface"
               >
                 También te puede interesar
               </h2>
               <Link
                 href="/explorar"
-                className="inline-flex items-center gap-1.5 text-sm text-[#8a3824] font-semibold hover:gap-2.5 transition-all"
+                className="inline-flex items-center gap-1.5 text-sm text-primary font-semibold hover:gap-2.5 transition-all"
               >
                 Ver todos
                 <ArrowRight size={14} aria-hidden="true" />
@@ -890,12 +990,38 @@ export default function DestinationDetailPage() {
       {/* Footer is rendered globally by the app layout */}
 
       {/* ── MODALS ────────────────────────────────────────────────────────── */}
+      <Modal
+        open={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
+        title={`Galería — ${dest.name}`}
+        description={`${images.length} fotografías`}
+        size="lg"
+      >
+        <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[70vh] overflow-y-auto">
+          {images.map((img, i) => (
+            <div
+              key={img.id}
+              className="relative aspect-video rounded-xl overflow-hidden bg-surface-dim"
+            >
+              <Image
+                src={img.url}
+                alt={img.altText ?? `${dest.name} — foto ${i + 1}`}
+                fill
+                sizes="(min-width:1024px) 40vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      </Modal>
       <BookingModal
         isOpen={isBookingOpen}
         onClose={() => setIsBookingOpen(false)}
         activities={dest.activities ?? []}
         destinationId={dest.id}
         destinationName={dest.name}
+        initialDate={startDate || undefined}
+        initialGuests={guests}
       />
       <ReviewModal
         isOpen={isReviewOpen}

@@ -2,8 +2,10 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ConflictException,
   ForbiddenException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 
@@ -69,11 +71,18 @@ export class CommentsService {
   }
 
   async listForPost(postId: string, page = 1, pageSize = 20) {
+    // Clamp pagination: NaN/negative/zero-safe, pageSize capped at 100
+    const safePage = Math.max(Math.floor(Number(page) || 1), 1);
+    const safePageSize = Math.min(
+      Math.max(Math.floor(Number(pageSize) || 10), 1),
+      100,
+    );
+
     return this.prisma.comment.findMany({
       where: { postId, status: 'APPROVED', parentId: null, deletedAt: null },
       orderBy: { createdAt: 'desc' },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
+      skip: (safePage - 1) * safePageSize,
+      take: safePageSize,
       include: {
         author: {
           select: {
@@ -126,15 +135,28 @@ export class CommentsService {
       select: { id: true },
     });
     if (!comment) throw new NotFoundException('Comment not found');
-    void userId;
-    void reason;
 
-    await this.prisma.comment.update({
-      where: { id: commentId },
-      data: {
-        reportCount: { increment: 1 },
-      },
-    });
+    try {
+      // Persist the report itself (@@unique([commentId, userId]) dedupes) and
+      // bump reportCount only when the report row is actually created.
+      await this.prisma.$transaction([
+        this.prisma.commentReport.create({
+          data: { commentId, userId, reason },
+        }),
+        this.prisma.comment.update({
+          where: { id: commentId },
+          data: { reportCount: { increment: 1 } },
+        }),
+      ]);
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2002'
+      ) {
+        throw new ConflictException('Comentario ya reportado');
+      }
+      throw err;
+    }
 
     return { success: true, message: 'Comment reported' };
   }

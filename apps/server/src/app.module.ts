@@ -28,6 +28,7 @@ import { CommentsModule } from './modules/comments/comments.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { CouponsModule } from './modules/coupons/coupons.module';
+import { FavoritesModule } from './modules/favorites/favorites.module';
 import { SearchModule } from './modules/search/search.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AuditModule } from './modules/audit/audit.module';
@@ -67,6 +68,7 @@ import { AuditModule } from './modules/audit/audit.module';
     TagsModule,
     CategoriesModule,
     CouponsModule,
+    FavoritesModule,
     SearchModule,
     AdminModule,
     AuditModule,

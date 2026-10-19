@@ -35,11 +35,11 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         aria-describedby={describedBy}
         className={cn(
           "w-full rounded-xl border bg-surface-container-lowest text-on-surface text-sm p-4 resize-none",
-          "transition-all duration-200 ease-out-expo outline-none",
-          "placeholder:text-on-surface-variant/60",
-          "focus:border-primary focus:ring-2 focus:ring-primary/20",
+          "transition-all duration-200 ease-out-expo focus:outline-none",
+          "placeholder:text-on-surface-variant/80",
+          "focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-primary",
           "disabled:opacity-50 disabled:cursor-not-allowed",
-          error ? "border-danger focus:border-danger focus:ring-danger/20" : "border-outline-variant",
+          error ? "border-danger focus-visible:border-danger focus-visible:ring-danger/40" : "border-outline-variant",
           className
         )}
         {...props}

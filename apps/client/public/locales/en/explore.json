@@ -54,7 +54,10 @@
     "pricePerPerson": "Price per person",
     "totalGuests": "Total guests",
     "totalToPay": "Total to pay",
-    "payButton": "Pay with Stripe",
+    "payButton": "Continue to payment",
+    "priceOnRequest": "Price on request",
+    "noActivities": "This destination has no activities available yet",
+    "submitting": "Processing booking...",
     "success": "Booking Confirmed!",
     "successHint": "We've sent the details to your email.",
     "errors": {

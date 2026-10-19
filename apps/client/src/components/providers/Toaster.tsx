@@ -1,6 +1,16 @@
 "use client";
 
-import { Toaster as SonnerToaster } from "sonner";
+import dynamic from "next/dynamic";
+import type { ComponentProps } from "react";
+import type { Toaster as SonnerComponent } from "sonner";
+
+type SonnerProps = ComponentProps<typeof SonnerComponent>;
+
+// Sonner is only needed when a toast fires — keep it out of the shared chunk.
+const SonnerToaster = dynamic<SonnerProps>(
+  () => import("sonner").then((m) => m.Toaster),
+  { ssr: false }
+);
 
 export function Toaster() {
   return (

@@ -11,12 +11,13 @@
     "build:client": "npm run build --workspace=client",
     "build:server": "npm run build --workspace=server",
     "build": "npm run build:client && npm run build:server",
+    "lint": "npm run lint --workspace=client && npm run lint --workspace=server",
+    "test": "npm run test:ci --workspace=client && npm run test --workspace=server",
     "prepare": "husky"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@google/stitch-sdk": "^0.3.5",
     "@nestjs/cli": "^11.0.23",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2"

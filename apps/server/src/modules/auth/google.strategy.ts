@@ -1,12 +1,60 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, type VerifyCallback } from 'passport-google-oauth20';
+import {
+  Strategy,
+  type StrategyOptions,
+  type VerifyCallback,
+} from 'passport-google-oauth20';
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { randomBytes } from 'crypto';
+import type { Request, Response } from 'express';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
 import { TokensService } from './tokens.service';
-import type { OAuthAccount, User } from '@prisma/client';
+import type { User } from '@prisma/client';
 
-type OAuthWithUser = OAuthAccount & { user: User };
+const STATE_COOKIE = 'g_oauth_state';
+const STATE_TTL_MS = 10 * 60 * 1000;
+
+function readCookie(req: Request, name: string): string | undefined {
+  const header = req.headers?.cookie;
+  if (!header) return undefined;
+  for (const part of header.split(';')) {
+    const [key, ...rest] = part.trim().split('=');
+    if (key === name) return decodeURIComponent(rest.join('='));
+  }
+  return undefined;
+}
+
+/**
+ * CSRF protection for the OAuth flow without server sessions: a random
+ * state value round-trips through Google and is compared against a
+ * short-lived httpOnly cookie set when the flow starts.
+ */
+class CookieStateStore {
+  store(req: Request, done: (err: Error | null, state?: string) => void): void {
+    const state = randomBytes(16).toString('hex');
+    const res = (req as Request & { res?: Response }).res;
+    res?.cookie(STATE_COOKIE, state, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: STATE_TTL_MS,
+      path: '/',
+    });
+    done(null, state);
+  }
+
+  verify(
+    req: Request,
+    state: string,
+    done: (err: Error | null, ok?: boolean) => void,
+  ): void {
+    const expected = readCookie(req, STATE_COOKIE);
+    const res = (req as Request & { res?: Response }).res;
+    res?.clearCookie(STATE_COOKIE, { path: '/' });
+    done(null, Boolean(state) && expected === state);
+  }
+}
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -23,33 +71,32 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       config.get<string>('GOOGLE_CALLBACK_URL') ||
       `${config.get<string>('CLIENT_URL', 'http://localhost:3000')}/auth/google/callback`;
 
+    const options = {
+      clientID: clientID || 'GOOGLE_CLIENT_ID_MISSING',
+      clientSecret: clientSecret || 'GOOGLE_CLIENT_SECRET_MISSING',
+      callbackURL,
+      scope: ['email', 'profile'],
+      state: true,
+      store: new CookieStateStore(),
+    };
+
     if (!clientID || !clientSecret) {
-      super({
-        clientID: clientID || 'GOOGLE_CLIENT_ID_MISSING',
-        clientSecret: clientSecret || 'GOOGLE_CLIENT_SECRET_MISSING',
-        callbackURL,
-        scope: ['email', 'profile'],
-      });
+      super(options as unknown as StrategyOptions);
       this.logger.warn(
         'Google OAuth credentials missing — Google login will fail until configured.',
       );
       return;
     }
 
-    super({
-      clientID,
-      clientSecret,
-      callbackURL,
-      scope: ['email', 'profile'],
-    });
+    super(options as unknown as StrategyOptions);
   }
 
   async validate(
-    accessToken: string,
-    refreshToken: string,
+    _accessToken: string,
+    _refreshToken: string,
     profile: {
       id: string;
-      emails?: { value: string }[];
+      emails?: { value: string; verified?: boolean }[];
       name?: { givenName?: string; familyName?: string };
       photos?: { value: string }[];
     },
@@ -64,6 +111,16 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         );
       }
 
+      // Google must assert the email is verified: otherwise the account
+      // could be created/linked against an unowned address.
+      const googleEmailVerified = profile.emails?.[0]?.verified === true;
+      if (!googleEmailVerified) {
+        return done(
+          new BadRequestException('Google email is not verified'),
+          undefined,
+        );
+      }
+
       const name =
         [profile.name?.givenName, profile.name?.familyName]
           .filter(Boolean)
@@ -73,25 +130,33 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       const avatarUrl = profile.photos?.[0]?.value;
 
       // Find by OAuth account first
-      const existingOAuth: OAuthWithUser | null =
-        await this.prisma.oAuthAccount.findUnique({
-          where: {
-            provider_providerAccountId: {
-              provider: 'google',
-              providerAccountId: profile.id,
-            },
+      const existingOAuth = await this.prisma.oAuthAccount.findUnique({
+        where: {
+          provider_providerAccountId: {
+            provider: 'google',
+            providerAccountId: profile.id,
           },
-          include: { user: true },
-        });
+        },
+        include: { user: true },
+      });
 
       let user: User | null = existingOAuth?.user ?? null;
-      let oauth: OAuthAccount | null = existingOAuth ?? null;
 
       if (!user) {
         const existingByEmail = await this.prisma.user.findUnique({
           where: { email },
         });
         if (existingByEmail) {
+          // Auto-linking an UNVERIFIED local account would let an attacker
+          // who pre-registered the victim's email hijack their Google login.
+          if (!existingByEmail.emailVerified) {
+            return done(
+              new BadRequestException(
+                'An account with this email already exists. Sign in with your password and verify your email first.',
+              ),
+              undefined,
+            );
+          }
           user = existingByEmail;
         } else {
           user = await this.prisma.user.create({
@@ -105,21 +170,17 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             },
           });
         }
-        oauth = await this.prisma.oAuthAccount.create({
+
+        // Do NOT persist the provider's access/refresh tokens: they are not
+        // needed and a DB leak would expose users' Google credentials.
+        await this.prisma.oAuthAccount.create({
           data: {
             userId: user.id,
             provider: 'google',
             providerAccountId: profile.id,
-            accessToken,
-            refreshToken,
             tokenType: 'Bearer',
             scope: 'email profile',
           },
-        });
-      } else if (oauth) {
-        oauth = await this.prisma.oAuthAccount.update({
-          where: { id: oauth.id },
-          data: { accessToken, refreshToken },
         });
       }
 

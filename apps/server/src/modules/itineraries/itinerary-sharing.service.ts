@@ -6,8 +6,26 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { createHash } from 'node:crypto';
+import { createHash, timingSafeEqual } from 'node:crypto';
+import * as bcrypt from 'bcrypt';
+import type { Prisma, ShareVisibility } from '@prisma/client';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
+
+/** Accepts both the legacy lowercase values and the ShareVisibility enum. */
+export type ShareVisibilityInput =
+  | ShareVisibility
+  | 'private'
+  | 'link'
+  | 'public';
+
+const BCRYPT_HASH_RE = /^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/;
+
+function normalizeVisibility(
+  visibility?: ShareVisibilityInput,
+): ShareVisibility {
+  if (!visibility) return 'LINK';
+  return visibility.toUpperCase() as ShareVisibility;
+}
 
 @Injectable()
 export class ItinerarySharingService {
@@ -17,8 +35,9 @@ export class ItinerarySharingService {
     ownerId: string,
     itineraryId: string,
     options: {
-      visibility?: 'private' | 'link' | 'public';
+      visibility?: ShareVisibilityInput;
       expiresAt?: Date;
+      password?: string;
     } = {},
   ) {
     const itinerary = await this.prisma.itinerary.findFirst({
@@ -32,13 +51,17 @@ export class ItinerarySharingService {
       data: {
         itineraryId,
         shareSlug,
-        visibility: options.visibility ?? 'link',
+        visibility: normalizeVisibility(options.visibility),
         expiresAt: options.expiresAt,
+        // Store only a bcrypt hash, same convention as User.password
+        password: options.password
+          ? await bcrypt.hash(options.password, 12)
+          : null,
       },
     });
   }
 
-  async getBySlug(slug: string) {
+  async getBySlug(slug: string, password?: string) {
     const share = await this.prisma.itineraryShare.findUnique({
       where: { shareSlug: slug },
       include: {
@@ -74,8 +97,11 @@ export class ItinerarySharingService {
     if (share.expiresAt && share.expiresAt < new Date()) {
       throw new ForbiddenException('Share link has expired');
     }
-    if (share.visibility === 'private') {
+    if (share.visibility === 'PRIVATE') {
       throw new ForbiddenException('Share link is private');
+    }
+    if (!(await this.verifySharePassword(share.password, password))) {
+      throw new ForbiddenException('Invalid share password');
     }
 
     // Increment view count (fire and forget)
@@ -86,7 +112,7 @@ export class ItinerarySharingService {
       })
       .catch(() => undefined);
 
-    return share;
+    return this.serializeShare(share);
   }
 
   async revokeShare(ownerId: string, shareId: string) {
@@ -102,7 +128,7 @@ export class ItinerarySharingService {
     return { success: true };
   }
 
-  async forkItinerary(forkerId: string, sourceSlug: string) {
+  async forkItinerary(forkerId: string, sourceSlug: string, password?: string) {
     const source = await this.prisma.itineraryShare.findUnique({
       where: { shareSlug: sourceSlug },
       include: {
@@ -117,9 +143,15 @@ export class ItinerarySharingService {
         },
       },
     });
-    if (!source) throw new NotFoundException('Source itinerary not found');
+    // Same gate as getBySlug: never reveal private or missing shares
+    if (!source || source.visibility === 'PRIVATE') {
+      throw new NotFoundException('Source itinerary not found');
+    }
     if (source.expiresAt && source.expiresAt < new Date()) {
       throw new ForbiddenException('Source link has expired');
+    }
+    if (!(await this.verifySharePassword(source.password, password))) {
+      throw new ForbiddenException('Invalid share password');
     }
 
     return this.prisma.itinerary.create({
@@ -195,6 +227,62 @@ export class ItinerarySharingService {
       where: { itineraryId_userId: { itineraryId, userId: collaboratorId } },
     });
     return { success: true };
+  }
+
+  /**
+   * ItineraryShare.password has no dedicated write path yet, so both storage
+   * formats are supported: bcrypt hashes (as used for User.password) and plain
+   * text. Compared in constant time where possible.
+   */
+  private async verifySharePassword(
+    stored: string | null,
+    provided?: string,
+  ): Promise<boolean> {
+    if (!stored) return true; // no password set on this share
+    if (!provided) return false;
+    if (BCRYPT_HASH_RE.test(stored)) {
+      return bcrypt.compare(provided, stored);
+    }
+    const a = createHash('sha256').update(provided).digest();
+    const b = createHash('sha256').update(stored).digest();
+    return timingSafeEqual(a, b);
+  }
+
+  /**
+   * Never expose the stored share password and convert Prisma.Decimal money
+   * fields to plain numbers for JSON responses.
+   */
+  private serializeShare<
+    T extends {
+      password: string | null;
+      itinerary: {
+        totalPrice: Prisma.Decimal | null;
+        days: Array<{
+          items: Array<{ activity: { price: Prisma.Decimal | null } | null }>;
+        }>;
+      };
+    },
+  >(share: T) {
+    return {
+      ...share,
+      password: null,
+      itinerary: {
+        ...share.itinerary,
+        totalPrice: share.itinerary.totalPrice?.toNumber() ?? null,
+        days: share.itinerary.days.map((day) => ({
+          ...day,
+          items: day.items.map((item) => ({
+            ...item,
+            activity: item.activity
+              ? {
+                  ...item.activity,
+                  price: item.activity.price?.toNumber() ?? null,
+                }
+              : null,
+          })),
+        })),
+      },
+    };
   }
 
   private generateSlug(): string {

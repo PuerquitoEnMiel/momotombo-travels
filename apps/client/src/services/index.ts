@@ -1,6 +1,6 @@
 export { api } from "./api";
 export { authService } from "./auth.service";
-export { destinationsService } from "./destinations.service";
+export { destinationsService, type FavoriteEntry } from "./destinations.service";
 export { itinerariesService } from "./itineraries.service";
 export { bookingsService } from "./bookings.service";
 export { reviewsService } from "./reviews.service";

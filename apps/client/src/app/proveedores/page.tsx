@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { PlusCircle, Calendar, CurrencyDollar, Pulse, Gear, CheckCircle, Clock } from "@phosphor-icons/react";
-import { API_URL } from "@/lib/api";
+import { PlusCircle, Calendar, CurrencyDollar, Pulse, Gear, CheckCircle, Clock, Info } from "@phosphor-icons/react";
+import { API_URL, getAuthToken } from "@/lib/api";
+import { formatMoney } from "@/lib/money";
+import { Badge } from "@/components/ui";
 
 interface GuideUser {
     name: string;
@@ -20,7 +22,7 @@ export default function ProveedoresDashboard() {
     const [activeTab, setActiveTab] = useState("activities");
 
     useEffect(() => {
-        const token = localStorage.getItem("authToken");
+        const token = getAuthToken();
         if (!token) {
             router.push("/auth/login");
             return;
@@ -47,7 +49,9 @@ export default function ProveedoresDashboard() {
         );
     }
 
-    const mockActivities = [
+    // Demo-only preview rows. Clearly labeled as "Datos de demostración" in the
+    // UI — never presented as live bookings or revenue.
+    const demoActivities = [
         { id: 1, name: "Tour Guiado Volcán Masaya", status: "Active", bookings: 12, revenue: 360 },
         { id: 2, name: "Clases de Surf San Juan del Sur", status: "Active", bookings: 8, revenue: 240 },
         { id: 3, name: "Recorrido Histórico León", status: "Draft", bookings: 0, revenue: 0 },
@@ -58,7 +62,7 @@ export default function ProveedoresDashboard() {
             {/* Sidebar */}
             <aside className="w-full md:w-64 bg-volcano-black text-white p-6 flex flex-col min-h-[calc(100vh-80px)]">
                 <div className="mb-10">
-                    <h2 className="text-xl font-bold font-serif mb-1">Portal Guías</h2>
+                    <h1 className="text-xl font-bold font-serif mb-1">Portal de Guías</h1>
                     <p className="text-xs text-gray-400">Momotombo Travels</p>
                 </div>
 
@@ -100,9 +104,9 @@ export default function ProveedoresDashboard() {
             <main className="flex-1 p-6 md:p-10">
                 {activeTab === "activities" && (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                        <div className="flex justify-between items-center mb-8">
+                        <div className="flex justify-between items-center mb-4">
                             <div>
-                                <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">Mis Actividades</h1>
+                                <h2 className="text-3xl font-serif font-bold text-gray-900 mb-2">Mis Actividades</h2>
                                 <p className="text-gray-500">Gestiona los tours y experiencias que ofreces.</p>
                             </div>
                             <Link
@@ -112,6 +116,13 @@ export default function ProveedoresDashboard() {
                             >
                                 <PlusCircle size={18} /> Nueva Actividad
                             </Link>
+                        </div>
+
+                        <div className="flex items-center gap-2.5 mb-6 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl">
+                            <Badge variant="warning">Datos de demostración</Badge>
+                            <p className="text-xs text-gray-600">
+                                Esta tabla muestra ejemplos ilustrativos. Tus actividades reales aparecerán aquí.
+                            </p>
                         </div>
 
                         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
@@ -125,7 +136,7 @@ export default function ProveedoresDashboard() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
-                                    {mockActivities.map(act => (
+                                    {demoActivities.map(act => (
                                         <tr key={act.id} className="hover:bg-gray-50 transition-colors">
                                             <td className="px-6 py-4">
                                                 <span className="font-bold text-gray-900">{act.name}</span>
@@ -142,7 +153,7 @@ export default function ProveedoresDashboard() {
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 font-medium text-gray-700">{act.bookings}</td>
-                                            <td className="px-6 py-4 font-bold text-primary">${act.revenue}</td>
+                                            <td className="px-6 py-4 font-bold text-primary">{formatMoney(act.revenue)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -153,26 +164,56 @@ export default function ProveedoresDashboard() {
 
                 {activeTab === "calendar" && (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                        <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">Calendario</h1>
+                        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-2">Calendario</h2>
                         <p className="text-gray-500 mb-8">Administra tu disponibilidad y horarios de tours.</p>
                         <div className="bg-white rounded-2xl border border-gray-100 p-16 text-center shadow-sm">
+                            <div className="flex justify-center mb-4">
+                                <Badge variant="warning">Vista de demostración</Badge>
+                            </div>
                             <Calendar size={48} className="mx-auto text-gray-300 mb-4" />
                             <h3 className="font-bold text-xl text-gray-900 mb-2">Calendario de Reservas</h3>
                             <p className="text-gray-500 max-w-sm mx-auto">Sincroniza tus reservas con tu calendario personal de Google o Apple.</p>
                         </div>
                     </motion.div>
                 )}
-                
+
                 {activeTab === "finance" && (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                        <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">Finanzas</h1>
+                        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-2">Finanzas</h2>
                         <p className="text-gray-500 mb-8">Revisa tus ganancias y métodos de retiro (Stripe Connect).</p>
+                        <div className="flex items-center gap-2.5 mb-6 px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl">
+                            <Badge variant="warning">Datos de demostración</Badge>
+                            <p className="text-xs text-gray-600">
+                                Este balance es un ejemplo ilustrativo. Tus montos reales aparecerán aquí.
+                            </p>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                             <div className="bg-linear-to-br from-primary to-primary-container rounded-2xl p-6 text-white shadow-lg">
                                 <p className="text-white/80 font-medium mb-1">Balance Disponible</p>
-                                <h3 className="text-4xl font-bold">$600.00</h3>
-                                <button className="mt-4 bg-white text-primary text-sm font-bold px-4 py-2 rounded-full hover:bg-gray-50 w-full transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.97]">Retirar a Banco</button>
+                                <h3 className="text-4xl font-bold">{formatMoney(600)}</h3>
+                                <button
+                                    type="button"
+                                    disabled
+                                    title="Próximamente"
+                                    className="mt-4 bg-white/60 text-primary text-sm font-bold px-4 py-2 rounded-full w-full cursor-not-allowed"
+                                >
+                                    Retirar a Banco
+                                </button>
                             </div>
+                        </div>
+                    </motion.div>
+                )}
+
+                {activeTab === "settings" && (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-2">Configuración</h2>
+                        <p className="text-gray-500 mb-8">Administra las preferencias de tu cuenta de guía.</p>
+                        <div className="bg-white rounded-2xl border border-gray-100 p-16 text-center shadow-sm">
+                            <Gear size={48} className="mx-auto text-gray-300 mb-4" />
+                            <p className="text-gray-500 max-w-sm mx-auto flex items-center justify-center gap-2">
+                                <Info size={16} className="shrink-0" />
+                                Configuración estará disponible próximamente.
+                            </p>
                         </div>
                     </motion.div>
                 )}

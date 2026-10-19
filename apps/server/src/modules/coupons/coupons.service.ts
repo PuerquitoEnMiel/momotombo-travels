@@ -1,11 +1,14 @@
 import {
   Injectable,
-  NotFoundException,
   BadRequestException,
   ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../../infrastructure/prisma/prisma.service';
 import type { CouponScope, DiscountType } from '@prisma/client';
+
+// Un unico error generico para cualquier fallo del cupon, evitando
+// enumeracion de codigos (no distingue inexistente vs expirado/inactivo).
+const GENERIC_COUPON_ERROR = 'Coupon is invalid or no longer available';
 
 @Injectable()
 export class CouponsService {
@@ -27,26 +30,35 @@ export class CouponsService {
     const coupon = await this.prisma.coupon.findUnique({
       where: { code: code.toUpperCase() },
     });
-    if (!coupon) throw new NotFoundException('Coupon not found');
+    if (!coupon) throw new BadRequestException(GENERIC_COUPON_ERROR);
     return coupon;
   }
 
   async validate(code: string, userId: string, purchaseAmount: number) {
+    if (!userId) {
+      throw new BadRequestException('An authenticated user is required');
+    }
+
     const coupon = await this.getByCode(code);
     const now = new Date();
 
-    if (!coupon.isActive) throw new BadRequestException('Coupon is inactive');
-    if (coupon.validFrom > now)
-      throw new BadRequestException('Coupon is not yet valid');
-    if (coupon.validUntil && coupon.validUntil < now) {
-      throw new BadRequestException('Coupon has expired');
+    if (
+      !coupon.isActive ||
+      coupon.validFrom > now ||
+      (coupon.validUntil && coupon.validUntil < now) ||
+      (coupon.usageLimit && coupon.usageCount >= coupon.usageLimit)
+    ) {
+      throw new BadRequestException(GENERIC_COUPON_ERROR);
     }
-    if (coupon.usageLimit && coupon.usageCount >= coupon.usageLimit) {
-      throw new BadRequestException('Coupon usage limit reached');
+    if (
+      coupon.discountType === 'PERCENTAGE' &&
+      Number(coupon.discountValue) > 100
+    ) {
+      throw new BadRequestException('Coupon percentage cannot exceed 100');
     }
-    if (purchaseAmount < coupon.minPurchase) {
+    if (purchaseAmount < Number(coupon.minPurchase)) {
       throw new BadRequestException(
-        `Minimum purchase of $${coupon.minPurchase} required`,
+        `Minimum purchase of $${Number(coupon.minPurchase)} required`,
       );
     }
 
@@ -59,9 +71,9 @@ export class CouponsService {
 
     const discount = this.calculateDiscount(
       coupon.discountType,
-      coupon.discountValue,
+      Number(coupon.discountValue),
       purchaseAmount,
-      coupon.maxDiscount,
+      coupon.maxDiscount != null ? Number(coupon.maxDiscount) : null,
     );
     return { coupon, discount, finalAmount: purchaseAmount - discount };
   }
@@ -75,12 +87,28 @@ export class CouponsService {
     const coupon = await this.prisma.coupon.findUnique({
       where: { id: couponId },
     });
-    if (!coupon) throw new NotFoundException('Coupon not found');
+    if (!coupon) throw new BadRequestException(GENERIC_COUPON_ERROR);
 
     const validation = await this.validate(coupon.code, userId, purchaseAmount);
 
     return this.prisma.$transaction(async (tx) => {
-      const redemption = await tx.couponRedemption.create({
+      // Incremento atomico condicionado al limite de uso: si otro proceso
+      // agoto el cupon, count === 0 y la transaccion se revierte.
+      const updated = await tx.coupon.updateMany({
+        where: {
+          id: couponId,
+          ...(coupon.usageLimit != null
+            ? { usageCount: { lt: coupon.usageLimit } }
+            : {}),
+        },
+        data: { usageCount: { increment: 1 } },
+      });
+
+      if (updated.count === 0) {
+        throw new BadRequestException(GENERIC_COUPON_ERROR);
+      }
+
+      return tx.couponRedemption.create({
         data: {
           couponId,
           userId,
@@ -88,13 +116,6 @@ export class CouponsService {
           discountAmount: validation.discount,
         },
       });
-
-      await tx.coupon.update({
-        where: { id: couponId },
-        data: { usageCount: { increment: 1 } },
-      });
-
-      return redemption;
     });
   }
 
@@ -145,7 +166,10 @@ export class CouponsService {
     amount: number,
     maxDiscount?: number | null,
   ): number {
-    let discount = type === 'PERCENTAGE' ? (amount * value) / 100 : value;
+    let discount =
+      type === 'PERCENTAGE'
+        ? (amount * Math.min(Math.max(value, 0), 100)) / 100
+        : value;
     if (maxDiscount != null) discount = Math.min(discount, maxDiscount);
     return Math.max(0, Math.min(discount, amount));
   }

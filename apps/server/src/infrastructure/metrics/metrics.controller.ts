@@ -1,9 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
-import { Public } from '../../common/decorators/public.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
 
 @Controller('metrics')
 export class MetricsController {
-  @Public()
+  @Roles('ADMIN')
   @Get()
   getMetrics() {
     // PrometheusModule handles the /metrics endpoint automatically

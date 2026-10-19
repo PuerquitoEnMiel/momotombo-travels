@@ -23,6 +23,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { API_URL } from "@/lib/api";
+import { formatAndSanitize, sanitizeHtml } from "@/lib/sanitize";
+import { api } from "@/services/api";
 
 /* ─── types ───────────────────────────────────────────────────────────────── */
 
@@ -111,7 +113,7 @@ function SuggestionCard({ dest }: { dest: DestinationSuggestion }) {
       {/* thumbnail */}
       <div className="w-14 h-14 rounded-lg overflow-hidden bg-surface-dim shrink-0 relative">
         {dest.image_url ? (
-          <Image src={dest.image_url} alt={dest.name} fill className="object-cover" sizes="56px" unoptimized />
+          <Image src={dest.image_url} alt={dest.name} fill className="object-cover" sizes="56px" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <Mountains size={20} className="text-outline" aria-hidden="true" />
@@ -134,12 +136,6 @@ function SuggestionCard({ dest }: { dest: DestinationSuggestion }) {
       <CaretRight size={14} className="text-outline group-hover:text-[#8a3824] shrink-0 transition-colors" aria-hidden="true" />
     </Link>
   );
-}
-
-function formatContent(text: string) {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\n/g, "<br />");
 }
 
 /* ─── main page ───────────────────────────────────────────────────────────── */
@@ -174,19 +170,11 @@ export default function PlanificarPage() {
 
       try {
         const history = messages.map((m) => ({ role: m.role, content: m.content }));
-        const response = await fetch(`${API_URL}/gemini-agent/chat`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: userMessage, history }),
-        });
-
-        if (!response.ok) throw new Error("Error conectando con Kary");
-
-        const data = await response.json() as {
+        const data = await api.post<{
           message: string;
           suggested_destinations?: DestinationSuggestion[];
           action_type?: string;
-        };
+        }>(`${API_URL}/gemini-agent/chat`, { message: userMessage, history });
 
         setMessages((prev) => [
           ...prev,
@@ -214,6 +202,19 @@ export default function PlanificarPage() {
     },
     [input, isLoading, started, messages]
   );
+
+  /* Handoff from the home Atelier planner: AtelierPlanner composes the trip
+     prompt, stores it under "initial-query" and routes here — send it into the
+     chat on mount so the user's selections are not silently discarded. */
+  const handledInitialQuery = useRef(false);
+  useEffect(() => {
+    if (handledInitialQuery.current) return;
+    const query = localStorage.getItem("initial-query");
+    if (!query) return;
+    handledInitialQuery.current = true;
+    localStorage.removeItem("initial-query");
+    void sendMessage(query);
+  }, [sendMessage]);
 
   /* derived: all suggested destinations across conversation */
   const allSuggestions = messages
@@ -362,8 +363,8 @@ export default function PlanificarPage() {
                         dangerouslySetInnerHTML={{
                           __html:
                             msg.role === "assistant"
-                              ? formatContent(msg.content)
-                              : msg.content,
+                              ? formatAndSanitize(msg.content)
+                              : sanitizeHtml(msg.content),
                         }}
                       />
                       {/* timestamp */}
@@ -556,7 +557,6 @@ export default function PlanificarPage() {
                               fill
                               className="object-cover"
                               sizes="320px"
-                              unoptimized
                             />
                           </div>
                         ) : null}

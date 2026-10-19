@@ -30,7 +30,7 @@ describe('Button', () => {
   it('renders with outline variant', () => {
     render(<Button variant="outline">Outline</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('border');
+    expect(button).toHaveClass('border-2');
   });
 
   it('renders with destructive variant', () => {

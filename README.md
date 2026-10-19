@@ -55,10 +55,11 @@ git clone https://github.com/yourusername/momotombo-travels.git
 cd momotombo-travels
 ```
 
-2. Install dependencies:
+2. Install dependencies (from the repo root only — the monorepo has a single root `package-lock.json`):
 ```bash
 npm install
 ```
+Do not run `npm install` inside `apps/client` or `apps/server`; the root install covers all workspaces.
 
 3. Set up environment variables:
 ```bash
@@ -74,9 +75,10 @@ cp apps/client/.env.example apps/client/.env.local
 4. Set up the database:
 ```bash
 cd apps/server
-npx prisma migrate dev
+npx prisma migrate deploy
 npx prisma db seed
 ```
+Note: if your dev database was created earlier with `prisma db push`, reset it first with `npx prisma migrate reset` so it aligns with the migration history.
 
 5. Start development servers:
 ```bash
@@ -90,11 +92,12 @@ npm run dev:client  # Client on http://localhost:3000
 ### Available Scripts
 
 ```bash
-# Root
+# Root (all of these exist at the workspace root)
 npm run dev:client    # Start client dev server
 npm run dev:server    # Start server dev server
 npm run build         # Build both apps
 npm run lint          # Lint both apps
+npm run test          # Run client + server test suites
 
 # Client
 npm run test          # Run unit tests (Vitest)
@@ -108,22 +111,23 @@ npm run test:e2e      # Run E2E tests
 
 ### Code Quality
 
-- **Linting**: ESLint + Prettier
-- **Type Checking**: TypeScript strict mode
+- **Linting**: ESLint + Prettier (root `npm run lint` covers both apps)
+- **Type Checking**: TypeScript — the client runs with `strict: true`; the server is not fully strict (`noImplicitAny` is off)
 - **Pre-commit Hooks**: Husky + lint-staged
 - **Commit Messages**: Conventional Commits
 
 ## Testing
 
+Test coverage is currently limited — see [Architecture](./ARCHITECTURE.md#testing-strategy) for the real state and the testing backlog.
+
 ### Unit Tests
 ```bash
-# Client
-cd apps/client
+# From the root (runs both suites)
 npm run test
 
-# Server
-cd apps/server
-npm run test
+# Or per app
+cd apps/client && npm run test   # Vitest + Testing Library
+cd apps/server && npm run test   # Jest + ts-jest
 ```
 
 ### E2E Tests

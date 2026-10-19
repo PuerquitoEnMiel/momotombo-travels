@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { Type } from 'class-transformer';
@@ -14,10 +15,15 @@ import {
   IsDateString,
   IsIn,
   IsOptional,
+  IsString,
   IsUUID,
+  Length,
   ValidateNested,
 } from 'class-validator';
-import { ItinerarySharingService } from './itinerary-sharing.service';
+import {
+  ItinerarySharingService,
+  type ShareVisibilityInput,
+} from './itinerary-sharing.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { Public } from '../../common/decorators/public.decorator';
 import {
@@ -27,12 +33,17 @@ import {
 
 class ShareOptionsDto {
   @IsOptional()
-  @IsIn(['private', 'link', 'public'])
-  visibility?: 'private' | 'link' | 'public';
+  @IsIn(['private', 'link', 'public', 'PRIVATE', 'LINK', 'PUBLIC'])
+  visibility?: ShareVisibilityInput;
 
   @IsOptional()
   @IsDateString()
   expiresAt?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(1, 128)
+  password?: string;
 }
 
 class CreateShareDto {
@@ -80,13 +91,14 @@ export class ItinerarySharingController {
       expiresAt: dto.options?.expiresAt
         ? new Date(dto.options.expiresAt)
         : undefined,
+      password: dto.options?.password,
     });
   }
 
   @Public()
   @Get(':slug')
-  getBySlug(@Param('slug') slug: string) {
-    return this.sharingService.getBySlug(slug);
+  getBySlug(@Param('slug') slug: string, @Query('password') password?: string) {
+    return this.sharingService.getBySlug(slug, password);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -99,8 +111,12 @@ export class ItinerarySharingController {
   @UseGuards(JwtAuthGuard)
   @Post('fork/:slug')
   @HttpCode(HttpStatus.CREATED)
-  fork(@Param('slug') slug: string, @CurrentUser() user: AuthenticatedUser) {
-    return this.sharingService.forkItinerary(user.userId, slug);
+  fork(
+    @Param('slug') slug: string,
+    @CurrentUser() user: AuthenticatedUser,
+    @Body('password') password?: string,
+  ) {
+    return this.sharingService.forkItinerary(user.userId, slug, password);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -1,7 +1,8 @@
 import { config } from 'dotenv';
 config({ path: '../.env' });
 
-import { PrismaClient, UserRole } from '@prisma/client';
+import { randomBytes } from 'crypto';
+import { PrismaClient, UserRole, type Difficulty } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import * as bcrypt from 'bcrypt';
@@ -13,6 +14,13 @@ import { destinationsData } from './destinations';
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
+
+function toDifficulty(value: string | undefined): Difficulty | undefined {
+  if (value === 'EASY' || value === 'MODERATE' || value === 'HARD') {
+    return value;
+  }
+  return undefined;
+}
 
 async function main() {
   console.log('🌱 Starting comprehensive Nicaragua seed...\n');
@@ -45,11 +53,26 @@ async function main() {
   await prisma.user.deleteMany();
   console.log('  ✅ Database cleaned\n');
 
-  // 2. Admin user
-  const hashedPassword = await bcrypt.hash('admin123', 10);
+  // 2. Admin user (credenciales desde el entorno; nunca un password fijo)
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@momotombo.com';
+  const envPassword = process.env.ADMIN_PASSWORD;
+  const adminPassword = envPassword || randomBytes(32).toString('base64url');
+
+  if (!envPassword) {
+    console.warn(
+      '⚠️  ADMIN_PASSWORD no está definida en el entorno. Se generó una contraseña aleatoria para el usuario admin.',
+    );
+    console.warn(`     ADMIN_EMAIL=${adminEmail}`);
+    console.warn(`     ADMIN_PASSWORD=${adminPassword}`);
+    console.warn(
+      '     Guárdala y define ADMIN_PASSWORD en .env para poder volver a iniciar sesión.',
+    );
+  }
+
+  const hashedPassword = await bcrypt.hash(adminPassword, 12);
   const admin = await prisma.user.create({
     data: {
-      email: 'admin@momotombo.com',
+      email: adminEmail,
       password: hashedPassword,
       name: 'Admin Momotombo',
       role: UserRole.ADMIN,
@@ -122,7 +145,7 @@ async function main() {
             description: act.description,
             price: act.price,
             duration: act.duration,
-            difficulty: act.difficulty,
+            difficulty: toDifficulty(act.difficulty),
             included: act.included,
             toBring: act.toBring,
           })),

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { fadeRise } from "@/lib/motion";
 
 export function ValueProposition() {
     return (
@@ -9,10 +10,7 @@ export function ValueProposition() {
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
                 {/* Text Content */}
                 <motion.div
-                    initial={{ opacity: 0, x: -50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
+                    {...fadeRise}
                 >
                     <h2 className="font-serif text-5xl md:text-6xl font-bold text-volcano-black mb-8 leading-tight">
                         Una nueva forma <br />
@@ -33,10 +31,8 @@ export function ValueProposition() {
 
                 {/* Image */}
                 <motion.div
-                    initial={{ opacity: 0, x: 50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
+                    {...fadeRise}
+                    transition={{ ...fadeRise.transition, delay: 0.2 }}
                     className="relative h-[600px] w-full rounded-3xl overflow-hidden shadow-2xl"
                 >
                     <Image

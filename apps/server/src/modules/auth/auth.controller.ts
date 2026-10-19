@@ -30,10 +30,9 @@ import {
 function getRequestMeta(req: Request) {
   return {
     userAgent: req.headers['user-agent'],
-    ipAddress:
-      (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
-      req.socket.remoteAddress ||
-      undefined,
+    // req.ip is derived from Express' trust-proxy configuration; the raw
+    // X-Forwarded-For header is attacker-forgeable and must not be trusted.
+    ipAddress: req.ip || undefined,
   };
 }
 

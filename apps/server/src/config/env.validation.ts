@@ -24,9 +24,16 @@ export interface EnvVars {
 }
 
 const schema = Joi.object<EnvVars>({
+  // Explicit NODE_ENV is mandatory: a silent 'development' default would let a
+  // production deployment silently run with dev safety nets. Fail validation if
+  // it is undefined.
   NODE_ENV: Joi.string()
     .valid('development', 'production', 'test')
-    .default('development'),
+    .required()
+    .messages({
+      'any.required':
+        'NODE_ENV is required (set it explicitly to development, test, or production)',
+    }),
   PORT: Joi.number().default(3001),
   DATABASE_URL: Joi.string().required(),
   JWT_SECRET: Joi.string().min(32).required().messages({
@@ -43,7 +50,25 @@ const schema = Joi.object<EnvVars>({
   GOOGLE_CLIENT_SECRET: Joi.string().optional(),
   GOOGLE_CALLBACK_URL: Joi.string().uri().optional(),
   STRIPE_SECRET_KEY: Joi.string().optional(),
-  STRIPE_WEBHOOK_SECRET: Joi.string().optional(),
+  // A real (non-mock) Stripe key verifies Stripe-Signature headers with the
+  // webhook secret, so in production the secret becomes conditionally required
+  // whenever a real key is configured.
+  STRIPE_WEBHOOK_SECRET: Joi.string()
+    .optional()
+    .when('STRIPE_SECRET_KEY', {
+      is: Joi.string()
+        .required()
+        .pattern(/^(?!sk_test_dev-)/),
+      then: Joi.string().when('NODE_ENV', {
+        is: 'production',
+        then: Joi.string().required().messages({
+          'any.required':
+            'STRIPE_WEBHOOK_SECRET is required in production when STRIPE_SECRET_KEY is a real key',
+        }),
+        otherwise: Joi.string().optional(),
+      }),
+      otherwise: Joi.string().optional(),
+    }),
   PINECONE_API_KEY: Joi.string().optional(),
   GOOGLE_CLOUD_PROJECT: Joi.string().optional(),
   GEMINI_API_KEY: Joi.string().optional(),

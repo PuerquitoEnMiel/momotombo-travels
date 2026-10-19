@@ -22,10 +22,11 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { Spinner, EmptyState, Badge, Container } from "@/components/ui";
+import { Spinner, EmptyState, ErrorState, Badge, Container } from "@/components/ui";
 import { destinationsService, type AiSearchResponse } from "@/services/destinations.service";
 import { useToast } from "@/hooks/useToast";
 import type { Destination, PriceLevel } from "@/types/destination";
+import { CATEGORY_SLUGS, type CategorySlug } from "@/lib/categories";
 import { cn } from "@/lib/cn";
 
 // Curated high-fidelity photographic mapping for fallback
@@ -40,12 +41,19 @@ const CURATED_IMAGE_MAP: Record<string, string> = {
   masaya: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop",
 };
 
-const CATEGORY_TABS = [
+const CATEGORY_LABELS: Record<CategorySlug, string> = {
+  volcanes: "Volcanes & Aventura",
+  playas: "Playas & Surf Pacífico",
+  reservas: "Selva Nubosa & Reservas",
+  colonial: "Ciudades Coloniales",
+  aventura: "Aventura & Adrenalina",
+};
+
+// Tabs are derived from the canonical seed slugs (apps/server/prisma/seed/categories.ts),
+// so every pill is backed by a category that actually exists in the catalog.
+const CATEGORY_TABS: { label: string; slug: CategorySlug | "" }[] = [
   { label: "Todas las Expediciones", slug: "" },
-  { label: "Volcanes & Aventura", slug: "volcanes" },
-  { label: "Ciudades Coloniales", slug: "colonial" },
-  { label: "Playas & Surf Pacífico", slug: "playas" },
-  { label: "Selva Nubosa & Reservas", slug: "naturaleza" },
+  ...CATEGORY_SLUGS.map((slug) => ({ label: CATEGORY_LABELS[slug], slug })),
 ];
 
 function getPriceSymbol(level?: string | null): string {
@@ -110,8 +118,14 @@ function DestinationCard({ dest, index }: { dest: Destination; index: number }) 
                 Nicaragua
               </span>
               <div className="inline-flex items-center gap-1 font-mono font-bold text-oro-indigena bg-volcano-black/60 px-2 py-0.5 rounded-md">
-                <Star size={13} weight="fill" />
-                <span>{dest.rating?.toFixed(1) ?? "5.0"}</span>
+                {dest.rating > 0 ? (
+                  <>
+                    <Star size={13} weight="fill" />
+                    <span>{dest.rating.toFixed(1)}</span>
+                  </>
+                ) : (
+                  <span>Nuevo</span>
+                )}
               </div>
             </div>
           </div>
@@ -128,8 +142,8 @@ function DestinationCard({ dest, index }: { dest: Destination; index: number }) 
             </div>
 
             <div className="pt-4 border-t border-outline-variant/30 flex items-center justify-between text-xs">
-              <span className="font-mono text-tertiary font-semibold uppercase tracking-wider text-[11px]">
-                Guía Certificado
+              <span className="font-mono text-tertiary-text font-semibold uppercase tracking-wider text-[11px]">
+                Guía local
               </span>
               <span className="inline-flex items-center gap-1.5 font-sans font-semibold text-primary group-hover:translate-x-1 transition-transform">
                 Explorar Ficha <ArrowRight size={14} />
@@ -147,22 +161,25 @@ export default function ExplorarPage() {
   const toast = useToast();
 
   const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("");
+  const [activeCategory, setActiveCategory] = useState<CategorySlug | "">("");
   const [priceFilter, setPriceFilter] = useState("ALL");
   const [sortBy, setSortBy] = useState("RATING");
   const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [summary, setSummary] = useState<string | null>(null);
 
   const loadDestinations = useCallback(async (catSlug?: string) => {
     setLoading(true);
     setSummary(null);
+    setError(false);
     try {
       const data = await destinationsService.list(catSlug);
       setDestinations(Array.isArray(data) ? data : []);
     } catch {
       setDestinations([]);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -394,30 +411,35 @@ export default function ExplorarPage() {
 
         {!loading && !aiLoading && (
           <>
-            {filteredDestinations.length > 0 ? (
+            {error ? (
+              <div className="mb-16">
+                <ErrorState
+                  title="No pudimos cargar las expediciones"
+                  description="Ocurrió un problema al obtener los destinos del catálogo. Revisa tu conexión e inténtalo de nuevo."
+                  onRetry={() => void loadDestinations(activeCategory || undefined)}
+                />
+              </div>
+            ) : filteredDestinations.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
                 {filteredDestinations.map((dest, i) => (
                   <DestinationCard key={dest.id} dest={dest} index={i} />
                 ))}
               </div>
             ) : (
-              <div className="py-16 text-center bg-surface-container-lowest rounded-2xl border border-outline-variant/40 p-8 mb-16">
-                <MapPin size={40} className="text-stone-400 mx-auto mb-3" />
-                <h3 className="font-serif text-xl font-bold text-on-surface mb-1">No se encontraron destinos</h3>
-                <p className="text-sm text-on-surface-variant max-w-sm mx-auto mb-6">
-                  Prueba modificando tus filtros de categoría o presupuesto para ver más expediciones.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveCategory("");
-                    setPriceFilter("ALL");
-                    clearSearch();
+              <div className="mb-16 bg-surface-container-lowest rounded-2xl border border-outline-variant/40">
+                <EmptyState
+                  icon={<MapPin size={32} aria-hidden="true" />}
+                  title="No se encontraron destinos"
+                  description="Prueba modificando tus filtros de categoría o presupuesto para ver más expediciones."
+                  action={{
+                    label: "Restablecer Filtros",
+                    onClick: () => {
+                      setActiveCategory("");
+                      setPriceFilter("ALL");
+                      clearSearch();
+                    },
                   }}
-                  className="px-5 py-2.5 rounded-full bg-primary text-on-primary font-sans text-xs font-semibold uppercase tracking-wider"
-                >
-                  Restablecer Filtros
-                </button>
+                />
               </div>
             )}
           </>
@@ -427,7 +449,7 @@ export default function ExplorarPage() {
         <div className="bg-surface-container-lowest border border-outline-variant/50 rounded-2xl p-8 sm:p-12 shadow-xl mb-16 relative overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8 space-y-4">
-              <span className="text-xs font-mono uppercase tracking-widest text-tertiary font-bold flex items-center gap-1.5">
+              <span className="text-xs font-mono uppercase tracking-widest text-tertiary-text font-bold flex items-center gap-1.5">
                 <Sparkle size={15} weight="fill" /> ASISTENCIA VIRTUAL · KARY IA
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl font-bold text-on-surface tracking-tight">
@@ -467,8 +489,8 @@ export default function ExplorarPage() {
               <ShieldCheck size={18} weight="fill" />
             </div>
             <div>
-              <p className="font-bold text-on-surface">Vulcanólogos INETER</p>
-              <p className="text-on-surface-variant text-[11px]">Guías acreditados y monitoreo activo</p>
+              <p className="font-bold text-on-surface">Guías locales expertos</p>
+              <p className="text-on-surface-variant text-[11px]">Rutas en volcanes y reservas naturales</p>
             </div>
           </div>
 
@@ -487,8 +509,8 @@ export default function ExplorarPage() {
               <Star size={18} weight="fill" />
             </div>
             <div>
-              <p className="font-bold text-on-surface">Relais & Châteaux</p>
-              <p className="text-on-surface-variant text-[11px]">Hospedaje colonial & eco-luxury</p>
+              <p className="font-bold text-on-surface">Momotombo Travels</p>
+              <p className="text-on-surface-variant text-[11px]">Hospedaje colonial &amp; eco-luxury</p>
             </div>
           </div>
 
